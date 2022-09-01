@@ -1,0 +1,38 @@
+.modalWrap {
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+
+  :global {
+    .ant-modal {
+      padding-bottom: 0;
+    }
+
+    .ant-modal-content {
+      border: none;
+    }
+
+    .ant-modal-wrap {
+      position: unset;
+    }
+
+    .ant-modal-header {
+      padding: 0;
+    }
+
+    .ant-modal-body {
+      padding: 24px 44px;
+      background: #181818;
+      color: #fff;
+      height: calc(100vh - 61px);
+    }
+
+    .ant-modal-header {
+      border-bottom: 1px solid #292929;
+    }
+    .ant-modal-close-x{
+      height: 60px;
+      width: 46px;
+    }
+  }
+}

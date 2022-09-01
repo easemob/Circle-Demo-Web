@@ -1,0 +1,95 @@
+.emojiWrap {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.emojiContentWrap {
+  width: 390px;
+  height: 286px;
+  padding: 12px 8px;
+  background: #191919;
+  border: 1px solid #4d4d4d;
+  border-radius: 12px;
+}
+.allEmojiContent{
+  margin-top: -6px;
+  margin-left: -16px;
+}
+.emojiItemWrap {
+  display: inline-block;
+  margin-top: 20px;
+  margin-left: 24px;
+}
+
+.emoji {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+
+  &:hover {
+    border-radius: 5px;
+    background: #50545b;
+  }
+}
+
+.emojiContent {
+  max-height: 262px;
+  overflow: scroll;
+}
+
+.freEmojiWrap {
+  margin-top: -6px;
+  margin-left: -16px;
+  padding-bottom: 14px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #4d4d4d;
+}
+
+.title {
+  color: #999;
+  font-size: 12px;
+  line-height: 20px;
+  padding: 0 5px;
+}
+
+.emojiPopover {
+  background: unset;
+
+  :global {
+    .ant-popover-inner-content {
+      padding: 0;
+    }
+
+    .ant-popover-inner {
+      background-color: unset;
+    }
+
+    .ant-popover-arrow {
+      display: none;
+    }
+  }
+}
+
+.active {
+  color: #fff;
+}
+
+.normal {
+  color: #c3c3c3;
+}
+
+.icon {
+  cursor: pointer;
+
+  &:hover {
+    .active;
+  }
+}
+.emojiIconCon{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  width: 28px;
+}

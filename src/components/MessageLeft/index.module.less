@@ -1,0 +1,119 @@
+.layout {
+    padding: 8px 12px 12px 4px;
+    width: 100%;
+    border-radius: 8px;
+    &.selected{
+        background: #0F0F0F;
+    }
+
+    &:hover {
+        background: #0F0F0F;
+
+        .message>.messageInfo>.bar>.operation {
+            display: block;
+        }
+    }
+
+    .message {
+        display: flex;
+
+        .avatar {
+            display: flex;
+            flex: 0 0 44px;
+            align-items: center;
+            justify-content: center;
+            height: 44px;
+            border-radius: 100%;
+            cursor: pointer;
+
+            &:hover {
+                background: #3d3d3d;
+            }
+        }
+
+        .messageInfo {
+            flex: 1;
+            margin-left: 4px;
+
+            .bar {
+                position: relative;
+                display: flex;
+                flex: 1 1 auto;
+                justify-content: space-between;
+                margin-top: 4px;
+                height: 16px;
+                line-height: 16px;
+
+                .l {
+                    display: flex;
+                    flex: 1 1 auto;
+                    width: 0;
+                    height: 16px;
+
+                    .name {
+                        font-family: 'PingFang SC';
+                        font-style: normal;
+                        font-weight: 600;
+                        font-size: 16px;
+                        line-height: 16px;
+                        color: #27AE60;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        word-break: break-all;
+                    }
+
+                    .date {
+                        display: inline-block;
+                        max-width: 100px;
+                        margin-left: 8px;
+                        font-family: 'PingFang SC';
+                        font-size: 12px;
+                        line-height: 16px;
+                        height: 16px;
+                        color: #929497;
+                        white-space: nowrap;
+                        word-break: break-all;
+                    }
+                }
+
+                .operation {
+                    display: none;
+                    position: absolute;
+                    height: 28px;
+                    top: -4px;
+                    right: -2px;
+                }
+            }
+
+            .content {
+                margin-top: 8px;
+                width: 100%;
+            }
+        }
+    }
+}
+
+.layout:not(:first-child) {
+    margin-top: 12px;
+}
+
+.channelUserInfo {
+    :global {
+        .ant-popover-content {
+            .ant-popover-arrow {
+                display: none;
+            }
+
+            .ant-popover-inner {
+                background: none;
+                border-radius: 0 0 12px 12px;
+            }
+
+            .ant-popover-inner-content {
+                padding: 0;
+
+            }
+        }
+    }
+}

@@ -1,0 +1,75 @@
+.contactsItem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 54px;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 0 8px;
+
+  &:hover {
+    background: #474747;
+    .mainInfo{
+      border-bottom: 1px solid transparent;
+    }
+  }
+
+  .avatar {
+    display: flex;
+  }
+
+  .mainInfo {
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: space-between;
+    border-bottom: 1px solid #2e2e2e;
+    height: 100%;
+
+    .basicInfo {
+      display: flex;
+      flex: 1 1 auto;
+      align-items: center;
+      margin-left: 8px;
+    }
+
+    .operation {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+  }
+}
+
+.scrollWrap {
+  height: 100%;
+  overflow: scroll;
+}
+
+.ellipsis {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  font-weight: 500;
+  font-size: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: break-all;
+
+  .name {
+    font-weight: 500;
+    font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
+  }
+}
+.muteIcon{
+  margin-left: 4px;
+  display: flex;
+  height: 18px;
+  width: 18px;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,0 +1,90 @@
+.channelWrap {
+  position: relative;
+  display: flex;
+  width: 100%;
+  background: #181818;
+}
+
+.contentWrap {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 60px);
+  padding-bottom: 12px;
+  width: 100%;
+}
+
+.messageWrap {
+  display: flex;
+  height: calc(100% - 40px);
+  padding: 16px 12px 0 12px;
+  overflow: scroll;
+  margin-bottom: 12px;
+  flex-direction: column-reverse;
+}
+
+.iptWrap {
+  padding: 0 12px;
+}
+
+.main {
+  width: 100%;
+}
+
+.side {
+  flex: 0 0 368px;
+  height: 100vh;
+  border-left: 8px solid #292929;
+}
+
+.drawerWrap {
+  flex: 0 0 280px;
+
+  .drawerBody {
+    padding: 9px 8px;
+    background: #292929;
+    height: 100%;
+  }
+}
+
+.icon {
+  color: #c5c5c5;
+  cursor: pointer;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.drawerHeader {
+  display: flex;
+  color: #fff;
+  font-size: 16px;
+  line-height: 28px;
+  padding: 0px 14px 0px 24px;
+  background: #1f1f1f;
+  align-items: center;
+  height: 60px;
+  justify-content: space-between;
+  border-bottom: 1px solid #292929;
+
+  .iconCon {
+    display: flex;
+
+    .invite {
+      display: flex;
+      height: 32px;
+      width: 32px;
+      align-items: center;
+      justify-content: center;
+      margin-right: 8px;
+    }
+
+    .close {
+      display: flex;
+      height: 32px;
+      width: 32px;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}

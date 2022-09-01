@@ -1,0 +1,382 @@
+.sideBarWrap {
+  width: 280px;
+  height: 100vh;
+  background: #292929;
+
+  :global {
+    .ant-collapse-expand-icon {
+      display: flex;
+      align-items: center;
+      margin-right: 4px;
+    }
+
+    .ant-collapse-content {
+      transition: none !important;
+    }
+
+    .ant-menu-horizontal {
+      line-height: unset;
+    }
+
+    .ant-list-split .ant-list-item {
+      border: none;
+    }
+
+    .ant-list-item {
+      padding: 0;
+    }
+
+    .ant-list-items {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: center;
+    }
+  }
+
+  .serverCover {
+    position: relative;
+    width: 280px;
+    height: 120px;
+    border-radius: 1px;
+    padding: 12px;
+    background-image: url("https://p1.meituan.net/dpplatform/50dbe2fec3eca335c35fe5e128609bb93350245.jpg");
+    background-size: cover;
+    background-position: center;
+    .shadow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(0deg, #000000 0%, rgba(0, 0, 0, 0) 100%);
+      opacity: 0.6;
+    }
+  }
+
+  .infoWrap {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .serverName {
+    font-size: 16px;
+    font-weight: bolder;
+    line-height: 24px;
+    letter-spacing: 0;
+    text-align: left;
+    color: #fff;
+    max-width: 178px;
+    margin-left: 4px;
+  }
+
+  .iconWarp {
+    display: flex;
+    align-items: center;
+
+    .icon {
+      cursor: pointer;
+    }
+  }
+
+  .tagWrap {
+    display: flex;
+    flex-flow: row wrap;
+    position: absolute;
+    height: 16px;
+    bottom: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .channelWrap {
+    margin-top: 7px;
+
+    :global {
+      .ant-collapse-header {
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+      }
+
+      .ant-collapse-content-box {
+        padding: 0;
+      }
+
+      .ant-collapse
+        > .ant-collapse-item
+        > .ant-collapse-header
+        .ant-collapse-arrow {
+        margin-right: 8px;
+      }
+
+      .ant-collapse-header-text {
+        width: 100%;
+        text-align: left;
+      }
+    }
+
+    .customCollapse .customCollapsePanel {
+      border: 0;
+      border-radius: 0;
+      background: #292929;
+      :global {
+        .ant-collapse-header{
+          line-height: 20px;
+        }
+      }
+    }
+
+    .headerWrap {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .addIcon {
+      width: 16px;
+      height: 16px;
+      background: url("../../../assets/images/channelPlus.png");
+      background-size: cover;
+      margin-right: 4px;
+      opacity: 0.74;
+      &:hover{
+        opacity: 1;
+      }
+    }
+  }
+
+  .serverContentWrap {
+    padding: 8px 12px;
+    color: #fff;
+
+    .desc {
+      display: flex;
+      font-size: 12px;
+      text-align: left;
+      line-height: 20px;
+    }
+
+    .arrow {
+      position: absolute;
+      display: inline-block;
+      color: #bababa;
+      cursor: pointer;
+      margin-left: 5px;
+      margin-top: 5px;
+    }
+  }
+
+  .textHeader {
+    font-size: 12px;
+    line-height: 20px;
+    color: #c7c7c7;
+  }
+
+  .channelItemWrap {
+    margin-top: 6px;
+
+    :global {
+      .ant-collapse-header-text {
+        font-size: 12px;
+        color: #767676;
+      }
+
+      .ant-collapse-header {
+        padding: 0 20px;
+        margin-top: 4px;
+      }
+
+      .ant-collapse-content-box {
+        text-align: left;
+        padding-left: 46px;
+      }
+    }
+
+    .active {
+      background: #404040;
+      border-radius: 8px;
+    }
+
+    .channel {
+      display: flex;
+      justify-content: space-between;
+      color: #fff;
+      display: flex;
+      width: 264px;
+      height: 44px;
+      padding: 0 8px;
+      font-size: 16px;
+      font-weight: 500;
+      align-items: center;
+      text-align: left;
+      cursor: pointer;
+      margin: 0 auto;
+      &:hover {
+        .active
+      }
+    }
+
+    .channelNameWrap {
+      display: flex;
+      align-items: center;
+
+      .name {
+        max-width: 175px;
+        font-weight: 500;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-break: break-all;
+      }
+    }
+
+    .public {
+      &::before {
+        content: "";
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        background: #1f1f1f;
+        background-image: url("../../../assets/images/hashtag.png");
+        background-size: 16px 16px;
+        background-repeat: no-repeat;
+        background-position: center;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+    }
+
+    .private {
+      &::before {
+        content: "";
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        background: #1f1f1f;
+        background-image: url("../../../assets/images/privateHash.png");
+        background-size: 16px 16px;
+        background-repeat: no-repeat;
+        background-position: center;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+    }
+
+    .unReadCount {
+      height: 14px;
+      background: #ff1477;
+      border-radius: 9px;
+      font-size: 12px;
+      line-height: 14px;
+      padding: 0 3.15px;
+      margin-right: 4px;
+    }
+
+    .unReadWrap {
+      width: 30px;
+      display: flex;
+      align-items: center;
+    }
+
+    .threadItem {
+      height: 38px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2px;
+      cursor: pointer;
+
+      &:hover {
+        background: #404040;
+      }
+    }
+
+    .threadActive {
+      background: #404040;
+    }
+
+    .threadName {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      color: #fff;
+      cursor: pointer;
+
+      &::before {
+        content: "";
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background: url("../../../assets/images/bendLine.png");
+        background-size: 100%;
+        margin-right: 6px;
+      }
+
+      .name {
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-break: break-all;
+      }
+    }
+
+    .loadBtn {
+      color: #767676;
+      font-size: 12px;
+      line-height: 20px;
+      cursor: pointer;
+      margin-left: 6px;
+    }
+  }
+}
+
+.channelContentWrap {
+  height: calc(100vh - 200px);
+  overflow: scroll;
+}
+
+.expand {
+  display: inline-block;
+  transform: rotate(0deg);
+  transition: transform 0.3s;
+}
+
+.fold {
+  display: inline-block;
+  transform: rotate(-90deg);
+  transition: transform 0.3s;
+}
+
+.tagItem {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #ccc;
+  margin-right: 11px;
+  line-height: 16px;
+  cursor: pointer;
+
+  &::before {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background: url("../../../assets/images/tag.png");
+    background-size: 100%;
+  }
+}
+
+.expandIcon {
+  display: inline-block;
+  cursor: pointer;
+  color: #c7c7c7;
+  margin-left: 12px;
+}

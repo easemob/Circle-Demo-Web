@@ -1,0 +1,90 @@
+.detailWrap {
+    :global {
+        .ant-modal-content {
+            height: 232px;
+            background: #292929;
+            border: 1px solid #4D4D4D;
+            box-shadow: 0px 24px 36px rgba(0, 0, 0, 0.12), 8px 0px 24px rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+        }
+
+        .ant-modal-body {
+            padding: 0;
+        }
+
+        .ant-modal-close {
+            display: none;
+        }
+    }
+}
+
+.bg {
+    position: relative;
+    height: 100px;
+    width: 100%;
+    background: url("../../../../assets/images/contactBg.png") 0 0 no-repeat;
+    .contactOp{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        height: 32px;
+        width: 32px;
+        border-radius: 50%;
+        top: 16px;
+        right: 16px;
+        cursor: pointer;
+        &:hover{
+            background: rgba(0, 0, 0, 0.3);
+        }
+    }
+}
+
+.infoCon {
+    position: relative;
+    height: 132px;
+    width: 100%;
+
+    .userInfo {
+        position: relative;
+        padding-top: 57px;
+        height: 100%;
+        width: 100%;
+        font-family: 'Noto Sans SC';
+        color: #fff;
+        font-weight: 500;
+
+        .avatar {
+            position: absolute;
+            left: 16px;
+            top: -45px;
+        }
+
+        .nickname {
+            margin-left: 24px;
+            font-size: 18px;
+            height: 24px;
+            line-height: 24px;
+        }
+
+        .idInfo {
+            margin-top: 4px;
+            margin-left: 24px;
+            font-size: 14px;
+            height: 20px;
+            line-height: 20px;
+            color: rgba(255, 255, 255, 0.74);
+        }
+    }
+
+    .buttonCon {
+        position: absolute;
+        display: flex;
+        bottom: 20px;
+        right: 20px;
+
+        .private {
+            margin-left: 16px;
+        }
+    }
+}

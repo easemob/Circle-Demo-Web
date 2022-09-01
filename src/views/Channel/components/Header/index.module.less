@@ -1,0 +1,86 @@
+.name {
+  color: #fff;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 500;
+}
+.base {
+  display: flex;
+  align-items: center;
+  &::before {
+    content: "";
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    background: url("../../../../assets/images/hashtag.png");
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 12px;
+  }
+}
+.private{
+  display: flex;
+  align-items: center;
+  &::before {
+    content: "";
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    background: url("../../../../assets/images/privateHash.png");
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 12px;
+  }
+}
+
+.optWrap {
+  display: flex;
+  align-items: center;
+
+  .icon {
+    display: flex;
+    width: 32px;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    cursor: pointer;
+    color: #c7c7c7;
+    &:hover {
+      color: #fff;
+    }
+  }
+}
+.popover {
+  border-radius: 10px 10px 0 0;
+  overflow: hidden;
+  padding-top: 0;
+
+  :global {
+    .ant-popover-content {
+      padding: 0;
+    
+      .ant-popover-inner-content {
+        padding: 0;
+      }
+      .ant-popover-arrow {
+        display: none;
+      }
+    }
+  }
+}
+.iconCon{
+  height: 60px;
+  display: flex;
+  align-items: center;
+  width: 32px;
+  .icon {
+    margin-right: 8px;
+    cursor: pointer;
+    color: #c7c7c7;
+    &:hover {
+      color: #fff;
+    }
+  }
+}

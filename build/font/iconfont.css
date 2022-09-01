@@ -1,0 +1,196 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 3514593 */
+  src: url('iconfont.woff2?t=1657676539244') format('woff2'),
+       url('iconfont.woff?t=1657676539244') format('woff'),
+       url('iconfont.ttf?t=1657676539244') format('truetype');
+  font-display:swap;     
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-arrow_down_in_box:before {
+  content: "\73";
+}
+
+.icon-file:before {
+  content: "\72";
+}
+
+.icon-bend_line_big:before {
+  content: "\71";
+}
+
+.icon-pencil:before {
+  content: "\70";
+}
+
+.icon-label:before {
+  content: "\6f";
+}
+
+.icon-person_2:before {
+  content: "\41";
+}
+
+.icon-person_plus:before {
+  content: "\42";
+}
+
+.icon-arrow_back:before {
+  content: "\43";
+}
+
+.icon-person_wave_slash:before {
+  content: "\44";
+}
+
+.icon-magnify:before {
+  content: "\45";
+}
+
+.icon-check_in_circle:before {
+  content: "\46";
+}
+
+.icon-message_on_message:before {
+  content: "\47";
+}
+
+.icon-person_wave:before {
+  content: "\48";
+}
+
+.icon-person_normal:before {
+  content: "\49";
+}
+
+.icon-img:before {
+  content: "\4a";
+}
+
+.icon-person_nut:before {
+  content: "\4b";
+}
+
+.icon-square_4:before {
+  content: "\4c";
+}
+
+.icon-emoji_plus:before {
+  content: "\4d";
+}
+
+.icon-eye:before {
+  content: "\4e";
+}
+
+.icon-square_2-01:before {
+  content: "\4f";
+}
+
+.icon-clip:before {
+  content: "\50";
+}
+
+.icon-xmark_in_circle:before {
+  content: "\51";
+}
+
+.icon-xmark:before {
+  content: "\52";
+}
+
+.icon-circle:before {
+  content: "\53";
+}
+
+.icon-door:before {
+  content: "\54";
+}
+
+.icon-shevron_down:before {
+  content: "\55";
+}
+
+.icon-hashtag_lock:before {
+  content: "\56";
+}
+
+.icon-hashtag_message:before {
+  content: "\57";
+}
+
+.icon-point_9:before {
+  content: "\58";
+}
+
+.icon-bend_line:before {
+  content: "\59";
+}
+
+.icon-message_retangle:before {
+  content: "\5a";
+}
+
+.icon-eye_slash:before {
+  content: "\61";
+}
+
+.icon-minus_in_circle:before {
+  content: "\62";
+}
+
+.icon-emoji:before {
+  content: "\63";
+}
+
+.icon-plus:before {
+  content: "\64";
+}
+
+.icon-add_in_circle:before {
+  content: "\65";
+}
+
+.icon-ellipsis:before {
+  content: "\66";
+}
+
+.icon-gear:before {
+  content: "\67";
+}
+
+.icon-shevron_right:before {
+  content: "\68";
+}
+
+.icon-trash:before {
+  content: "\69";
+}
+
+.icon-shevron_up:before {
+  content: "\6a";
+}
+
+.icon-hashtag:before {
+  content: "\6b";
+}
+
+.icon-shevron_left:before {
+  content: "\6c";
+}
+
+.icon-message:before {
+  content: "\6d";
+}
+
+.icon-check_in_circle-copy:before {
+  content: "\6e";
+}
+

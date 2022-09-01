@@ -1,0 +1,68 @@
+.main {
+    width: 100%;
+
+    .canHover:hover {
+        cursor: pointer;
+    }
+
+    .custom {
+        display: flex;
+        width: 284px;
+        padding: 8px;
+        background: #282828;
+        border-radius: 4px;
+
+        .iconCon {
+            flex: 0 0 48px;
+            height: 48px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .infoCon {
+            flex: 1 1 auto;
+            margin-left: 12px;
+            font-family: 'Noto Sans SC';
+            color: #fff;
+            width: 0;
+
+            .inviteInfo {
+                height: 24px;
+                font-size: 14px;
+                line-height: 24px;
+            }
+
+            .serverName {
+                height: 20px;
+                font-weight: 700;
+                font-size: 14px;
+                line-height: 20px;
+                width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                word-break: break-all;
+            }
+
+            .channelName {
+                height: 20px;
+                font-weight: 500;
+                font-size: 14px;
+                line-height: 20px;
+                width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                word-break: break-all;
+            }
+        }
+    }
+}
+
+.customCon {
+    width: 100%;
+    font-family: 'Noto Sans SC';
+    font-size: 14px;
+    line-height: 24px;
+    color: #929497;
+}

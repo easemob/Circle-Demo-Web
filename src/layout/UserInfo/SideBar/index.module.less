@@ -1,0 +1,138 @@
+.sideBarWrap {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 280px;
+    height: 100%;
+    background: #292929;
+
+    .info {
+        flex: 1 1 auto;
+
+        .avatar {
+            position: relative;
+            margin: 56px auto 0;
+            height: 90px;
+            width: 90px;
+            text-align: center;
+            cursor: pointer;
+            .cover{
+                position: absolute;
+                top:0;
+                left:0;
+                height: 90px;
+                width: 90px;
+                background:rgba(0, 0, 0, 0.4);
+                border-radius: 100%;
+            }
+
+            .edit {
+                display: block;
+                position: absolute;
+                top: 30px;
+                left: 30px;
+                height: 32px;
+                width: 32px;
+            }
+        }
+
+        .nickname {
+            display: block;
+            margin-top: 16px;
+            font-family: 'Noto Sans SC';
+            font-weight: 500;
+            font-size: 18px;
+            line-height: 24px;
+            color: #FFFFFF;
+            text-align: center;
+        }
+
+        .uid {
+            display: block;
+            margin-top: 4px;
+            font-family: 'Noto Sans SC';
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 20px;
+            color: #FFFFFF;
+            opacity: 0.74;
+            text-align: center;
+        }
+
+        .operationList {
+            margin-top: 30px;
+            width: 100%;
+            padding: 0 8px;
+
+            .operationItem {
+                display: flex;
+                align-items: center;
+                height: 48px;
+                line-height: 48px;
+                width: 100%;
+                text-align: center;
+                border-radius: 8px;
+                font-family: 'PingFang SC';
+                font-weight: 500;
+                font-size: 14px;
+                color: #fff;
+                background: #3D3D3D;
+
+                .userInfo {
+                    display: inline-flex;
+                    margin-left: 14px;
+                }
+
+                .text {
+                    margin-left: 16px;
+                }
+            }
+        }
+    }
+
+    .logout {
+        display: flex;
+        flex: 0 0 64px;
+        align-items: center;
+        margin: 0 16px;
+        border-top: 1px solid #3D3D3D;
+        cursor: pointer;
+
+        .logoutIcon {
+            display: inline-flex;
+            margin-left: 6px;
+        }
+
+        .logoutText {
+            margin-left: 16px;
+            font-family: 'PingFang SC';
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 64px;
+            color: #FFFFFF;
+        }
+    }
+}
+
+.logoutCon {
+    position: relative;
+    padding: 32px 24px 0;
+    height: 170px;
+
+    .content {
+        font-family: 'Noto Sans SC';
+        font-size: 14px;
+        line-height: 24px;
+        color: rgba(255, 255, 255, 0.87);
+    }
+
+    .buttons {
+        position: absolute;
+        display: flex;
+        bottom: 24px;
+        margin-left: 264px;
+
+        .confirm {
+            margin-left: 16px;
+        }
+    }
+}
