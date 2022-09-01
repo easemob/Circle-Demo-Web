@@ -1,0 +1,241 @@
+.layout {
+    display: flex;
+    flex: 0 0 60px;
+    height: 60px;
+    background: #1F1F1F;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #292929;
+
+    .close {
+        display: flex;
+        height: 32px;
+        width: 32px;
+        align-items: center;
+        justify-content: center;
+        margin-left: 8px;
+        margin-right: 14px;
+        cursor: pointer;
+    }
+
+    .createCon {
+        flex: 1;
+        padding-left: 24px;
+        font-family: 'Noto Sans SC';
+        font-weight: 500;
+        font-size: 18px;
+        color: #fff;
+    }
+
+    .threadBar {
+        flex: 1;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .nameCon {
+            display: flex;
+            flex: 1 1 auto;
+            width: 0;
+            height: 60px;
+            align-items: center;
+            padding: 0 8px 0 16px;
+
+            .channelInfo {
+                display: flex;
+                align-items: center;
+                height: 60px;
+                line-height: 60px;
+                margin-right: 16px;
+                height: 36px;
+                border-radius: 8px;
+                cursor: pointer;
+
+                &:hover{
+                    background: #292929;
+                    .line{
+                        border-right: 1px solid #292929;
+                    }
+                }
+
+                .iconCon {
+                    display: flex;
+                    height: 32px;
+                    width: 32px;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .name {
+                    display: inline-block;
+                    max-width: 256px;
+                    margin-left: 16px;
+                    margin-right: 16px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    word-break: break-all;
+                    font-family: 'Noto Sans SC';
+                    font-weight: 500;
+                    font-size: 16px;
+                    line-height: 22px;
+                    color: #999;
+                }
+
+                .line {
+                    display: inline-block;
+                    width: 0;
+                    height: 16px;
+                    border: 0;
+                    border-right: 1px solid #666;
+                }
+            }
+
+            .threadInfo {
+                display: flex;
+                align-items: center;
+                height: 60px;
+                line-height: 60px;
+                overflow: hidden;
+
+                .iconCon {
+                    display: flex;
+                }
+
+                .name {
+                    width: 100%;
+                    margin-left: 16px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    word-break: break-all;
+                    font-family: 'Noto Sans SC';
+                    font-weight: 500;
+                    font-size: 16px;
+                    line-height: 22px;
+                    color: #FFFFFF;
+                }
+            }
+        }
+
+        .editIcon {
+            display: flex;
+            flex: 0 0 32px;
+            height: 32px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+    }
+}
+
+.threadMember {
+    padding-top: 0;
+    :global {
+        .ant-popover-content {
+            .ant-popover-arrow {
+                display: none;
+            }
+
+            .ant-popover-inner {
+                background: none;
+                border-radius: 0 0 12px 12px;
+            }
+
+            .ant-popover-inner-content {
+                padding: 0;
+
+            }
+        }
+    }
+}
+
+.updateNickname {
+    padding: 26px 16px;
+    height: 230px;
+
+    .title {
+        display: block;
+        font-family: 'Noto Sans SC';
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 20px;
+        color: #FFFFFF;
+        opacity: 0.74;
+    }
+
+    .updateCon {
+        display: flex;
+        margin-top: 14px;
+        align-items: center;
+        padding: 16px;
+        height: 56px;
+        width: 100%;
+        font-family: 'Noto Sans SC';
+        font-size: 16px;
+        background: #333333;
+        border-radius: 16px;
+
+        .input {
+            height: 56px;
+            padding: 0;
+            margin: 0;
+            flex: 1 1 auto;
+            line-height: 56px;
+            width: 100%;
+            color: #FFFFFF;
+            background: none;
+            border: none;
+            outline: none;
+            caret-color: #27AE60;
+        }
+
+        .count {
+            flex: 0 0 50px;
+            text-align: right;
+            color: #929497;
+        }
+    }
+
+    .confirm {
+        margin-top: 54px;
+        float: right;
+    }
+}
+
+.logoutCon {
+    position: relative;
+    padding: 32px 24px 0;
+    height: 170px;
+
+    .content {
+        font-family: 'Noto Sans SC';
+        font-size: 14px;
+        line-height: 24px;
+        letter-spacing: 0.15px;
+        color: rgba(255, 255, 255, 0.87);
+
+        .name {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+        }
+    }
+
+    .buttons {
+        position: absolute;
+        display: flex;
+        bottom: 24px;
+        margin-left: 264px;
+
+        .confirm {
+            margin-left: 16px;
+        }
+    }
+}
+.membersCon{
+    position: fixed;
+    top: 0;
+    right: 20px;
+}

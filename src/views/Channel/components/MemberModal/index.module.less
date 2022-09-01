@@ -1,0 +1,56 @@
+.name {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 500;
+  .person{
+    display: flex;
+    margin-right: 16px;
+    align-items: center;
+    justify-content: center;
+    height: 26px;
+    width: 26px;
+  }
+}
+
+.base {
+  display: flex;
+  align-items: center;
+  &::before {
+    content: "";
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    background: url("../../../../assets/images/hashtag.png");
+    background-size: 100% 100%;
+    margin-right: 12px;
+  }
+}
+
+.scrollWrap {
+  height: 100%;
+  overflow: scroll;
+}
+
+.iptWrap {
+  display: flex;
+  width: 280px;
+  height: 32px;
+  border-radius: 16px;
+  background: #242424;
+  margin-right: 50px;
+  line-height: 32px;
+  align-items: center;
+  padding: 0 10px;
+  :global {
+    .ant-input {
+      border: none;
+      background: unset;
+      outline: none;
+      box-shadow: none;
+      color: #c8c8c8;
+    }
+  }
+}

@@ -1,0 +1,89 @@
+.layout {
+    width: 100%;
+
+    .nameCon {
+        display: flex;
+        padding: 0 8px;
+        line-height: 30px;
+        width: 100%;
+        justify-content: space-between;
+
+        .icon1 {
+            display: flex;
+            height: 32px;
+            width: 32px;
+            border-radius: 100%;
+            background: #1f1f1f;
+        }
+
+        .name {
+            display: flex;
+            flex: 1 1 auto;
+            margin-left: 8px;
+            font-family: 'Noto Sans SC';
+            font-weight: 700;
+            font-size: 24px;
+            line-height: 30px;
+            color: #fff;
+        }
+    }
+
+    .inputCon {
+        padding: 0 14px 0 12px;
+        width: 100%;
+        margin-top: 28px;
+
+        .t {
+            display: flex;
+            align-items: center;
+            height: 30px;
+            line-height: 30px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #47464B;
+            box-sizing: content-box;
+
+            .input {
+                flex: 1;
+                background: none;
+                border: none;
+                outline: none;
+                font-family: 'Roboto';
+                font-weight: 700;
+                font-size: 18px;
+                line-height: 30px;
+                color: #fff;
+                caret-color: #27AE60;
+            }
+
+            .input::-webkit-input-placeholder {
+                color: #666;
+            }
+
+            .input::-moz-placeholder {
+                color: #666;
+            }
+
+            .input::-ms-input-placeholder {
+                color: #666;
+            }
+
+            .del {
+                flex: 0 0 36px;
+                padding-left: 8px;
+                cursor: pointer;
+            }
+        }
+
+        .b {
+            margin-top: 8px;
+            font-family: 'SF Pro Text';
+            font-size: 14px;
+            line-height: 20px;
+            color: #333;
+
+            &.light {
+                color: #27AE60;
+            }
+        }
+    }
+}

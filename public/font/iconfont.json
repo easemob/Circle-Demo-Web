@@ -1,0 +1,324 @@
+{
+  "id": "3514593",
+  "name": "easecircle",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "30529817",
+      "name": "arrow_down_in_box",
+      "font_class": "arrow_down_in_box",
+      "unicode": "73",
+      "unicode_decimal": 115
+    },
+    {
+      "icon_id": "30529303",
+      "name": "file",
+      "font_class": "file",
+      "unicode": "72",
+      "unicode_decimal": 114
+    },
+    {
+      "icon_id": "30505024",
+      "name": "bend_line_big",
+      "font_class": "bend_line_big",
+      "unicode": "71",
+      "unicode_decimal": 113
+    },
+    {
+      "icon_id": "30504075",
+      "name": "pencil",
+      "font_class": "pencil",
+      "unicode": "70",
+      "unicode_decimal": 112
+    },
+    {
+      "icon_id": "30504220",
+      "name": "label",
+      "font_class": "label",
+      "unicode": "6f",
+      "unicode_decimal": 111
+    },
+    {
+      "icon_id": "30499010",
+      "name": "person_2",
+      "font_class": "person_2",
+      "unicode": "41",
+      "unicode_decimal": 65
+    },
+    {
+      "icon_id": "30499011",
+      "name": "person_plus",
+      "font_class": "person_plus",
+      "unicode": "42",
+      "unicode_decimal": 66
+    },
+    {
+      "icon_id": "30499012",
+      "name": "arrow_back",
+      "font_class": "arrow_back",
+      "unicode": "43",
+      "unicode_decimal": 67
+    },
+    {
+      "icon_id": "30499013",
+      "name": "person_wave_slash",
+      "font_class": "person_wave_slash",
+      "unicode": "44",
+      "unicode_decimal": 68
+    },
+    {
+      "icon_id": "30499014",
+      "name": "magnify",
+      "font_class": "magnify",
+      "unicode": "45",
+      "unicode_decimal": 69
+    },
+    {
+      "icon_id": "30499015",
+      "name": "check_in_circle",
+      "font_class": "check_in_circle",
+      "unicode": "46",
+      "unicode_decimal": 70
+    },
+    {
+      "icon_id": "30499016",
+      "name": "message_on_message",
+      "font_class": "message_on_message",
+      "unicode": "47",
+      "unicode_decimal": 71
+    },
+    {
+      "icon_id": "30499017",
+      "name": "person_wave",
+      "font_class": "person_wave",
+      "unicode": "48",
+      "unicode_decimal": 72
+    },
+    {
+      "icon_id": "30499018",
+      "name": "person_normal",
+      "font_class": "person_normal",
+      "unicode": "49",
+      "unicode_decimal": 73
+    },
+    {
+      "icon_id": "30499019",
+      "name": "img",
+      "font_class": "img",
+      "unicode": "4a",
+      "unicode_decimal": 74
+    },
+    {
+      "icon_id": "30499020",
+      "name": "person_nut",
+      "font_class": "person_nut",
+      "unicode": "4b",
+      "unicode_decimal": 75
+    },
+    {
+      "icon_id": "30499021",
+      "name": "square_4",
+      "font_class": "square_4",
+      "unicode": "4c",
+      "unicode_decimal": 76
+    },
+    {
+      "icon_id": "30499022",
+      "name": "emoji_plus",
+      "font_class": "emoji_plus",
+      "unicode": "4d",
+      "unicode_decimal": 77
+    },
+    {
+      "icon_id": "30499023",
+      "name": "eye",
+      "font_class": "eye",
+      "unicode": "4e",
+      "unicode_decimal": 78
+    },
+    {
+      "icon_id": "30499024",
+      "name": "square_2-01",
+      "font_class": "square_2-01",
+      "unicode": "4f",
+      "unicode_decimal": 79
+    },
+    {
+      "icon_id": "30499025",
+      "name": "clip",
+      "font_class": "clip",
+      "unicode": "50",
+      "unicode_decimal": 80
+    },
+    {
+      "icon_id": "30499026",
+      "name": "xmark_in_circle",
+      "font_class": "xmark_in_circle",
+      "unicode": "51",
+      "unicode_decimal": 81
+    },
+    {
+      "icon_id": "30499027",
+      "name": "xmark",
+      "font_class": "xmark",
+      "unicode": "52",
+      "unicode_decimal": 82
+    },
+    {
+      "icon_id": "30499028",
+      "name": "circle",
+      "font_class": "circle",
+      "unicode": "53",
+      "unicode_decimal": 83
+    },
+    {
+      "icon_id": "30499029",
+      "name": "door",
+      "font_class": "door",
+      "unicode": "54",
+      "unicode_decimal": 84
+    },
+    {
+      "icon_id": "30499030",
+      "name": "shevron_down",
+      "font_class": "shevron_down",
+      "unicode": "55",
+      "unicode_decimal": 85
+    },
+    {
+      "icon_id": "30499031",
+      "name": "hashtag_lock",
+      "font_class": "hashtag_lock",
+      "unicode": "56",
+      "unicode_decimal": 86
+    },
+    {
+      "icon_id": "30499032",
+      "name": "hashtag_message",
+      "font_class": "hashtag_message",
+      "unicode": "57",
+      "unicode_decimal": 87
+    },
+    {
+      "icon_id": "30499033",
+      "name": "point_9",
+      "font_class": "point_9",
+      "unicode": "58",
+      "unicode_decimal": 88
+    },
+    {
+      "icon_id": "30499034",
+      "name": "bend_line",
+      "font_class": "bend_line",
+      "unicode": "59",
+      "unicode_decimal": 89
+    },
+    {
+      "icon_id": "30499035",
+      "name": "message_retangle",
+      "font_class": "message_retangle",
+      "unicode": "5a",
+      "unicode_decimal": 90
+    },
+    {
+      "icon_id": "30499036",
+      "name": "eye_slash",
+      "font_class": "eye_slash",
+      "unicode": "61",
+      "unicode_decimal": 97
+    },
+    {
+      "icon_id": "30499037",
+      "name": "minus_in_circle",
+      "font_class": "minus_in_circle",
+      "unicode": "62",
+      "unicode_decimal": 98
+    },
+    {
+      "icon_id": "30499038",
+      "name": "emoji",
+      "font_class": "emoji",
+      "unicode": "63",
+      "unicode_decimal": 99
+    },
+    {
+      "icon_id": "30499039",
+      "name": "plus",
+      "font_class": "plus",
+      "unicode": "64",
+      "unicode_decimal": 100
+    },
+    {
+      "icon_id": "30499040",
+      "name": "add_in_circle",
+      "font_class": "add_in_circle",
+      "unicode": "65",
+      "unicode_decimal": 101
+    },
+    {
+      "icon_id": "30499041",
+      "name": "ellipsis",
+      "font_class": "ellipsis",
+      "unicode": "66",
+      "unicode_decimal": 102
+    },
+    {
+      "icon_id": "30499042",
+      "name": "gear",
+      "font_class": "gear",
+      "unicode": "67",
+      "unicode_decimal": 103
+    },
+    {
+      "icon_id": "30499043",
+      "name": "shevron_right",
+      "font_class": "shevron_right",
+      "unicode": "68",
+      "unicode_decimal": 104
+    },
+    {
+      "icon_id": "30499044",
+      "name": "trash",
+      "font_class": "trash",
+      "unicode": "69",
+      "unicode_decimal": 105
+    },
+    {
+      "icon_id": "30499045",
+      "name": "shevron_up",
+      "font_class": "shevron_up",
+      "unicode": "6a",
+      "unicode_decimal": 106
+    },
+    {
+      "icon_id": "30499046",
+      "name": "hashtag",
+      "font_class": "hashtag",
+      "unicode": "6b",
+      "unicode_decimal": 107
+    },
+    {
+      "icon_id": "30499047",
+      "name": "shevron_left",
+      "font_class": "shevron_left",
+      "unicode": "6c",
+      "unicode_decimal": 108
+    },
+    {
+      "icon_id": "30499048",
+      "name": "message",
+      "font_class": "message",
+      "unicode": "6d",
+      "unicode_decimal": 109
+    },
+    {
+      "icon_id": "30499359",
+      "name": "check_in_circle",
+      "font_class": "check_in_circle-copy",
+      "unicode": "6e",
+      "unicode_decimal": 110
+    }
+  ]
+}

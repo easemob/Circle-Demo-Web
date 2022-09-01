@@ -1,0 +1,72 @@
+.main {
+    width: 100%;
+
+    .fileCon {
+        display: flex;
+        align-items: center;
+        width: 284px;
+        height: 64px;
+        background: #282828;
+        border-radius: 4px;
+
+        .flag {
+            display: flex;
+            flex: 0 0 48px;
+            margin-left: 8px;
+            align-items: center;
+            justify-content: center;
+            height: 48px;
+            background: #A5A7FE;
+            border-radius: 4px;
+        }
+
+        .info {
+            display: flex;
+            width: calc(100% - 76px);
+            flex-direction: column;
+            margin-left: 12px;
+
+            .fileName {
+                height: 24px;
+                font-family: 'PingFang SC';
+                font-size: 14px;
+                line-height: 24px;
+                color: #FFFFFF;
+                width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                word-break: break-all;
+            }
+
+            .more {
+                display: flex;
+                align-items: center;
+                height: 24px;
+                line-height: 24px;
+
+                .size {
+                    margin-right: 4px;
+                    font-family: 'PingFang SC';
+                    font-size: 12px;
+                    line-height: 24px;
+                    color: #BDBDBD;
+                }
+
+                .download {
+                    display: flex;
+                    align-items: center;
+
+                    .iconColor {
+                        color: #b3b3b3;
+                        cursor: pointer;
+
+                        &:hover {
+                            color: #27AE60;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

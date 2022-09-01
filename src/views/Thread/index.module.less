@@ -1,0 +1,32 @@
+.layout{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background: #181818;
+    
+    .contentWrap {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 12px;
+        width: 100%;
+        overflow: hidden;
+      }
+      
+      .messageWrap {
+        flex:1;
+        padding: 16px 12px 0 12px;
+        overflow-y: scroll;
+        margin-bottom: 12px;
+        width: 100%;
+
+        .messageItem:not(:first-child){
+          margin-top: 12px;
+        }
+      }
+      
+      .iptWrap {
+        padding: 0 12px;
+      }
+}

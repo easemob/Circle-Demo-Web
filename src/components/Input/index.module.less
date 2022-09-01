@@ -1,0 +1,77 @@
+.controlWrap {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+
+  .IconCon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+    height: 36px;
+    width: 36px;
+
+    .icon {
+      font-size: 30px;
+      cursor: pointer;
+      color: #c3c3c3;
+
+      &:hover {
+        color: #fff;
+      }
+    }
+  }
+}
+
+.editableContainer {
+  width: 100%;
+  background: #3d3d3d;
+  border-radius: 18px;
+  padding: 6px 16px;
+  margin-right: 8px;
+  min-height: 36px;
+}
+
+.optWrap {
+  display: flex;
+}
+
+.emojiMsg {
+  width: 20px;
+  height: 20px;
+  margin: 0 1px;
+}
+
+.inputWrap {
+  display: flex;
+  width: 100%;
+  outline: none;
+  font-size: 16px;
+  margin-right: 8px;
+  word-break: break-all;
+  max-height: 50px;
+  min-height: 24px;
+  overflow-y: scroll;
+  flex-wrap: wrap;
+  line-height: 24px;
+}
+
+.inputWrap[placeholder]:empty:before {
+  content: attr(placeholder);
+  color: #c7c7c7;
+}
+
+[contenteditable] {
+  -webkit-user-select: auto;
+  user-select: auto;
+}
+
+.upload {
+  width: 100%;
+
+  :global {
+    .ant-upload {
+      width: 100%;
+    }
+  }
+}
