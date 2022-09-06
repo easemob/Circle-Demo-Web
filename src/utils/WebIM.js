@@ -1,4 +1,5 @@
-import WebIM from "./Easemob-chat";
+// import WebIM from "./Easemob-chat";
+import WebIM from "easemob-websdk";
 
 WebIM.conn = new WebIM.connection({
   appKey: "easemob-demo#jzz1",

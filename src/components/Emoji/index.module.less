@@ -12,10 +12,12 @@
   border: 1px solid #4d4d4d;
   border-radius: 12px;
 }
-.allEmojiContent{
+
+.allEmojiContent {
   margin-top: -6px;
   margin-left: -16px;
 }
+
 .emojiItemWrap {
   display: inline-block;
   margin-top: 20px;
@@ -80,16 +82,20 @@
 }
 
 .icon {
-  cursor: pointer;
-
   &:hover {
     .active;
   }
 }
-.emojiIconCon{
+
+.emojiIconCon {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 28px;
   width: 28px;
+  cursor: pointer;
+
+  &.disable {
+    cursor: not-allowed;
+  }
 }

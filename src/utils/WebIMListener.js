@@ -125,7 +125,7 @@ export default function initListener() {
             event: CHANNEL_EVENT.destroy,
             data: e
           });
-          deleteLocalChannel(serverInfo.id, id);
+          deleteLocalChannel(serverInfo.id, id,true);
           break;
         case CHANNEL_EVENT.update:
           updateLocalChannelDetail("notify", serverInfo.id, e);

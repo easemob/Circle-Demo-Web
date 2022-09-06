@@ -86,7 +86,7 @@ const ServerSquare = (props) => {
                 const conf = getConfirmModalConf({
                     title: '',
                     okText: "立即加入",
-                    cancelText: "取消",
+                    cancelText: "暂不加入",
                     content: <InviteModal serverId={server_id} isServerInvite={true} />,
                     onOk: () => confirmJoinServer(server_id),
                     onCancel: () => {
@@ -127,7 +127,7 @@ const ServerSquare = (props) => {
             <div className={s.title}>
                 <div className={s.welcome}>
                     <span className={s.text}>欢迎来到</span>
-                    <span className={s.text}>环信圈子</span>
+                    <span className={s.text}>环信超级社区</span>
                 </div>
                 <div className={s.search}>
                     <div className={s.searchInputCon}>

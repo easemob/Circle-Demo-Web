@@ -56,7 +56,7 @@ const UserInfo = (props) => {
             <div className={s.main}>
                 <div className={s.item}>
                     <div className={s.info}>
-                        <span>我的昵称</span>
+                        <span className={s.nameLeft}>我的昵称</span>
                         <span className={s.nickname}>{userInfo.nickname || userInfo.username}</span>
                     </div>
                     <div className={s.edit} onClick={showModal}>编辑</div>

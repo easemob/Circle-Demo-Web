@@ -140,9 +140,12 @@ const ScrollBar = (props) => {
     }
   }, [channelId, userId])
   useEffect(() => {
-    setSelectedVal(location.pathname)
     getJoinedServers({ cursor: "" });
   }, []);
+
+  useEffect(() => {
+    setSelectedVal(location.pathname)
+  }, [location])
 
   let navigate = useNavigate();
   const totalUnreadNum = () => {
@@ -207,8 +210,6 @@ const ScrollBar = (props) => {
         changeRoute(channelEvent);
         break;
       case "destroy":
-        const { serverInfo={}, id="" } = channelEvent.data;
-        deleteLocalChannel(serverInfo.id, id, true);
         changeRoute(channelEvent);
         break;
       default:

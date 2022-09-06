@@ -3,6 +3,7 @@
     background: #292929;
     border-radius: 10px 10px 16px 16px;
     overflow: hidden;
+    box-shadow: 0px 24px 36px rgba(0, 0, 0, 0.12), 8px 0px 24px rgba(0, 0, 0, 0.08);
 
     .headerThread {
         display: flex;
@@ -23,7 +24,10 @@
         }
 
         .HeaderIcon {
-            margin-right: 20px;
+            display: flex;
+            margin-right: 14px;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
         }
     }
@@ -39,6 +43,9 @@
         overflow-Y: scroll;
         list-style: none;
         box-sizing: border-box;
+        border: 1px solid #4d4d4d;
+        border-top: none;
+        border-radius: 0 0 16px 16px;
 
         .defaultTips {
             position: absolute;

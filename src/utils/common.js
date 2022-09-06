@@ -578,7 +578,11 @@ const deleteLocalChannel = (serverId, channelId, isDestroy = false) => {
       const findIndex2 = privateChannel.findIndex(
         (item) => item.channelId === channelId
       );
-      if (findIndex2 > -1) {
+      let role = 'user';
+      if(getState().app.serverRole.has(serverId)){
+        role = getState().app.serverRole.get[serverId]
+      }
+      if (findIndex2 > -1 && role === 'user') {
         privateChannel.splice(findIndex2, 1);
         dispatch.channel.deleteChannelThreadMap({ channelId });
         updateChannelList(serverId, channelInfo, privateChannel, "private");
@@ -664,7 +668,8 @@ function convertToMessage(e) {
   var t = (function () {
     var t = [],
       r = document.createElement("div");
-    r.innerHTML = e.replace(/\\/g, "###h###");
+    r.innerHTML = e;
+    // r.innerHTML = e.replace(/\\/g, "###h###");
     for (
       var n = r.querySelectorAll("img"),
         a = r.querySelectorAll("div"),

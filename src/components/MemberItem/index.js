@@ -4,7 +4,7 @@ import s from "./index.module.less";
 import React, { memo, useRef, useState, useEffect } from "react";
 
 const MemberItem = (props) => {
-    const { info, uid, operationReactNode, handlerHover, borderType, basicShowOnline } = props;
+    const { info, uid, operationReactNode, handlerHover, borderType, basicShowOnline, size } = props;
     const memberItemRef = useRef();
     const [selected, setSelected] = useState(false);
     //点击消息
@@ -28,7 +28,7 @@ const MemberItem = (props) => {
     return (
         <div className={`memberItem ${s.contactsItem} ${selected ? s.selected : borderType === 2 ? s.contactsItem2 : null} `} onMouseOver={() => { handlerHover && handlerHover(info?.uid) }} onMouseLeave={() => { handlerHover && handlerHover("") }}>
             <div className={s.avatar}>
-                <AvatarInfo name={info?.nickname || uid} src={info?.avatarurl} online={info?.online} />
+                <AvatarInfo size={size} name={info?.nickname || uid} src={info?.avatarurl} online={info?.online} />
             </div>
             <div className={`${s.mainInfo} ${borderType === 2 ? s.type2 : null}`}>
                 <div className={s.basicInfo}>
