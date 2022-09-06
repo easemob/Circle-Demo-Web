@@ -32,7 +32,7 @@ const PAGE_SIZE = 20;
 const ChannelMemberHeader = ({ onClose = () => { }, onInvite, channelInfo }) => {
   return (
     <div className={s.drawerHeader}>
-      <span>频道成员</span>
+      <span className={s.channelMember}>频道成员</span>
       <div className={s.iconCon}>
         {/* 公开频道不显示邀请入口 */}
         {!channelInfo?.defaultChannel && (
@@ -271,7 +271,8 @@ const Channel = (props) => {
 
   useEffect(() => {
     isInChannel();
-  }, [serverId, channelId]);
+    setVisible(false);
+  }, [channelId]);
 
   const serverInfo = useMemo(() => {
     return getServerInfoById({ serverId, serverList: joinedServerInfo.list });

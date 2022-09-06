@@ -70,7 +70,7 @@ const EmojiPanel = ({ onSelect, showFrequently }) => {
 
 const EmojiPicker = (props) => {
   const [emojiVisible, setEmojiVisible] = useState(false);
-  const { showFrequently = false, emojiIcon = "emoji_plus" } = props;
+  const { showFrequently = false, emojiIcon = "emoji_plus", disabled = false } = props;
 
   const wrapRef = useRef();
 
@@ -104,24 +104,25 @@ const EmojiPicker = (props) => {
             <EmojiPanel showFrequently={showFrequently} onSelect={onSelect} />
           }
           trigger="click"
-          visible={emojiVisible}
+          visible={emojiVisible && !disabled}
           destroyTooltipOnHide={{ keepParent: false }}
           overlayClassName={s.emojiPopover}
           placement="bottomRight"
         >
           <div
-           className={s.emojiIconCon}
+            className={`${s.emojiIconCon}  ${disabled ? s.disable : null}`}
             onClick={() => {
               setEmojiVisible(!emojiVisible);
             }}
           >
             {props.children || (
               <Icon
-                size={emojiIcon==="emoji_plus"?"22px":"30px"}
+                size={emojiIcon === "emoji_plus" ? "22px" : "30px"}
                 iconClass={
                   emojiVisible
                     ? `${s.icon} ${s.active}`
                     : `${s.icon} ${s.normal}`
+
                 }
                 name={emojiIcon}
               />

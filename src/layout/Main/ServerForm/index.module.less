@@ -1,26 +1,31 @@
-.serverFormModal{
-  :global{
-    .ant-modal-close-x{
+.serverFormModal {
+  :global {
+    .ant-modal-close-x {
       height: 54px;
       width: 46px;
     }
-    .ant-modal-body{
+
+    .ant-modal-body {
       padding: 32px 15px 0px;
     }
-    .ant-modal-footer{
+
+    .ant-modal-footer {
       padding: 24px;
     }
   }
 }
+
 .serverForm {
   :global {
     .ant-form-item {
       margin-bottom: 11px;
     }
+
     .ant-form-item-control-input-content {
       text-align: center;
     }
   }
+
   .avatar {
     position: relative;
     display: flex;
@@ -33,6 +38,7 @@
     align-items: center;
     justify-content: center;
   }
+
   .cover {
     position: absolute;
     height: 100%;
@@ -40,10 +46,12 @@
     background-color: rgba(0, 0, 0, 0.4);
     border-radius: 50%;
   }
-  .selectAvatar{
+
+  .selectAvatar {
     position: absolute;
     z-index: 2;
   }
+
   .tip {
     font-size: 16px;
     line-height: 20px;
@@ -52,10 +60,12 @@
     margin-bottom: 12px;
   }
 }
+
 .icon {
   cursor: pointer;
   color: #929497;
   margin-right: 12px;
+
   &:hover {
     color: #fff;
   }
@@ -81,9 +91,10 @@
   text-align: left;
   align-items: center;
   background: #333;
-  padding: 12px 4px;
+  padding: 12px 14px;
   border-radius: 16px;
 }
+
 .tagItem {
   display: flex;
   align-items: center;
@@ -91,6 +102,7 @@
   color: #ccc;
   margin-right: 10px;
   cursor: pointer;
+
   &::before {
     content: "";
     display: inline-block;
@@ -100,6 +112,7 @@
     background-size: 100%;
   }
 }
+
 .createBtn {
   display: inline-flex;
   align-items: center;
@@ -111,6 +124,7 @@
   color: #fff;
   cursor: pointer;
   border: none;
+
   &:hover,
   &:focus {
     color: #fff;

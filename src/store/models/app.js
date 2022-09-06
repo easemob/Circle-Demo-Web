@@ -99,6 +99,7 @@ const App = {
     updateUnReadNum(state, { chatType, fromId, number, message = {} }) {
       if (
         state.currentChatInfo.chatType === chatType &&
+        chatType === CHAT_TYPE.single &&
         state.currentChatInfo.id === fromId
       ) {
         //清空未读消息

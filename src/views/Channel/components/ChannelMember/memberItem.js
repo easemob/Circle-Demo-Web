@@ -175,6 +175,7 @@ const MemberItem = (props) => {
     <div className={s.contactsItem}>
       <div className={s.avatar}>
         <AvatarInfo
+          size={36}
           name={info?.nickname || uid}
           src={info?.avatarurl}
           online={info?.online}

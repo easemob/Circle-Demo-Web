@@ -20,7 +20,7 @@ const LoadingIcon = () => {
 }
 
 const LOGIN = {
-  loginText: "登录环信圈子",
+  loginText: "登录环信超级社区",
   usernamePlaceHolder: "请输入您的手机号",
   passwordPlaceHolder: "请输入密码",
   login: "登录"

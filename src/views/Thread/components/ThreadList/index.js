@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import WebIM from "@/utils/WebIM";
 import AvatarInfo from "@/components/AvatarInfo";
 import InfiniteScroll from "react-infinite-scroll-component";
+import CloseIcon from "@/components/CloseIcon";
 
 const SCROLL_WARP_ID = "threadListScrollId";
 const LIMIT = 20;
@@ -84,7 +85,7 @@ const ThreadList = (props) => {
             <div className={s.headerThread}>
                 <span className={s.headerTitle}>子区列表</span>
                 <div className={s.HeaderIcon} onClick={() => onClose()}>
-                    <Icon name="xmark" color="#c7c7c7" size="18px" />
+                    <CloseIcon />
                 </div>
             </div>
             <ul id={SCROLL_WARP_ID} className={s.list}>
@@ -107,8 +108,8 @@ const ThreadList = (props) => {
                                             <div className={s.leftCon}>
                                                 <div className={s.avatar}><AvatarInfo size={16} src={appUserInfo[option.lastMessage?.from]?.avatarurl} /></div>
                                                 <div className={s.ownerName}>
-                                                <span className={s.itemOwner}>{appUserInfo[option.lastMessage?.from]?.nickname ||
-                                                    option.lastMessage.from}</span>
+                                                    <span className={s.itemOwner}>{appUserInfo[option.lastMessage?.from]?.nickname ||
+                                                        option.lastMessage.from}</span>
                                                 </div>
                                                 {option.lastMessage && <div className={s.message}><span className={s.itemMsg}>{renderTxt(renderMessage(option.lastMessage))}</span></div>}</div>
                                             <span className={s.itemTime}>{getTimeDiff(option.lastMessage?.time)}</span>

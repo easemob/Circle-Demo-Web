@@ -59,7 +59,7 @@ const ThreadMember = (props) => {
                 >
                     {memberList?.length > 0 && memberList.map((item, index) => {
                         return (
-                            <MemberItem info={appUserInfo[item]} showLine={true} basicShowOnline={false} uid={item} key={index} borderType={2}/>
+                            <MemberItem size={36} info={appUserInfo[item]} showLine={true} basicShowOnline={false} uid={item} key={index} borderType={2}/>
                         )
                     })}
                 </InfiniteScroll>

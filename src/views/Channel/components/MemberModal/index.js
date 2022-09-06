@@ -204,10 +204,6 @@ const MemberModal = (props) => {
     visible && getServerMembers({ cursor: "" });
   }, [visible]);
 
-  useEffect(()=>{
-    setVisible(false);
-  },[serverId, channelId])
-
   return (
     <CustomModal
       title={<Title />}

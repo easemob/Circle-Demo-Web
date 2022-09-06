@@ -132,7 +132,13 @@ const SideBar = (props) => {
     } else if (e.key === SERVER_MENU_TYPES.viewMember) {
       //路由跳转
       navigate(`/main/channel/${serverId}/${channelId}`);
-      setVisible(true);
+      if (threadId) {
+        setTimeout(() => {
+          setVisible(true);
+        }, 0)
+      } else {
+        setVisible(true);
+      }
     } else if (e.key === SERVER_MENU_TYPES.editServer) {
       setServerFormVisible(SERVER_OPT_TYPE.edit);
     } else if (e.key === SERVER_MENU_TYPES.leaveServer) {

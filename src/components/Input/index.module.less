@@ -1,7 +1,21 @@
 .controlWrap {
+  position: relative;
   display: flex;
   align-items: flex-end;
   width: 100%;
+
+  &.cannotSend {
+    opacity: 20%;
+    .editableContainer{
+      cursor: not-allowed;
+    }
+
+    .IconCon {
+      .icon {
+        cursor: not-allowed;
+      }
+    }
+  }
 
   .IconCon {
     display: flex;
@@ -28,7 +42,7 @@
   background: #3d3d3d;
   border-radius: 18px;
   padding: 6px 16px;
-  margin-right: 8px;
+  margin-right: 16px;
   min-height: 36px;
 }
 

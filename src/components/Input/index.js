@@ -236,8 +236,8 @@ const Input = (props) => {
         msg: convertToMessage(ref.current.innerHTML),
         isChatThread: props.isThread
       });
+      setText("");
       deliverMsg(msg).then(() => {
-        setText("");
         if (msg.isChatThread) {
           setThreadMessage({
             message: { ...msg, from: WebIM.conn.user },
@@ -323,13 +323,13 @@ const Input = (props) => {
   }, [onPaste]);
 
   return (
-    <div className={s.controlWrap}>
+    <div className={`${s.controlWrap} ${threadName === "" ? s.cannotSend : null} `}>
       <div className={s.editableContainer}>
         <ContentEditable
           innerRef={ref}
           className={s.inputWrap}
           html={text}
-          disabled={false}
+          disabled={threadName === ""}
           onDrop={(e) => {
             e.preventDefault();
           }}
@@ -345,12 +345,13 @@ const Input = (props) => {
         />
       </div>
       <div className={s.optWrap}>
-        <EmojiPicker onEmojiSelect={onEmojiSelect} emojiIcon={"emoji"} />
+        <EmojiPicker onEmojiSelect={onEmojiSelect} emojiIcon={"emoji"} disabled={threadName === ""} />
         <Dropdown
           overlay={menu}
           placement="top"
           overlayClassName="circleDropDown"
           trigger="click"
+          disabled={threadName === ""}
         >
           <div className={s.IconCon}>
             <Icon iconClass={s.icon} name="add_in_circle" />
