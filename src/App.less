@@ -82,6 +82,7 @@ span.ant-input-suffix {
   line-height: 20px;
   font-weight: 500;
   padding: 8px 8px;
+  border: 1px solid #4d4d4d;
 }
 
 .ant-menu-dark .ant-menu-item {
@@ -241,14 +242,17 @@ span.ant-input-suffix {
 .img-crop-modal {
   .ant-modal-content {
     border: none;
+    .ant-modal-close
+    .ant-modal-close-x {
+      display:block;
+      color: #c7c7c7;
+      font-size: 18px;
+      width: 54px;
+    }
   }
 
   .ant-btn {
     height: auto;
-  }
-
-  .ant-modal-close-x {
-    color: #c7c7c7;
   }
 
   .ant-btn-primary {
@@ -575,4 +579,10 @@ span.ant-input-suffix {
     }
     
   }
+}
+.messageOperationIcon{
+  color: #c9c9c9;
+  &:hover{
+    color: #fff;
+}
 }
