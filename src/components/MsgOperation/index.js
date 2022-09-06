@@ -88,7 +88,7 @@ const Operation = (props) => {
               }}
             >
               <div>
-                <Icon name={"emoji_plus"} size={"20px"} />
+                <Icon name={"emoji_plus"} size={"18px"} iconClass="messageOperationIcon"/>
               </div>
             </Tooltip>
           </EmojiPicker>
@@ -99,7 +99,7 @@ const Operation = (props) => {
               className={s.iconItem}
               onClick={() => canCreateThread ? operation("createThread") : operation("openThreadPanel")}
             >
-              <Icon name={"message_on_message"} size={"20px"} />
+              <Icon name="hashtag_message" size="18px" iconClass="messageOperationIcon"/>
             </div>
           </Tooltip>
         }
@@ -114,7 +114,7 @@ const Operation = (props) => {
             }
           >
             <div className={s.iconItem}>
-              <Icon name={"ellipsis"} size={"20px"} />
+              <Icon name={"ellipsis"} size={"18px"} iconClass="messageOperationIcon"/>
             </div>
           </Dropdown>
         )}

@@ -323,13 +323,13 @@ const Input = (props) => {
   }, [onPaste]);
 
   return (
-    <div className={`${s.controlWrap} ${threadName === "" ? s.cannotSend : null} `}>
+    <div className={`${s.controlWrap} ${threadName === "" && isCreatingThread ? s.cannotSend : null} `}>
       <div className={s.editableContainer}>
         <ContentEditable
           innerRef={ref}
           className={s.inputWrap}
           html={text}
-          disabled={threadName === ""}
+          disabled={threadName === "" && isCreatingThread}
           onDrop={(e) => {
             e.preventDefault();
           }}
@@ -345,13 +345,13 @@ const Input = (props) => {
         />
       </div>
       <div className={s.optWrap}>
-        <EmojiPicker onEmojiSelect={onEmojiSelect} emojiIcon={"emoji"} disabled={threadName === ""} />
+        <EmojiPicker onEmojiSelect={onEmojiSelect} emojiIcon={"emoji"} disabled={threadName === "" && isCreatingThread} />
         <Dropdown
           overlay={menu}
           placement="top"
           overlayClassName="circleDropDown"
           trigger="click"
-          disabled={threadName === ""}
+          disabled={threadName === "" && isCreatingThread}
         >
           <div className={s.IconCon}>
             <Icon iconClass={s.icon} name="add_in_circle" />
