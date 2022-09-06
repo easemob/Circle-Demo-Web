@@ -213,7 +213,7 @@ const ThreadHeader = (props) => {
             </Modal>
             <Modal className={`logoutModal`} title={isModalVisible === "leaveThread" ? "退出子区" : "删除子区"} width={546} destroyOnClose={true} visible={isModalVisible === "leaveThread" || isModalVisible === "destroyThread"} onCancel={handleCancel} footer={null} closeIcon={<CloseIcon />}>
                 <div className={s.logoutCon}>
-                    {isModalVisible === "leaveThread" ? <span className={s.content}>确认退出子区<span className={s.name}>&nbsp;{currentThreadInfo?.name}</span></span> : <span className={s.content}>确认删除子区<span className={s.name}>{currentThreadInfo?.name}？</span>本操作不可恢复。</span>}
+                    {isModalVisible === "leaveThread" ? <span className={s.content}>确认退出子区<span className={s.name}>&nbsp;{currentThreadInfo?.name}</span></span> : <span className={s.content}>确认删除子区&nbsp;<span className={s.name}>{currentThreadInfo?.name}？</span>本操作不可恢复。</span>}
 
                     <div className={s.buttons}>
                         <div className={`circleBtn106 circleBtnGray`} onClick={handleCancel}>取消</div>
