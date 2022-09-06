@@ -17,12 +17,41 @@
 
 .serverForm {
   :global {
+    .customFormItem{
+      .ant-col.ant-form-item-control{
+        padding: 18px 16px 0px;
+      }
+    }
     .ant-form-item {
       margin-bottom: 11px;
     }
 
     .ant-form-item-control-input-content {
       text-align: center;
+    }
+    .ant-form-item-control-input{
+      line-height: 20px;
+      min-height: 20px;
+    }
+    .ant-input-affix-wrapper{
+      line-height: 20px;
+      input{
+        line-height: 20px;
+      }
+    }
+
+    .ant-modal-body {
+      padding: 32px 14px 0;
+    }
+
+    .ant-modal-footer {
+      padding: 24px;
+    }
+    .ant-col.ant-form-item-control{
+      padding: 18px 16px;
+    }
+    textarea.ant-input{
+      line-height: 20px;
     }
   }
 
@@ -77,6 +106,9 @@
       background: unset;
       padding: 0;
     }
+    .ant-col.ant-form-item-control{
+      padding: 0px;
+    }
   }
 }
 
@@ -91,7 +123,7 @@
   text-align: left;
   align-items: center;
   background: #333;
-  padding: 12px 14px;
+  padding: 18px 16px;
   border-radius: 16px;
 }
 

@@ -25,7 +25,7 @@ const ThreadItem = (props) => {
         <span className={s.name}>{threadInfo.name}</span>
       </span>
 
-      <div style={{ width: "38px", textAlign: "left" }}>
+      <div style={{ width: "22px", textAlign: "left" }}>
         <Icon name="shevron_right" color="#858585" size="14px"></Icon>
       </div>
     </div>
@@ -162,7 +162,6 @@ const ChannelItem = (props) => {
         </span>
         <div
           className={s.unReadWrap}
-          style={hasUnread ? { marginRight: "18px" } : {}}
         >
           {hasUnread && (
             <div className={s.unReadCount}>{getUnReadNum(channelId)}</div>

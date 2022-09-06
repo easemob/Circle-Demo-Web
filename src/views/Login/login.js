@@ -186,18 +186,6 @@ function Login(props) {
             maxLength={11}
             onChange={handleInputChange("username")}
           />
-          {/* <form>
-            <Input.Password
-              disabled={isLogging}
-              autoComplete="on"
-              value={inputValue.password}
-              className={`${style.passwordInput} ${isLogging ? style.isLoggingInput : null
-                }`}
-              placeholder={LOGIN.passwordPlaceHolder}
-              iconRender={(visible) => (visible ? <span className={style.eyeIcon}><Icon name="eye" size="24px" color="#979797" iconClass={style.eyeIcon} /></span> : <span><Icon name="eye_slash" size="24px" color="#979797" iconClass={style.eyeIcon} /></span>)}
-              onChange={handleInputChange("password")}
-            />
-          </form> */}
           <div
             className={`${style.loginButton} ${inputValue.username === "" ? style.loginDisable : null
               }`}
@@ -247,6 +235,7 @@ function Login(props) {
           <p className={style.loginTips}>未注册手机号登陆成功后将自动注册。</p>
         </div>
       </div>
+      <div className={style.version}>© 2022 环信</div>
     </div>
   );
 }
