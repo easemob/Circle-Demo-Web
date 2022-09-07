@@ -8,6 +8,7 @@
 ## 项目结构
 
 ```
+.
 ├── README.md
 ├── config
 ├── jsconfig.json
@@ -43,16 +44,13 @@
 │   │       └──  index.js //用户信息页面入口
 │   ├── routes //路由
 │   ├── setupTests.js
-│   ├── store
-│   │   ├── configureStore.js
-│   │   ├── index.js
-│   │   ├── loader.js
+│   ├── store //数据管理
 │   │   └── models
-│   │       ├── app.js
-│   │       ├── channel.js
-│   │       ├── contact.js
-│   │       ├── server.js
-│   │       └── thread.js
+│   │       ├── app.js //app 数据管理
+│   │       ├── channel.js //频道数据管理
+│   │       ├── contact.js //联系人数据管理
+│   │       ├── server.js //社区数据管理
+│   │       └── thread.js //子区数据管理
 │   ├── utils sdk及公用方法
 │   └── views //页面组件
 │       ├── Channel
@@ -72,6 +70,9 @@
 │       │   └── index.js //子区页面
 │       └── UserInfo
 │           └── index.js //更新用户信息
+
+65 directories, 201 files
+
 
 ```
 
