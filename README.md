@@ -7,6 +7,7 @@
 
 ## 项目结构
 
+```
 ├── README.md
 ├── config
 ├── jsconfig.json
@@ -72,6 +73,7 @@
 │       └── UserInfo
 │           └── index.js //更新用户信息
 
+```
 
 
 ## 运行项目
