@@ -97,18 +97,16 @@ const App = {
     },
     //更新已读，未读
     updateUnReadNum(state, { chatType, fromId, number, message = {} }) {
-      if (
-        state.currentChatInfo.chatType === chatType &&
-        chatType === CHAT_TYPE.single &&
-        state.currentChatInfo.id === fromId
-      ) {
-        //清空未读消息
-        let msg = WebIM.message.create({
-          chatType: CHAT_TYPE.single,
-          type: "channel",
-          to: fromId
-        });
-        WebIM.conn.send(msg);
+      if (state.currentChatInfo.chatType === chatType && state.currentChatInfo.id === fromId){
+        if (chatType === CHAT_TYPE.single) {
+          //清空未读消息
+          let msg = WebIM.message.create({
+            chatType: CHAT_TYPE.single,
+            type: "channel",
+            to: fromId
+          });
+          WebIM.conn.send(msg);
+        }
         return state;
       }
       let dt = {};
