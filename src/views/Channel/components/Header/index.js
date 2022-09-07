@@ -81,7 +81,7 @@ const ChannelHeader = (props) => {
         >
           <Tooltip title="子区列表" overlayClassName="toolTip">
             <span>
-              <Icon iconClass={s.icon} size="24px" name="message_on_message" />
+              <Icon iconClass={s.icon} size="24px" name="hashtag_message" />
             </span>
           </Tooltip>
         </Popover>
