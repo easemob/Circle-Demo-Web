@@ -1,4 +1,4 @@
-// import WebIM from "./Easemob-chat";//js 方式引入
+// import WebIM from "./Easemob-chat";
 import WebIM from "easemob-websdk";
 
 WebIM.conn = new WebIM.connection({
