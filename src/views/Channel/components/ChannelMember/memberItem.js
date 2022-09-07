@@ -52,8 +52,8 @@ const MemberItem = (props) => {
               ]
           }
         });
-      }).catch(err=>{
-        if(err.type === 17 && JSON.parse(err.data).error_description === "User is not in server."){
+      }).catch(err => {
+        if (err.type === 17 && JSON.parse(err.data).error_description === "User is not in server.") {
           message.warn({ content: "用户已退出社区" });
         }
       });
@@ -82,8 +82,8 @@ const MemberItem = (props) => {
             muteList: ls
           }
         });
-      }).catch(err=>{
-        if(err.type === 17 && JSON.parse(err.data).error_description === "User is not in server."){
+      }).catch(err => {
+        if (err.type === 17 && JSON.parse(err.data).error_description === "User is not in server.") {
           message.warn({ content: "用户已退出社区" });
         }
       });
@@ -98,7 +98,7 @@ const MemberItem = (props) => {
       const list = [...channelMemberInfo.list];
       const findIndex = list.findIndex(item => uid === item.uid)
       if (findIndex > -1) {
-        list.splice(findIndex,1)
+        list.splice(findIndex, 1)
         setChannelUserMap({
           channelId,
           userListInfo: {
@@ -107,8 +107,8 @@ const MemberItem = (props) => {
           }
         });
       }
-    }).catch(err=>{
-      if(err.type === 17 && JSON.parse(err.data).error_description === "User is not in server."){
+    }).catch(err => {
+      if (err.type === 17 && JSON.parse(err.data).error_description === "User is not in server.") {
         message.warn({ content: "用户已退出社区" });
       }
     });

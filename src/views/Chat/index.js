@@ -79,7 +79,7 @@ const Chat = (props) => {
         //打开单聊者详情
         if (data.from !== WebIM.conn.user) {
           //更新单聊者信息
-          getUsersInfo([data.from]).then(()=>{
+          getUsersInfo([data.from]).then(() => {
             setVisible(true);
           })
         }

@@ -61,9 +61,9 @@ const ChannelHeader = (props) => {
   return (
     <HeaderWrap>
       <span className={`${s.name} ${channelInfo?.isPublic
-          ? `${s.channelNameWrap} ${s.base} `
-          : `${s.channelNameWrap} ${s.private}`}`} 
-        >{channelInfo?.name}</span>
+        ? `${s.channelNameWrap} ${s.base} `
+        : `${s.channelNameWrap} ${s.private}`}`}
+      >{channelInfo?.name}</span>
       <div className={s.optWrap}>
         <Popover
           placement="bottomRight"

@@ -85,9 +85,9 @@ const ContactsOperation = (props) => {
     const [visible, setVisible] = useState(false);
 
     const handleVisibleChange = (data) => {
-        if(data){
+        if (data) {
             searchValue !== "" && setVisible(data);
-        }else{
+        } else {
             setVisible(data);
         }
     };
@@ -200,7 +200,7 @@ const ContactsOperation = (props) => {
                                 onFocus={() => { changeBorder(true) }}
                                 onBlur={() => { changeBorder(false) }}
                             ></input>
-                            {searchValue !== "" && <span className={s.closeIconCon} onClick={(e) => { e.stopPropagation();setSearchValue("") }}><Icon name="xmark_in_circle" size="20px" color="#BDBDBD" iconClass={s.deleteIcon} /></span>}
+                            {searchValue !== "" && <span className={s.closeIconCon} onClick={(e) => { e.stopPropagation(); setSearchValue("") }}><Icon name="xmark_in_circle" size="20px" color="#BDBDBD" iconClass={s.deleteIcon} /></span>}
                         </div>
                     </Popover>
                 </div>
@@ -297,7 +297,7 @@ const ContactEl = (props) => {
                     memberParent.current ? memberParent.current : document.body
                 }>
                 <span className={`opBg ${s.delete} ${((hoverContactUid === uid && source === "list") || (hoverSearchUid === uid && source === "search")) ? s.focus : null}`}>
-                    <span className={s.deleteIcon}><Icon name="ellipsis" size="22px" iconClass='opIcon'/></span>
+                    <span className={s.deleteIcon}><Icon name="ellipsis" size="22px" iconClass='opIcon' /></span>
                 </span>
             </Dropdown>
         </div>} />

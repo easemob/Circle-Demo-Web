@@ -42,6 +42,7 @@
     background-image: url("https://p1.meituan.net/dpplatform/50dbe2fec3eca335c35fe5e128609bb93350245.jpg");
     background-size: cover;
     background-position: center;
+
     .shadow {
       position: absolute;
       top: 0;
@@ -105,10 +106,7 @@
         padding: 0;
       }
 
-      .ant-collapse
-        > .ant-collapse-item
-        > .ant-collapse-header
-        .ant-collapse-arrow {
+      .ant-collapse>.ant-collapse-item>.ant-collapse-header .ant-collapse-arrow {
         margin-right: 8px;
       }
 
@@ -122,8 +120,9 @@
       border: 0;
       border-radius: 0;
       background: #292929;
+
       :global {
-        .ant-collapse-header{
+        .ant-collapse-header {
           line-height: 20px;
         }
       }
@@ -143,7 +142,8 @@
       background-size: cover;
       margin-right: 4px;
       opacity: 0.74;
-      &:hover{
+
+      &:hover {
         opacity: 1;
       }
     }
@@ -215,6 +215,7 @@
       text-align: left;
       cursor: pointer;
       margin: 0 auto;
+
       &:hover {
         .active
       }
