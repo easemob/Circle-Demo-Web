@@ -11,11 +11,11 @@ import { LOGIN_PASSWORD } from "@/consts";
 const LoadingIcon = () => {
   return (
     <LoadingOutlined
-    style={{
-      fontSize: 24,
-      color: "#fff"
-    }}
-  />
+      style={{
+        fontSize: 24,
+        color: "#fff"
+      }}
+    />
   )
 }
 
@@ -194,7 +194,7 @@ function Login(props) {
             {!isLogging ? (
               <span>{LOGIN.login}</span>
             ) : (
-              <Spin indicator={<LoadingIcon />}/>
+              <Spin indicator={<LoadingIcon />} />
             )}
           </div>
         </div>

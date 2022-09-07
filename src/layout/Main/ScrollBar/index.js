@@ -10,7 +10,6 @@ import Number from "@/components/Number";
 import { createMsg, deliverMsg, filterData, addServer, deleteServer, deleteLocalThread } from "@/utils/common";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { MULTI_DEVICE_EVENT } from "@/consts"
-import { deleteLocalChannel } from "@/utils/common"
 
 const ScrollBar = (props) => {
   const {
@@ -39,7 +38,7 @@ const ScrollBar = (props) => {
   const SCROLL_WARP_ID = "serverScrollWrapId";
   const LIMIT = 20;
   const location = useLocation();
-  
+
   const setSelectedVal = (loc) => {
     if (serverId) {
       setSelected(serverId);
@@ -218,7 +217,7 @@ const ScrollBar = (props) => {
   }
   //退出或者删除频道后路由跳转
   const changeRoute = (channelEvent) => {
-    const { serverInfo={}, id="" } = channelEvent.data;
+    const { serverInfo = {}, id = "" } = channelEvent.data;
     if (serverInfo.id === serverId && id === channelId) {
       const list = joinedServerInfo.list || [];
       const findIndex = list.findIndex(item => item.id === serverId);
@@ -269,7 +268,7 @@ const ScrollBar = (props) => {
       })
     }
   }, [deleteThreadEvent])
-  
+
   return (
     <div className={s.menuNav}>
       <div className={s.basis}>
@@ -295,7 +294,7 @@ const ScrollBar = (props) => {
             <div className={s.contactsBg}></div>
             {totalUnreadNum() > 0 && (
               <div className={s.number}>
-                <Number style={{height:"16px", border:"2px solid #181818", lineHeight:"12px"}} number={totalUnreadNum()} /></div>
+                <Number style={{ height: "16px", border: "2px solid #181818", lineHeight: "12px" }} number={totalUnreadNum()} /></div>
             )}
           </div>
         </div>
@@ -374,7 +373,7 @@ const mapStateToProps = ({ app, server, contact, thread }) => {
     channelEvent: server.channelEvent,
     applyNum: contact.applyInfo.length,
     serverUserMap: server.serverUserMap,
-    selected:app.selectedTab,
+    selected: app.selectedTab,
   };
 };
 

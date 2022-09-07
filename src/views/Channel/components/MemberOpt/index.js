@@ -41,7 +41,7 @@ const MemberOpt = ({
       )}
 
       {showOpIcon && (
-        <div  className={`${isServer ? 'opBg' : s.iconWrap}`}>
+        <div className={`${isServer ? 'opBg' : s.iconWrap}`}>
           <Menu
             onClick={(e) => {
               onMenuClick(e, { uid, serverId });

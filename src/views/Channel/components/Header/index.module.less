@@ -4,9 +4,11 @@
   line-height: 22px;
   font-weight: 500;
 }
+
 .base {
   display: flex;
   align-items: center;
+
   &::before {
     content: "";
     display: inline-block;
@@ -19,9 +21,11 @@
     margin-right: 12px;
   }
 }
-.private{
+
+.private {
   display: flex;
   align-items: center;
+
   &::before {
     content: "";
     display: inline-block;
@@ -47,11 +51,13 @@
     margin-right: 8px;
     cursor: pointer;
     color: #c7c7c7;
+
     &:hover {
       color: #fff;
     }
   }
 }
+
 .popover {
   border-radius: 10px 10px 0 0;
   overflow: hidden;
@@ -60,25 +66,29 @@
   :global {
     .ant-popover-content {
       padding: 0;
-    
+
       .ant-popover-inner-content {
         padding: 0;
       }
+
       .ant-popover-arrow {
         display: none;
       }
     }
   }
 }
-.iconCon{
+
+.iconCon {
   height: 60px;
   display: flex;
   align-items: center;
   width: 32px;
+
   .icon {
     margin-right: 8px;
     cursor: pointer;
     color: #c7c7c7;
+
     &:hover {
       color: #fff;
     }

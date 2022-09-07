@@ -22,14 +22,6 @@ export function getUsersInfo(userIdList) {
   }
   const list = getState().app.appUserInfo;
   const result = {};
-  // const needFetchIds = [];
-  // userIdList.forEach((uid) => {
-  //   if (list[uid]) {
-  //     result[uid] = list[uid];
-  //   } else {
-  //     needFetchIds.push(uid);
-  //   }
-  // });
 
   return new Promise((resolve, reject) => {
     const type = [
@@ -71,7 +63,7 @@ export function getUsersInfo(userIdList) {
                   if (reUserInfo[item.uid]) {
                     if (
                       Object.prototype.toString.call(item.status) ===
-                        "[object Object]" &&
+                      "[object Object]" &&
                       Object.values(item.status).indexOf("1") > -1
                     ) {
                       reUserInfo[item.uid].online = 1;
@@ -148,8 +140,8 @@ const getConfirmModalConf = ({
   content = "",
   okText = "确认",
   cancelText = "取消",
-  onOk = () => {},
-  onCancel = () => {}
+  onOk = () => { },
+  onCancel = () => { }
 }) => {
   return {
     className: "confirmModalWrap",
@@ -200,7 +192,7 @@ const deliverMsg = (msg) => {
           console.log("未登录");
         } else if (e.reason === ERROR_CODE.muted) {
           messageTip.info("您已被禁言！");
-        } else if(e.message === ERROR_CODE.trafficLimit) {
+        } else if (e.message === ERROR_CODE.trafficLimit) {
           messageTip.info("消息发送频繁，请稍后再试！");
         }
         reject(e);
@@ -579,7 +571,7 @@ const deleteLocalChannel = (serverId, channelId, isDestroy = false) => {
         (item) => item.channelId === channelId
       );
       let role = 'user';
-      if(getState().app.serverRole.has(serverId)){
+      if (getState().app.serverRole.has(serverId)) {
         role = getState().app.serverRole.get[serverId]
       }
       if (findIndex2 > -1 && role === 'user') {
@@ -662,7 +654,6 @@ const renderHtml = (txt) => {
   }
   rnTxt += txt.substring(start, txt.length);
   return rnTxt;
-  // return `<span display="inline-block">${rnTxt}</span>`;
 };
 function convertToMessage(e) {
   var t = (function () {
@@ -672,9 +663,9 @@ function convertToMessage(e) {
     // r.innerHTML = e.replace(/\\/g, "###h###");
     for (
       var n = r.querySelectorAll("img"),
-        a = r.querySelectorAll("div"),
-        i = n.length,
-        o = a.length;
+      a = r.querySelectorAll("div"),
+      i = n.length,
+      o = a.length;
       i--;
 
     ) {
@@ -683,7 +674,7 @@ function convertToMessage(e) {
       n[i].parentNode.removeChild(n[i]);
     }
     // eslint-disable-next-line no-unused-expressions
-    for (; o--; ) t.push(a[o].innerHTML), a[o].parentNode.removeChild(a[o]);
+    for (; o--;) t.push(a[o].innerHTML), a[o].parentNode.removeChild(a[o]);
     var c = (t = t.reverse()).length ? "\n" + t.join("\n") : t.join("\n");
     return (r.innerText + c)
       .replace(/###h###/g, "&#92;")
@@ -736,7 +727,7 @@ const addReactions = ({ messageId, reaction }) => {
     .catch((e) => {
       if (e.message === "The quantity has exceeded the limit!") {
         messageTip.info("Reaction类型数量已达到限制");
-      }else if(e.message === "the user is already operation this message"){
+      } else if (e.message === "the user is already operation this message") {
         messageTip.info("Reaction类型重复");
       }
     });

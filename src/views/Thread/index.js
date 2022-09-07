@@ -42,9 +42,9 @@ const ThreadPanel = (props) => {
         const dom = scrollThreadEl.current;
         if (!ReactDOM.findDOMNode(dom)) return;
         if (threadHasHistory === false && messageList.length !== 0 && dom.scrollHeight >= (dom.scrollTop + dom.clientHeight)) {
-            setTimeout(()=>{
+            setTimeout(() => {
                 dom.scrollTop = dom.scrollHeight;
-            },300)
+            }, 300)
         }
     }, [messageList.length])
 

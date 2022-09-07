@@ -20,7 +20,7 @@ const SCROLL_WARP_ID = "memberScrollWrap";
 const Title = () => {
   return (
     <HeaderWrap style={{ position: "unset", width: "100%" }}>
-      <span className={`${s.name} ${s.public}`}><span className={s.person}><Icon name="person_2" color="#fff" size="26px"/></span>社区成员</span>
+      <span className={`${s.name} ${s.public}`}><span className={s.person}><Icon name="person_2" color="#fff" size="26px" /></span>社区成员</span>
       {/* <div className={`${s.iptWrap}`}>
         <Icon name="magnify" color="#fff" />
         <Input placeholder="搜索社区成员" autoComplete="off" />
@@ -57,7 +57,7 @@ const MemberMenuChildren = (selfRole, userRole, item) => {
     }
     menu.push(menu1);
   }
-  if(item?.uid !== WebIM.conn.user){
+  if (item?.uid !== WebIM.conn.user) {
     menu.push({
       label: (
         <div>
@@ -237,7 +237,7 @@ const MemberModal = (props) => {
                     menuItems={MemberMenuItems(selfRole, item.role)}
                     isShowChat={item.uid !== WebIM.conn.user}
                     showOpIcon={
-                      MemberMenuChildren(selfRole, item.role,item).length > 0
+                      MemberMenuChildren(selfRole, item.role, item).length > 0
                     }
                     selfRole={selfRole}
                   />

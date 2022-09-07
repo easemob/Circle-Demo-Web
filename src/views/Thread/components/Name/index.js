@@ -18,7 +18,7 @@ const ThreadName = (props) => {
             {isCreatingThread ? <div className={s.inputCon}>
                 <div className={s.t}>
                     <input ref={nameEle} maxLength="64" className={s.input} placeholder="子区名（必填项）" value={inputVal} onChange={(e) => { setInputVal(e.target.value); setName(e.target.value) }} />
-                    {inputVal.length !== 0 && <span className={s.del} onClick={() => { setInputVal("");setName("") }}>
+                    {inputVal.length !== 0 && <span className={s.del} onClick={() => { setInputVal(""); setName("") }}>
                         <Icon name="xmark_in_circle" size="20px" color="#666" />
                     </span>}
                 </div>

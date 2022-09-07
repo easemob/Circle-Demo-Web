@@ -23,7 +23,7 @@ const ChannelForm = forwardRef((props, ref) => {
   const [isPrivate, setIsPrivate] = useState(false);
   const navigate = useNavigate();
 
-  const submit = (onSuccess = () => {}, onError = () => {}) => {
+  const submit = (onSuccess = () => { }, onError = () => { }) => {
     form
       .validateFields()
       .then((values = {}) => {
@@ -94,7 +94,7 @@ const ChannelForm = forwardRef((props, ref) => {
           navigate(`/main/channel/${serverId}/${channelId}`);
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   useImperativeHandle(ref, () => ({

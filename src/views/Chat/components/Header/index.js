@@ -21,8 +21,8 @@ const ChannelHeader = (props) => {
         deleteRoam: false,
       }).then(() => {
         const findIndex = conversationList.indexOf(userId);
-        if(findIndex>-1){
-          conversationList.splice(findIndex,1);
+        if (findIndex > -1) {
+          conversationList.splice(findIndex, 1);
           setConversationList(conversationList);
         }
         navigate("/main/contacts/index");
