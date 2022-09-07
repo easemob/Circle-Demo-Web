@@ -7,16 +7,70 @@
 
 ## 项目结构
 
-| 功能 | 位置 |
-| --- | --- |
-|  登录注册| src/views/Login|
-|  个人信息管理| src/layout/UserInfo |
-|  联系人管理| src/layout/Contacts|
-|  社区管理| src/layout/Main/ServerForm |
-|  频道管理| src/layout/Channel|
-|  子区管理| src/views/Thread |
-|  消息管理| src/components/Input/index.js|
-|  广场 | src/layout/Server |
+├── README.md
+├── config
+├── jsconfig.json
+├── package-lock.json
+├── package.json
+├── public
+├── scripts
+├── src
+│   ├── App.js
+│   ├── App.less
+│   ├── App.test.js
+│   ├── assets //静态资源
+│   ├── components //基础组件
+│   ├── index.css
+│   ├── index.js
+│   ├── layout //页面入口
+│   │   ├── Channel //频道相关页面
+│   │   │   ├── InviteUser //邀请用户加入频道
+│   │   │   ├── SideBar // 频道列表及当前server展示页面
+│   │   │   └──  index.js //频道页面入口
+│   │   ├── Contacts
+│   │   │   ├── SideBar 联系人列表页面
+│   │   │   └──  index.js //联系人页面入口
+│   │   ├── Main
+│   │   │   ├── ScrollBar //社区列表页面
+│   │   │   ├── ServerForm //创建、编辑社区
+│   │   │   └── index.js //主页面入口
+│   │   ├── Server
+│   │   │   ├── SideBar //广场菜单页面
+│   │   │   └──  index.js //广场页面入口
+│   │   └── UserInfo
+│   │       ├── SideBar //用户信息页面
+│   │       └──  index.js //用户信息页面入口
+│   ├── routes //路由
+│   ├── setupTests.js
+│   ├── store
+│   │   ├── configureStore.js
+│   │   ├── index.js
+│   │   ├── loader.js
+│   │   └── models
+│   │       ├── app.js
+│   │       ├── channel.js
+│   │       ├── contact.js
+│   │       ├── server.js
+│   │       └── thread.js
+│   ├── utils sdk及公用方法
+│   └── views //页面组件
+│       ├── Channel
+│       │   ├── components 频道聊天页面组件
+│       │   └── index.js //频道聊天页面
+│       ├── Chat
+│       │   ├── components //联系人聊天页面组件
+│       │   └── index.js //联系人聊天页面
+│       ├── ContactsOperation
+│       │   └── index.js //联系人页面
+│       ├── Login
+│       │   └── login.js //登录页面
+│       ├── ServerSquare
+│       │   └── index.js //广场页面
+│       ├── Thread
+│       │   ├── components //子区页组件
+│       │   └── index.js //子区页面
+│       └── UserInfo
+│           └── index.js //更新用户信息
 
 
 
