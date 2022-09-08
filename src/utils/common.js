@@ -513,6 +513,13 @@ const updateLocalChannelDetail = (type, serverId, data) => {
   //收到channel更新的通知 "notify"
   //本账号编辑channel "edit"
   const { id } = data;
+  const currentChannelInfo = getState().app.currentChannelInfo;
+  if(currentChannelInfo.serverId === serverId && currentChannelInfo.channelId === data.id){
+    dispatch.app.setCurrentChannelInfo({
+      ...currentChannelInfo,
+      ...data
+    });
+  }
   if (getState().server.channelMap.has(serverId)) {
     const channelInfo = getState().server.channelMap.get(serverId);
     const publicChannel = [...channelInfo?.public] || [];
