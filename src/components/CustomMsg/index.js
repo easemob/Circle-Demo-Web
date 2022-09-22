@@ -10,7 +10,7 @@ import { connect } from "react-redux";
 import { insertChannelList } from "@/utils/common"
 
 const CustomMsg = (props) => {
-  const { message, insertChatMessage, appUserInfo, setServerRole } = props;
+  const { message, appUserInfo, setServerRole } = props;
   const isServerInvite = message.customEvent === INVITE_TYPE.inviteServer;
   const acceptInviteEvent =
     message.customEvent === ACCEPT_INVITE_TYPE.acceptInviteServer ||
@@ -48,14 +48,7 @@ const CustomMsg = (props) => {
               server_name: message.customExts?.server_name
             }
           });
-          deliverMsg(msg).then(() => {
-            insertChatMessage({
-              chatType: msg.chatType,
-              fromId: msg.to,
-              messageInfo: {
-                list: [{ ...msg, from: WebIM.conn.user }]
-              }
-            });
+          deliverMsg({msg,needShow: true}).then(() => {
             const serverId = message.customExts?.server_id || "";
             WebIM.conn.getServerRole({ serverId }).then((res) => {
               setServerRole({ serverId, role: res.data.role });
@@ -90,15 +83,7 @@ const CustomMsg = (props) => {
               channel_name: message.customExts?.channel_name
             }
           });
-          deliverMsg(msg).then(() => {
-            insertChatMessage({
-              chatType: msg.chatType,
-              fromId: msg.to,
-              messageInfo: {
-                list: [{ ...msg, from: WebIM.conn.user }]
-              }
-            });
-          });
+          deliverMsg({msg,needShow: true}).then();
         })
         .catch((err) => {
           if (err.message === "User is already in channel.") {
@@ -182,12 +167,6 @@ const mapStateToProps = ({ app }) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    insertChatMessage: (params) => {
-      return dispatch({
-        type: "app/insertChatMessage",
-        payload: params
-      });
-    },
     setServerRole: (params) => {
       return dispatch({
         type: "app/setServerRole",

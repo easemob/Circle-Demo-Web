@@ -7,7 +7,8 @@ const FileMsg = (props) => {
   const { message } = props;
   //下载
   const handleDownloadFile = () => {
-    fetch(message.url)
+    const url = message.localUrl||message.url
+    fetch(url)
       .then((res) => {
         return res.blob();
       })

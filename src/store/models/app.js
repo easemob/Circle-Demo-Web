@@ -10,6 +10,7 @@ import WebIM from "@/utils/WebIM";
 
 const App = {
   state: {
+    isOnline: true,//在线状态
     serverFormVisible: false,
     isLogging: false,
     loginSuccess: false,
@@ -24,7 +25,7 @@ const App = {
     serverRole: {},
     reactionMap: new Map(), // reaction Map
     currentChannelInfo: {},
-    currentChatInfo: {} //当前聊天对象的信息{chatType:"singleChat" "groupChat"  id:string}
+    currentChatInfo: {}, //当前聊天对象的信息{chatType:"singleChat" "groupChat"  id:string}
   },
   reducers: {
     /**
@@ -79,7 +80,6 @@ const App = {
       } else {
         ls = messageInfo?.list;
       }
-
       return {
         ...state,
         chatMap: {
@@ -95,9 +95,67 @@ const App = {
         }
       };
     },
+    //本地发送的消息状态更新，发送成功时消息id修改为serverId
+    updateChatMessageIdMid(state, { id, mid, to, status }) {
+      if (to === state.currentChatInfo.id) {
+        const chatType = state.currentChatInfo.chatType
+        const dt = state.chatMap[chatType].get(to)
+        if (state.chatMap[chatType].has(to)) {
+          const ls = dt?.list || [];
+          const findIndex = ls.findIndex(item => item.id === id);
+          if (findIndex > -1) {
+            const newMsg = { ...ls[findIndex], ...{ status, id: mid || id } }
+            ls.splice(findIndex, 1, newMsg);
+            return {
+              ...state,
+              chatMap: {
+                ...state.chatMap,
+                [chatType]: new Map([
+                  ...state.chatMap[chatType],
+                  ...new Map().set(to, {
+                    ...dt,
+                    list: ls
+                  })
+                ])
+              }
+            }
+          }
+        }
+      }
+      return state
+    },
+    //本地发送的附件消息上传成功后url更新
+    changeChatMessageUrl(state, {id, to , url}) {
+      if (to === state.currentChatInfo.id) {
+        const chatType = state.currentChatInfo.chatType
+        const dt = state.chatMap[chatType].get(to)
+        if (state.chatMap[chatType].has(to)) {
+          const ls = dt?.list || [];
+          const findIndex = ls.findIndex(item => item.localId && item.localId === id);
+          if (findIndex > -1) {
+            const newMsg = { ...ls[findIndex], url }
+            ls.splice(findIndex, 1, newMsg);
+            return {
+              ...state,
+              chatMap: {
+                ...state.chatMap,
+                [chatType]: new Map([
+                  ...state.chatMap[chatType],
+                  ...new Map().set(to, {
+                    ...dt,
+                    list: ls
+                  })
+                ])
+              }
+            }
+          }
+        }
+      }
+      return state
+    },
     //更新已读，未读
     updateUnReadNum(state, { chatType, fromId, number, message = {} }) {
-      if (state.currentChatInfo.chatType === chatType && state.currentChatInfo.id === fromId){
+      if (state.currentChatInfo.chatType === chatType && state.currentChatInfo.id === fromId) {
         if (chatType === CHAT_TYPE.single) {
           //清空未读消息
           let msg = WebIM.message.create({
@@ -150,6 +208,33 @@ const App = {
             msg: "撤回了一条消息"
           };
           ls.splice(idx, 1, newMessage);
+          return {
+            ...state,
+            chatMap: {
+              ...state.chatMap,
+              [chatType]: new Map([
+                ...state.chatMap[chatType],
+                ...new Map().set(fromId, {
+                  ...dt,
+                  list: ls
+                })
+              ])
+            }
+          };
+        }
+      }
+      return state;
+    },
+    //删除未发送成功的本地消息
+    deleteLocalMessage(state,{ id, fromId, chatType }){
+      const dt = state.chatMap[chatType].get(fromId);
+      if (state.chatMap[chatType].has(fromId)) {
+        let ls = [...dt?.list];
+        const idx = ls.findIndex((item) => {
+          return item.id === id;
+        });
+        if (idx > -1) {
+          ls.splice(idx, 1);
           return {
             ...state,
             chatMap: {
@@ -376,7 +461,19 @@ const App = {
     },
     setSelectedTab(selectedTab) {
       this.updateState({ selectedTab });
-    }
+    },
+    updateChatMessageId({ id, mid, to, status }) {
+      this.updateChatMessageIdMid({ id, mid, to, status })
+    },
+    updateChatMessageUrl({ id, to, url }) {
+      this.changeChatMessageUrl({ id, to, url })
+    },
+    updateOnline(isOnline){
+      this.updateState({isOnline});
+    },
+    deleteFailedMessage({ id, fromId, chatType }) {
+      this.deleteLocalMessage({ id, fromId, chatType });
+    },
   })
 };
 

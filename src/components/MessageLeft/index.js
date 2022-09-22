@@ -7,6 +7,7 @@ import ImgMsg from "@/components/ImgMsg";
 import RecallMsg from "@/components/RecallMsg";
 import CustomMsg from "@/components/CustomMsg";
 import Operation from "@/components/MsgOperation";
+import ResendMsg from "@/components/ResendMsg";
 import ThreadMsg from "@/components/ThreadMsg";
 import ReactionMsg from "@/components/ReactionMsg";
 import { renderTime, getUsersInfo } from "@/utils/common";
@@ -15,6 +16,7 @@ import { MESSAGE_ITEM_SOURCE } from "@/consts";
 import WebIM from "@/utils/WebIM";
 import { Popover } from "antd";
 import UserDetail from "@/views/Channel/components/UserDetail";
+import { InfoCircleFilled } from '@ant-design/icons';
 
 const Message = (props) => {
   const parent = useRef();
@@ -32,7 +34,7 @@ const Message = (props) => {
     return reactionMap.get(message.id) || [];
   }, [reactionMap, message.id]);
 
-  //消息操作 撤回、复制
+  //消息操作 撤回、复制、重新发送、删除（未发送成功的消息）
   const handleOperation = (operation) => {
     onHandleOperation(operation, isThreadMessage, message);
   };
@@ -78,7 +80,12 @@ const Message = (props) => {
   const showOperation =
     source !== MESSAGE_ITEM_SOURCE.threadParentMsg &&
     message.type !== "recall" &&
-    message.type !== "custom";
+    message.type !== "custom" &&
+    (message.status === "successful" || message.status === undefined);
+  const showDeleteMsg = source !== MESSAGE_ITEM_SOURCE.threadParentMsg &&
+    message.type !== "recall" &&
+    message.type !== "custom" &&
+    message.status === "failed";
 
 
   const [selected, setSelected] = useState(false);
@@ -125,6 +132,14 @@ const Message = (props) => {
               </span>
               <span className={s.date}>{renderTime(message.time)}</span>
             </div>
+            {showDeleteMsg && (
+              <div className={s.operation}>
+                <ResendMsg
+                  message={message}
+                  operation={handleOperation}
+                />
+              </div>
+            )}
             {showOperation && (
               <div className={s.operation} ref={operationRef}>
                 <Operation
@@ -147,6 +162,9 @@ const Message = (props) => {
           </div>
         </div>
       </div>
+      {message.status === "failed" && (
+        <div className={s.failed}><InfoCircleFilled className={s.icon} />发送失败</div>
+      )}
       {showReactionInfo && (
         <ReactionMsg msgId={message.id} reaction={reactionList} />
       )}

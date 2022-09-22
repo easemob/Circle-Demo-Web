@@ -179,13 +179,31 @@ const createMsg = (opt) => {
   return WebIM.message.create(opt);
 };
 // 发送消息
-const deliverMsg = (msg) => {
+const deliverMsg = (msgObj) => {
+  if (!getState().app.isOnline) {
+    messageTip.info("您已离线，请联网后再试！");
+    return
+  }
+  const { msg, needShow } = msgObj;
+  if (needShow) {//需要本地展示消息
+    if (msg.isChatThread) {
+      dispatch.thread.setThreadMessage({
+        message: { ...msg, from: WebIM.conn.user, status: "sending" },
+        fromId: msg.to
+      });
+    } else {
+      dispatch.app.insertChatMessage({
+        chatType: msg.chatType,
+        fromId: msg.to,
+        messageInfo: { list: [{ ...msg, from: WebIM.conn.user, status: "sending" }] }
+      });
+    }
+  }
   return new Promise((resolve, reject) => {
     WebIM.conn
       .send(msg)
       .then((res) => {
         resolve(res);
-        msg.id = res.serverMsgId;
       })
       .catch((e) => {
         if (e.message === ERROR_CODE.notLogin) {
@@ -194,6 +212,11 @@ const deliverMsg = (msg) => {
           messageTip.info("您已被禁言！");
         } else if (e.message === ERROR_CODE.trafficLimit) {
           messageTip.info("消息发送频繁，请稍后再试！");
+        }
+        if (msg.isChatThread) {
+          dispatch.thread.updateChatThreadMessageId({ ...e.data, to: msg.to, status: "failed" })
+        } else {
+          dispatch.app.updateChatMessageId({ id: msg.id, to: msg.to, status: "failed" })
         }
         reject(e);
       });
@@ -229,6 +252,15 @@ const recallMessage = (message, isChatThread = false) => {
     }
   });
 };
+//删除本地发送失败的消息
+const deleteFailedMessage = (message, isChatThread = false) => {
+  const { id, to: fromId, chatType } = message;
+  if (isChatThread) {
+    dispatch.thread.deleteThreadFailedMessage({ id, fromId, chatType })
+  } else {
+    dispatch.app.deleteFailedMessage({ id, fromId, chatType })
+  }
+}
 
 const pasteHtmlAtCaret = (html, lastEditRange) => {
   let sel, range;
@@ -514,7 +546,7 @@ const updateLocalChannelDetail = (type, serverId, data) => {
   //本账号编辑channel "edit"
   const { id } = data;
   const currentChannelInfo = getState().app.currentChannelInfo;
-  if(currentChannelInfo.serverId === serverId && currentChannelInfo.channelId === data.id){
+  if (currentChannelInfo.serverId === serverId && currentChannelInfo.channelId === data.id) {
     dispatch.app.setCurrentChannelInfo({
       ...currentChannelInfo,
       ...data
@@ -758,6 +790,7 @@ export {
   createMsg,
   deliverMsg,
   recallMessage,
+  deleteFailedMessage,
   pasteHtmlAtCaret,
   getThreadHistoryMessage,
   formatImFile,

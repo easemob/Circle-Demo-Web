@@ -21,7 +21,8 @@ import {
   getThreadParentMsg,
   recallMessage,
   createMsg,
-  deliverMsg
+  deliverMsg,
+  deleteFailedMessage
 } from "@/utils/common";
 import ChannelMember from "./components/ChannelMember";
 import Icon from "@/components/Icon";
@@ -81,10 +82,9 @@ const Channel = (props) => {
     setThreadHasHistory,
     setChannelFormVisible,
     setInviteVisible,
-    insertChatMessage,
     joinedServerInfo,
     currentThreadInfo,
-    setThreadMap
+    setThreadMap,
   } = props;
 
   const { serverId, channelId } = useParams();
@@ -139,15 +139,7 @@ const Channel = (props) => {
                   channel_name: res.data.name
                 }
               });
-              deliverMsg(msg).then(() => {
-                insertChatMessage({
-                  chatType: msg.chatType,
-                  fromId: msg.to,
-                  messageInfo: {
-                    list: [{ ...msg, from: WebIM.conn.user }]
-                  }
-                });
-              });
+              deliverMsg({msg,needShow: true}).then();
             });
         }
       });
@@ -187,7 +179,7 @@ const Channel = (props) => {
     // 切换channel 关闭thread面板
     handleThreadPanel(false);
     //清空thread数据
-    setThreadInfo({});
+    setThreadInfo({threadInfo:{}});
     getHistoryMsg({ cursor: "" });
   }, [channelId]);
 
@@ -197,9 +189,9 @@ const Channel = (props) => {
       case "createThread":
         setChannelMemberVisible(false);
         setIsCreatingThread(true);
-        setThreadInfo({
+        setThreadInfo({threadInfo:{
           parentMessage: data
-        });
+        }});
         handleThreadPanel(true);
         setThreadHasHistory(false);
         break;
@@ -226,7 +218,7 @@ const Channel = (props) => {
           });
         break;
       case "showMember":
-        setThreadInfo({});
+        setThreadInfo({threadInfo:{}});
         handleThreadPanel(false);
         setChannelMemberVisible(!channelMemberVisible);
         break;
@@ -235,6 +227,13 @@ const Channel = (props) => {
         break;
       case "recall":
         recallMessage(data, isChatThread);
+        break;
+      case "reSend":
+        deleteFailedMessage(data, isChatThread)
+        deliverMsg({ msg: data, needShow: true })
+        break;
+      case "delete":
+        deleteFailedMessage(data, isChatThread)
         break;
       default:
         break;
@@ -253,7 +252,7 @@ const Channel = (props) => {
           ? getThreadParentMsg(data.parentId, data.messageId)
           : data;
       let parentMessage = findMsg ? { ...findMsg, chatThreadOverview: {} } : {};
-      setThreadInfo({ ...res.data, parentMessage });
+      setThreadInfo({threadInfo:{...res.data, parentMessage}});
       //open threadPanel
       handleThreadPanel(true);
     });
@@ -305,7 +304,7 @@ const Channel = (props) => {
             >
               {messageInfo?.list?.map((item) => {
                 return (
-                  <div key={item.id}>
+                  <div key={item.localId ||item.id}>
                     <MessageLeft
                       parentId={channelId}
                       message={item}
@@ -423,18 +422,12 @@ const mapDispatchToProps = (dispatch) => {
         payload: params
       });
     },
-    insertChatMessage: (params) => {
-      return dispatch({
-        type: "app/insertChatMessage",
-        payload: params
-      });
-    },
     setThreadMap: (params) => {
       return dispatch({
         type: "channel/setThreadMap",
         payload: params
       });
-    }
+    },
   };
 };
 

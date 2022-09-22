@@ -1,6 +1,5 @@
 import React, { memo, useState, useEffect } from "react";
 import s from "./index.module.less";
-import Icon from "@/components/Icon";
 import { connect } from "react-redux";
 import { getTimeDiff, renderTxt } from "@/utils/common";
 import { useParams } from "react-router-dom";

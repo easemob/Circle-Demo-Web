@@ -88,7 +88,7 @@ const ThreadHeader = (props) => {
                 break;
             case "leaveThread":
                 WebIM.conn.leaveChatThread({ chatThreadId: currentThreadInfo.id }).then(() => {
-                    setThreadInfo({});
+                    setThreadInfo({threadInfo:{}});
                     handleThreadPanel(false);
                     if (threadId) {
                         navigate(`/main/channel/${serverId}/${channelId}`);
@@ -100,7 +100,7 @@ const ThreadHeader = (props) => {
             case "destroyThread":
                 WebIM.conn.destroyChatThread({ chatThreadId: currentThreadInfo.id }).then(() => {
                     deleteLocalThread(channelId, currentThreadInfo.id).then(() => {
-                        setThreadInfo({});
+                        setThreadInfo({threadInfo:{}});
                         handleThreadPanel(false);
                         if (threadId) {
                             navigate(`/main/channel/${serverId}/${channelId}`);
@@ -143,7 +143,7 @@ const ThreadHeader = (props) => {
             //从thread列表点击，需要查询本地消息
             let findMsg = getThreadParentMsg(res.data.parentId, res.data.messageId)
             let parentMessage = findMsg ? { ...findMsg, chatThreadOverview: {} } : {};
-            setThreadInfo({ ...res.data, parentMessage });
+            setThreadInfo({threadInfo:{...res.data, parentMessage}});
         });
     }
     useEffect(() => {
@@ -155,7 +155,7 @@ const ThreadHeader = (props) => {
         navigate(`/main/channel/${serverId}/${channelId}`);
         const tempInfo = { ...currentThreadInfo }
         setTimeout(() => {
-            setThreadInfo(tempInfo)
+            setThreadInfo({threadInfo:tempInfo});
             handleThreadPanel(true);
         }, 500);
     }
@@ -193,7 +193,7 @@ const ThreadHeader = (props) => {
                 </Dropdown>
 
             </div>}
-            {!threadId && <span className={s.close} onClick={() => { handleThreadPanel(false); setThreadInfo({}) }}>
+            {!threadId && <span className={s.close} onClick={() => { handleThreadPanel(false); setThreadInfo({threadInfo:{}}); }}>
                 <Icon name="xmark" size="18px" color="rgba(255, 255, 255, 0.74)"></Icon>
             </span>}
             <div className={s.membersCon}>

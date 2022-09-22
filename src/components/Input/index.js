@@ -30,14 +30,17 @@ const scrollBottom = () => {
 
 const Input = (props) => {
   const {
-    insertChatMessage,
     fromId,
     chatType,
     isThread,
     isCreatingThread,
     threadName,
     currentThreadInfo,
-    setThreadMessage
+    updateChatMessageUrl,
+    updateChatThreadMessageUrl,
+    updateChatMessageId,
+    updateChatThreadMessageId,
+    setThreadInfo,
   } = props;
   const [text, setText] = useState("");
   const ref = useRef("");
@@ -58,7 +61,9 @@ const Input = (props) => {
   };
 
   const beforeUploadImg = async (file) => {
+    const localUrl = window.URL.createObjectURL(file);
     let resFile = file;
+    let imgMsg = {}
     const getImgMsg = (target) => {
       return createMsg({
         chatType: chatType,
@@ -66,42 +71,53 @@ const Input = (props) => {
         to: target,
         isChatThread: props.isThread,
         file: formatImFile(resFile),
-        onFileUploadError: function () {
+        onFileUploadError: function (e) {
           // 消息上传失败
-          console.log("onFileUploadError");
+          console.log("onFileUploadError", e);
+          //更新id status
+          if (props.isThread) {
+            updateChatThreadMessageId({ id: imgMsg.localId, to: imgMsg.to, status: "failed" })
+          } else {
+            updateChatMessageId({ id: imgMsg.localId, to: imgMsg.to, status: "failed" })
+          }
         },
         onFileUploadProgress: function (progress) {
           // 上传进度的回调
           console.log(progress);
         },
-        onFileUploadComplete: function () {
+        onFileUploadComplete: function (e) {
           // 消息上传成功
-          console.log("onFileUploadComplete");
+          console.log("onFileUploadComplete", e, imgMsg);
+          if (props.isThread) {
+            updateChatThreadMessageUrl({
+              id: imgMsg.id,
+              to: imgMsg.to,
+              url: e.url
+            })
+          } else {
+            updateChatMessageUrl({
+              id: imgMsg.id,
+              to: imgMsg.to,
+              url: e.url
+            })
+          }
         }
       });
     };
     getTarget().then((target) => {
-      const imgMsg = getImgMsg(target);
+      imgMsg = getImgMsg(target);
+      imgMsg.localUrl = localUrl;
+      imgMsg.localId = imgMsg.id;
       // 发送图片消息
-      deliverMsg(imgMsg).then((res) => {
-        if (imgMsg.isChatThread) {
-          setThreadMessage({
-            message: { ...imgMsg, from: WebIM.conn.user },
-            fromId: target
-          });
-        } else {
-          insertChatMessage({
-            chatType,
-            fromId: target,
-            messageInfo: { list: [{ ...imgMsg, from: WebIM.conn.user }] }
-          });
-          scrollBottom();
-        }
-      });
+      deliverMsg({ msg: imgMsg, needShow: true }).then();
+      if (!props.isThread) {
+        scrollBottom();
+      }
     });
   };
 
   const beforeUploadFile = (file) => {
+    const localUrl = window.URL.createObjectURL(file);
     const getFileMsg = (target) => {
       return createMsg({
         chatType: chatType,
@@ -112,44 +128,48 @@ const Input = (props) => {
         filename: file.name,
         ext: {
           file_length: file.size,
-          file_type: file.type
+          file_type: file.type,
         },
-        onFileUploadError: function () {
+        onFileUploadError: function (e) {
           // 消息上传失败
-          console.log("onFileUploadError");
+          console.log("onFileUploadError", e);
+          //更新id status
+          updateChatMessageId({ id: fileMsg.localId, to: fileMsg.to, status: "failed" })
         },
         onFileUploadProgress: function (progress) {
           // 上传进度的回调
           console.log(progress);
         },
-        onFileUploadComplete: function () {
+        onFileUploadComplete: function (e) {
           // 消息上传成功
-          console.log("onFileUploadComplete");
+          console.log("onFileUploadComplete", e);
+          if (props.isThread) {
+            updateChatThreadMessageUrl({
+              id: fileMsg.id,
+              to: fileMsg.to,
+              url: e.url
+            })
+          } else {
+            updateChatMessageUrl({
+              id: fileMsg.id,
+              to: fileMsg.to,
+              url: e.url
+            })
+          }
         }
       });
     };
+    let fileMsg = {}
     getTarget().then((target) => {
-      const fileMsg = getFileMsg(target);
-      deliverMsg(fileMsg).then(() => {
-        if (fileMsg.isChatThread) {
-          setThreadMessage({
-            message: { ...fileMsg, from: WebIM.conn.user },
-            fromId: target
-          });
-        } else {
-          insertChatMessage({
-            chatType,
-            fromId: target,
-            messageInfo: {
-              list: [{ ...fileMsg, from: WebIM.conn.user }]
-            }
-          });
-          scrollBottom();
-        }
-      });
+      fileMsg = getFileMsg(target);
+      fileMsg.localUrl = localUrl;
+      fileMsg.localId = fileMsg.id;
+      deliverMsg({ msg: fileMsg, needShow: true }).then();
+      if (!props.isThread) {
+        scrollBottom();
+      }
     });
   };
-
   const menu = (
     <Menu
       items={[
@@ -207,6 +227,15 @@ const Input = (props) => {
         };
         WebIM.conn.createChatThread(options).then((res) => {
           const threadId = res.data?.chatThreadId;
+          setThreadInfo({
+            threadInfo: { ...currentThreadInfo, 
+              id:threadId,
+              name:options.name,
+              owner:WebIM.conn.user,
+              parentId:options.parentId,
+            },
+            clearHistory: true
+          });
           resolve(threadId);
         });
       } else if (isThread) {
@@ -237,25 +266,13 @@ const Input = (props) => {
         isChatThread: props.isThread
       });
       setText("");
-      deliverMsg(msg).then(() => {
-        if (msg.isChatThread) {
-          setThreadMessage({
-            message: { ...msg, from: WebIM.conn.user },
-            fromId: target
-          });
-        } else {
-          insertChatMessage({
-            chatType,
-            fromId: target,
-            messageInfo: {
-              list: [{ ...msg, from: WebIM.conn.user }]
-            }
-          });
-          scrollBottom();
-        }
-      });
+      msg.localId = msg.id;
+      deliverMsg({ msg, needShow: true }).then();
+      if (!props.isThread) {
+        scrollBottom()
+      }
     });
-  }, [text, props, getTarget, chatType, setThreadMessage, insertChatMessage]);
+  }, [text, props, getTarget, chatType]);
 
   //键盘enter事件
   const onKeyDown = useCallback(
@@ -362,27 +379,45 @@ const Input = (props) => {
   );
 };
 
-const mapStateToProps = ({ channel, thread }) => {
+const mapStateToProps = ({ thread }) => {
   return {
     currentThreadInfo: thread.currentThreadInfo,
-    isCreatingThread: thread.isCreatingThread
+    isCreatingThread: thread.isCreatingThread,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    insertChatMessage: (params) => {
+    updateChatMessageUrl: (params) => {
       return dispatch({
-        type: "app/insertChatMessage",
+        type: "app/updateChatMessageUrl",
         payload: params
       });
     },
-    setThreadMessage: (params) => {
+    updateChatThreadMessageUrl: (params) => {
       return dispatch({
-        type: "thread/setThreadMessage",
+        type: "thread/updateChatThreadMessageUrl",
         payload: params
       });
-    }
+    },
+    updateChatMessageId: (params) => {
+      return dispatch({
+        type: "app/updateChatMessageId",
+        payload: params
+      });
+    },
+    updateChatThreadMessageId: (params) => {
+      return dispatch({
+        type: "thread/updateChatThreadMessageId",
+        payload: params
+      });
+    },
+    setThreadInfo: (params) => {
+      return dispatch({
+        type: "thread/setThreadInfo",
+        payload: params
+      });
+    },
   };
 };
 
