@@ -9,7 +9,7 @@ import MessageLeft from "@/components/MessageLeft";
 import { CHAT_TYPE, MESSAGE_ITEM_SOURCE } from "@/consts";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
-import { getThreadHistoryMessage } from "@/utils/common"
+import { getThreadHistoryMessage, deliverMsg, deleteFailedMessage } from "@/utils/common"
 import InfiniteScroll from "react-infinite-scroll-component";
 import { recallMessage } from "@/utils/common";
 
@@ -28,7 +28,7 @@ const ThreadPanel = (props) => {
             if (!ReactDOM.findDOMNode(dom)) return;
             dom.scrollTop = 0;
         }
-        if (currentThreadInfo?.id && currentThreadInfo.source !== 'notify') {
+        if (currentThreadInfo?.id && currentThreadInfo.source !== 'notify' && threadHasHistory) {
             getThreadHistoryMessage(currentThreadInfo.id)
         }
     }, [currentThreadInfo?.id])
@@ -54,6 +54,13 @@ const ThreadPanel = (props) => {
             case "recall":
                 recallMessage(data, isThreadMessage);
                 break;
+            case "reSend":
+                deleteFailedMessage(data, true)
+                deliverMsg({ msg: data, needShow: true })
+                break;
+            case "delete":
+                deleteFailedMessage(data, true)
+                break;
             default:
                 break;
         }
@@ -75,7 +82,7 @@ const ThreadPanel = (props) => {
                         <OriginalMsg />
                         {messageList && messageList.length > 0 && messageList.map((item) => {
                             return (
-                                <div key={item.id} className={s.messageItem}>
+                                <div key={item.localId ||item.id} className={s.messageItem}>
                                     <MessageLeft message={item} isThreadMessage={true} parentId={channelId} source={MESSAGE_ITEM_SOURCE.threadChat} onHandleOperation={handleOperation} />
                                 </div>
                             );

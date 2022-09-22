@@ -170,15 +170,7 @@ export default function initListener() {
                       channel_name: name
                     }
                   });
-                  deliverMsg(msg).then(() => {
-                    dispatch.app.insertChatMessage({
-                      chatType: msg.chatType,
-                      fromId: msg.to,
-                      messageInfo: {
-                        list: [{ ...msg, from: WebIM.conn.user }]
-                      }
-                    });
-                  });
+                  deliverMsg({msg,needShow: true}).then();
                 });
             },
             onCancel: () => {
@@ -310,14 +302,7 @@ export default function initListener() {
                       server_name: name
                     }
                   });
-                  deliverMsg(msg).then(() => {
-                    dispatch.app.insertChatMessage({
-                      chatType: msg.chatType,
-                      fromId: msg.to,
-                      messageInfo: {
-                        list: [{ ...msg, from: WebIM.conn.user }]
-                      }
-                    });
+                  deliverMsg({msg,needShow: true}).then(() => {
                     WebIM.conn.getServerRole({ serverId }).then((res) => {
                       dispatch.app.setServerRole({
                         serverId,
@@ -588,8 +573,22 @@ export default function initListener() {
           list: [message]
         }
       });
+    },
+    onReceivedMessage: (message) => {
+      //更新id status
+      dispatch.app.updateChatMessageId({...message, status: "successful" })
+      dispatch.thread.updateChatThreadMessageId({...message, status: "successful" })
     }
   });
+  //网络情况
+  WebIM.conn.addEventHandler("online", {
+    onOnline: ()=>{
+      dispatch.app.updateOnline(true)
+    },
+    onOffline: ()=>{
+      dispatch.app.updateOnline(false)
+    }
+  })
   //thread事件 'create' | 'update' | 'destroy' | 'userRemove'
   WebIM.conn.addEventHandler("threadEvent", {
     onChatThreadChange: (msg) => {

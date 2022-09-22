@@ -39,7 +39,6 @@ const ChannelUserDetail = (props) => {
       }).catch(err => {
         if (err.type === 17 && JSON.parse(err.data).error_description === "User is not in server.") {
           message.warn({ content: "用户已退出社区" });
-          console.log("err=====")
         }
       });
   };

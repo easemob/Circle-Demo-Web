@@ -55,6 +55,7 @@ const thread = {
                         state.showThreadPanel = false;
                         message.warn({ content: "消息已创建子区！" });
                     } else {
+                        state.threadHasHistory = false;
                         //create 事件下发时间大部分晚于update，收到create不处理messageCount字段，防止覆盖 messageCount 字段
                         if (!state.currentThreadInfo.timestamp) {
                             //update the owner
@@ -116,14 +117,78 @@ const thread = {
             }
             return state
         },
+        //删除未发送成功的本地消息
+        deleteLocalThreadMessage(state, { id, fromId, chatType }) {
+            if (state.threadMessage.has(fromId)) {
+                let ls = [...state.threadMessage.get(fromId)];
+                const idx = ls.findIndex((item) => {
+                    return item.id === id;
+                });
+                if (idx > -1) {
+                    ls.splice(idx, 1);
+                    return {
+                        ...state,
+                        threadMessage: new Map([
+                            ...state.threadMessage,
+                            ...new Map().set(fromId, ls)
+                        ])
+                    }
+                }
+            }
+            return state
+        },
+        //本地发送的消息更新消息id为serverId
+        updateChatThreadMessageIdMid(state, { id, mid, to, status }) {
+            if (to === state.currentThreadInfo.id && state.threadMessage.has(to)) {
+                let ls = [...state.threadMessage.get(to)];
+                const idx = ls.findIndex((item) => {
+                    return item.id === id;
+                });
+                if (idx > -1) {
+                    const newMsg = { ...ls[idx], ...{ status, id: mid || id } }
+                    ls.splice(idx, 1, newMsg);
+                    return {
+                        ...state,
+                        threadMessage: new Map([
+                            ...state.threadMessage,
+                            ...new Map().set(to, ls)
+                        ])
+                    }
+                }
+            }
+            return state
+        },
+        //本地发送的附件消息url更新
+        changeChatThreadMessageUrl(state, { id, to, url }) {
+            if (to === state.currentThreadInfo.id && state.threadMessage.has(to)) {
+                let ls = [...state.threadMessage.get(to)];
+                const idx = ls.findIndex(item => item.localId && item.localId === id);
+                if (idx > -1) {
+                    const newMsg = { ...ls[idx], url }
+                    ls.splice(idx, 1, newMsg);
+                    return {
+                        ...state,
+                        threadMessage: new Map([
+                            ...state.threadMessage,
+                            ...new Map().set(to, ls)
+                        ])
+                    }
+                }
+            }
+            return state
+        },
     },
     effects: {
         setThreadPanelStatus(showThreadPanel) {
             this.updateState({ showThreadPanel: showThreadPanel });
         },
-        setThreadInfo(threadInfo) {
+        setThreadInfo({threadInfo,clearHistory}) {
             this.updateState({ currentThreadInfo: threadInfo });
-            this.updateState({ threadHasHistory: true });
+            if(!clearHistory){
+                this.updateState({ threadHasHistory: true });
+            }else{
+                this.updateState({ threadHasHistory: false });
+            }
             this.updateState({ threadCursor: "" });
         },
         setIsCreatingThread(data) {
@@ -149,7 +214,16 @@ const thread = {
         },
         setDeleteThreadEvent(deleteThreadEvent) {
             this.updateState({ deleteThreadEvent });
-        }
+        },
+        updateChatThreadMessageId({ id, mid, to, status }) {
+            this.updateChatThreadMessageIdMid({ id, mid, to, status })
+        },
+        updateChatThreadMessageUrl({ id, to, url }) {
+            this.changeChatThreadMessageUrl({ id, to, url })
+        },
+        deleteThreadFailedMessage({ id, fromId, chatType }) {
+            this.deleteLocalThreadMessage({ id, fromId, chatType });
+        },
     }
 };
 

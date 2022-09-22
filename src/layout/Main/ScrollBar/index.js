@@ -124,7 +124,7 @@ const ScrollBar = (props) => {
         type: "channel",
         to: userId
       });
-      deliverMsg(msg).then(() => {
+      deliverMsg({msg}).then(() => {
         setUnReadNumber({
           chatType: CHAT_TYPE.single,
           fromId: userId,
@@ -261,7 +261,7 @@ const ScrollBar = (props) => {
     if (deleteThreadEvent.event && deleteThreadEvent.event !== "") {
       deleteLocalThread(deleteThreadEvent.parentId, deleteThreadEvent.threadId).then(() => {
         if (threadId && threadId === deleteThreadEvent.threadId) {
-          setThreadInfo({});
+          setThreadInfo({threadInfo:{}});
           handleThreadPanel(false);
           navigate(`/main/channel/${serverId}/${channelId}`);
         }

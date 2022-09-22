@@ -6,9 +6,10 @@ import AvatarInfo from "@/components/AvatarInfo";
 import InviteModal from "@/components/InviteModal"
 import Icon from "@/components/Icon";
 import http from "@/utils/axios"
-import { getConfirmModalConf, insertServerList, getServerCover } from "@/utils/common";
+import { getConfirmModalConf, insertServerList, getServerCover, createMsg, deliverMsg } from "@/utils/common";
 import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
+import { CHAT_TYPE, ACCEPT_INVITE_TYPE } from "@/consts";
 const EnterKeyCode = 13;
 
 const ServerSquare = (props) => {
@@ -71,10 +72,23 @@ const ServerSquare = (props) => {
                         console.log("加入Server成功", res);
                         //插入数据
                         insertServerList(serverId, res.data)
-                        navigate(`/main/channel/${server_id}/${default_channel_id}`);
-                        WebIM.conn.getServerRole({ serverId }).then((res) => {
-                            setServerRole({ serverId, role: res.data.role });
+                        //发送消息
+                        let msg = createMsg({
+                            chatType: CHAT_TYPE.groupChat,
+                            type: "custom",
+                            to: default_channel_id,
+                            customEvent: ACCEPT_INVITE_TYPE.acceptInviteServer,
+                            customExts: {
+                                server_name: info.name
+                            }
                         });
+                        deliverMsg({ msg, needShow: true }).then(() => {
+                            navigate(`/main/channel/${server_id}/${default_channel_id}`);
+                            WebIM.conn.getServerRole({ serverId }).then((res) => {
+                                setServerRole({ serverId, role: res.data.role });
+                            });
+                        });
+
                     }).catch((err) => {
                         if (err.message === "User is already in server.") {
                             message.warn({ content: "已经在server了！" });

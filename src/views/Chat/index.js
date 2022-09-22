@@ -7,7 +7,7 @@ import MessageLeft from "@/components/MessageLeft";
 import Input from "@/components/Input";
 import { CHAT_TYPE, MESSAGE_ITEM_SOURCE, SCROLL_WARP_ID } from "@/consts";
 import WebIM from "@/utils/WebIM";
-import { recallMessage, getUsersInfo } from "@/utils/common";
+import { recallMessage, getUsersInfo, deliverMsg, deleteFailedMessage } from "@/utils/common";
 import { Spin } from "antd";
 import ContactDetail from "./components/ContactDetail";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -84,6 +84,13 @@ const Chat = (props) => {
           })
         }
         break;
+      case "reSend":
+        deleteFailedMessage(data, false)
+        deliverMsg({ msg: data, needShow: true })
+        break;
+      case "delete":
+        deleteFailedMessage(data, false)
+        break;
       default:
         break;
     }
@@ -108,7 +115,7 @@ const Chat = (props) => {
             >
               {messageInfo?.list?.map((item) => {
                 return (
-                  <div key={item.id}>
+                  <div key={item.localId ||item.id}>
                     <MessageLeft
                       message={item}
                       onHandleOperation={handleOperation}

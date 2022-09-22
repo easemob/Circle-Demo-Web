@@ -235,7 +235,7 @@ const ContactsOperation = (props) => {
                                 hoverContactUid={hoverContactUid}
                                 onHoverFn={handlerContactHover} />
                         )
-                    }) : emptyDom("您还没有好友")}
+                    }) : emptyDom(tab==="all"?"您还没有好友":"当前没有在线好友")}
                 </div>}
             {showAddDialog && <div className={s.addContact}>
                 <div className={s.dialog}>

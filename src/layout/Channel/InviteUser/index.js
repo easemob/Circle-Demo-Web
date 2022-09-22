@@ -74,7 +74,6 @@ const InviteUser = (props) => {
     setContactsList,
     appUserInfo,
     serverList,
-    insertChatMessage
   } = props;
   const [contactMap, setContactMap] = useState({});
 
@@ -119,15 +118,7 @@ const InviteUser = (props) => {
         }
       });
     }
-    deliverMsg(msg).then(() => {
-      insertChatMessage({
-        chatType: msg.chatType,
-        fromId: uid,
-        messageInfo: {
-          list: [{ ...msg, from: WebIM.conn.user }]
-        }
-      });
-    });
+    deliverMsg({msg,needShow: true}).then();
   };
 
   const getContacts = useCallback(() => {
@@ -252,12 +243,6 @@ const mapDispatchToProps = (dispatch) => {
         payload: params
       });
     },
-    insertChatMessage: (params) => {
-      return dispatch({
-        type: "app/insertChatMessage",
-        payload: params
-      });
-    }
   };
 };
 

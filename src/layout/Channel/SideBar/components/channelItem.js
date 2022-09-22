@@ -113,7 +113,7 @@ const ChannelItem = (props) => {
     );
     let parentMessage = findMsg ? { ...findMsg, chatThreadOverview: {} } : {};
     setIsCreatingThread(false);
-    setThreadInfo({ ...threadInfo, parentMessage });
+    setThreadInfo({threadInfo:{ ...threadInfo, parentMessage }});
     WebIM.conn
       .joinChatThread({ chatThreadId: threadInfo.id })
       .then((res) => {
