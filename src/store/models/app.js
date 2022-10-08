@@ -56,7 +56,6 @@ const App = {
       } else {
         ls = messageInfo?.list;
       }
-
       return {
         ...state,
         chatMap: {

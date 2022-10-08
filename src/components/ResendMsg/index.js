@@ -11,7 +11,7 @@ const ResendMsg = (props) => {
             <div className={s.list}>
                 <Tooltip title="重新发送" overlayClassName="toolTip">
                     <div className={s.iconItem} onClick={() => { operation("reSend") }}>
-                        <Icon name="hashtag_message" size="18px" iconClass="messageOperationIcon" />
+                        <Icon name="circle_arrow_counterclockwise-01" size="18px" iconClass="messageOperationIcon" />
                     </div>
                 </Tooltip>
                 <Tooltip title="删除" overlayClassName="toolTip" onClick={() => { operation("delete") }}>

@@ -1,9 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3514593 */
-  src: url('iconfont.woff2?t=1657676539244') format('woff2'),
-       url('iconfont.woff?t=1657676539244') format('woff'),
-       url('iconfont.ttf?t=1657676539244') format('truetype');
-  font-display:swap;     
+  src: url('iconfont.woff2?t=1663840377193') format('woff2'),
+       url('iconfont.woff?t=1663840377193') format('woff'),
+       url('iconfont.ttf?t=1663840377193') format('truetype');
 }
 
 .iconfont {
@@ -12,6 +11,14 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-circle_arrow_clockwise:before {
+  content: "\75";
+}
+
+.icon-circle_arrow_counterclockwise-01:before {
+  content: "\74";
 }
 
 .icon-arrow_down_in_box:before {
