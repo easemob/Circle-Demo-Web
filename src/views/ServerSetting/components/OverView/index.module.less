@@ -1,0 +1,290 @@
+.layout {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    background: #1F1F1F;
+    height: 100vh;
+
+    .header {
+        display: flex;
+        align-items: center;
+        height: 58px;
+
+        .icon {
+            display: inline-flex;
+            margin-left: 4px;
+            align-items: center;
+            justify-content: center;
+            height: 36px;
+            height: 36px;
+        }
+
+        .title {
+            display: inline-flex;
+            justify-content: center;
+            margin-left: 8px;
+            font-family: 'PingFang SC';
+            font-weight: 600;
+            font-size: 16px;
+            align-items: center;
+            color: #fff;
+        }
+    }
+
+    .main {
+        margin: 6px auto;
+        width: 840px;
+        height: 100vh;
+        overflow-y: auto;
+
+        .settingItem {
+            padding: 6px 8px;
+
+            .default {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                padding: 16px 18px 16px 20px;
+                background: #333;
+                border-radius: 16px;
+
+                .tagMain {
+                    display: flex;
+                    justify-content: space-between;
+                    width: 100%;
+                }
+
+                .content {
+                    display: flex;
+                    flex: 1;
+
+                    .tagPanel {
+                        display: flex;
+                        flex: 1;
+                        justify-content: space-between;
+
+                        .hasTags {
+                            margin-left: -12px;
+                            display: flex;
+                            flex: 1;
+                            flex-wrap: wrap;
+                        }
+
+                        .noTags {
+                            font-family: 'Noto Sans SC';
+                            font-size: 16px;
+                            line-height: 24px;
+                            color: #979797;
+                        }
+
+                        .operation {
+                            display: flex;
+                            align-items: flex-end;
+                            width: 44px;
+                            font-family: 'Noto Sans SC';
+                            font-weight: 500;
+                            font-size: 16px;
+                            line-height: 22px;
+                            text-align: right;
+                            color: #27AE60;
+                            cursor: pointer;
+                        }
+                    }
+
+                }
+
+                &.column {
+                    flex-direction: column;
+                    height: 300px;
+
+                    .editTag {
+                        display: flex;
+                        justify-content: space-between;
+                        height: 44px;
+
+                        .editWrap {
+                            width: 616px;
+                            background: #3D3D3D;
+                            border-radius: 12px;
+
+                            .editInput {
+                                margin-left: 16px;
+                                background: none;
+                                outline: none;
+                                border: none;
+                                width: 500px;
+                                height: 44px;
+                                line-height: 44px;
+                                font-family: 'Noto Sans SC';
+                                font-weight: 500;
+                                font-size: 16px;
+                                line-height: 24px;
+                                color: #fff;
+                                caret-color: #27AE60;
+                            }
+
+                            .editInput::-webkit-input-placeholder {
+                                color: rgba(255, 255, 255, 0.4);
+                            }
+
+                            .editInput::-moz-placeholder {
+                                color: rgba(255, 255, 255, 0.4);
+                            }
+
+                            .editInput::-ms-input-placeholder {
+                                color: rgba(255, 255, 255, 0.4);
+                            }
+
+                            .count {
+                                margin-left: 16px;
+                                font-family: 'Noto Sans SC';
+                                font-size: 16px;
+                                line-height: 24px;
+                                color: #929497;
+                            }
+
+                            .addTag {
+                                margin-left: 12px;
+                                display: inline-block;
+                                height: 24px;
+                                width: 24px;
+                                cursor: pointer;
+                            }
+                        }
+
+                        .btn {
+                            display: flex;
+                            align-items: center;
+                        }
+                    }
+                }
+            }
+
+            .serverBgCon {
+                display: flex;
+                padding: 16px;
+                height: 182px;
+                width: 100%;
+                background: #333;
+                border-radius: 16px;
+
+                .uploadCon {
+                    position: relative;
+                    height: 150px;
+                    width: 344px;
+                    border-radius: 16px;
+                    background: #7c7c7c;
+                    background-size: cover;
+                    background-position: center;
+
+                    .avaCon {
+                        position: relative;
+                        padding: 8px;
+                        margin-top: 20px;
+                        margin-left: 20px;
+                        height: 114px;
+                        width: 114px;
+                        border-radius: 100%;
+                        background: #333;
+
+                        .editAva {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            flex-direction: column;
+                            position: absolute;
+                            top: 8px;
+                            left: 8px;
+                            height: 98px;
+                            width: 98px;
+                            border-radius: 100%;
+                            background: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
+                            cursor: pointer;
+
+                            .editText {
+                                font-family: 'Noto Sans SC';
+                                font-weight: 500;
+                                font-size: 12px;
+                                line-height: 24px;
+                                color: #fff;
+                            }
+                        }
+                    }
+
+                    .editCover {
+                        position: absolute;
+                        right: 12px;
+                        top: 12px;
+                        padding-left: 12px;
+                        width: 106px;
+                        height: 32px;
+                        line-height: 32px;
+                        border-radius: 16px;
+                        background: rgba(0, 0, 0, .4);
+                        cursor: pointer;
+
+                        .editText {
+                            margin-left: 4px;
+                            font-family: 'Noto Sans SC';
+                            font-weight: 500;
+                            font-size: 14px;
+                            line-height: 24px;
+                            color: #fff;
+                        }
+                    }
+                }
+
+                .desc {
+                    margin-left: 24px;
+                    margin-top: 102px;
+                    height: 48px;
+                    color: #979797;
+                    font-family: 'Noto Sans SC';
+                    font-size: 16px;
+                    line-height: 24px;
+                }
+            }
+        }
+    }
+
+    .tagItem {
+        padding: 6px 8px 6px 0;
+        margin-left: 12px;
+        margin-bottom: 12px;
+        display: flex;
+        height: 28px;
+        background: #3d3d3d;
+        border-radius: 4px;
+
+        .iconCon {
+            display: inline-flex;
+            width: 20px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .name {
+            display: inline-block;
+            font-family: 'Noto Sans SC';
+            font-weight: 500;
+            font-size: 14px;
+            height: 14px;
+            line-height: 14px;
+        }
+
+        &.isEditTag {
+            padding-right: 0;
+            cursor: pointer;
+
+            &:hover {
+                background: rgba(39, 174, 96, 0.4)
+            }
+        }
+    }
+
+    :global {
+        .ant-upload {
+            color: #fff;
+        }
+    }
+}

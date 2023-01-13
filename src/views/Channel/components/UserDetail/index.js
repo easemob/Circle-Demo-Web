@@ -38,7 +38,7 @@ const ChannelUserDetail = (props) => {
         setMuteId([...muteId, userId]);
       }).catch(err => {
         if (err.type === 17 && JSON.parse(err.data).error_description === "User is not in server.") {
-          message.warn({ content: "用户已退出社区" });
+          message.warning({ content: "用户已退出社区" });
         }
       });
   };
@@ -53,7 +53,7 @@ const ChannelUserDetail = (props) => {
       setMuteId(ids);
     }).catch(err => {
       if (err.type === 17 && JSON.parse(err.data).error_description === "User is not in server.") {
-        message.warn({ content: "用户已退出社区" });
+        message.warning({ content: "用户已退出社区" });
       }
     });
   };
@@ -65,7 +65,7 @@ const ChannelUserDetail = (props) => {
       userId
     }).catch(err => {
       if (err.type === 17 && JSON.parse(err.data).error_description === "User is not in server.") {
-        message.warn({ content: "用户已退出社区" });
+        message.warning({ content: "用户已退出社区" });
       }
     });
   };

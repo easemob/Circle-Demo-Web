@@ -168,7 +168,7 @@ const ServerForm = forwardRef((props, ref) => {
       </Form.Item>
       <Form.Item label={isEdit ? "社区简介" : ""} name="description">
         <Input.TextArea
-          rows={5}
+          rows={4}
           placeholder="社区简介"
           maxLength={120}
           showCount={{

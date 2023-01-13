@@ -30,7 +30,7 @@ const UserInfo = (props) => {
             setUserInfo(Object.assign({ ...userInfo }, res.data));
             setAppUserInfo({ ...appUserInfo, [userInfo.username]: { ...appUserInfo[userInfo.username], ...res.data } });
         }).catch(e => {
-            message.warn({ content: "昵称修改失败，请重试！" });
+            message.warning({ content: "昵称修改失败，请重试！" });
         })
         setNameValue("");
         setIsModalVisible(false);
@@ -63,7 +63,7 @@ const UserInfo = (props) => {
                 </div>
             </div>
 
-            <Modal className={`userInfoModal`} destroyOnClose={true} title="更改昵称" visible={isModalVisible} onCancel={handleCancel} footer={null} closeIcon={<CloseIcon />}>
+            <Modal width={546} className={`userInfoModal`} destroyOnClose={true} title="更改昵称" open={isModalVisible} onCancel={handleCancel} footer={null} closeIcon={<CloseIcon />}>
                 <div className={s.updateNickname}>
                     <span className={s.title}>昵称</span>
                     <div className={s.updateCon}>

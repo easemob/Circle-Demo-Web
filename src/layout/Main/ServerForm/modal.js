@@ -45,9 +45,9 @@ const Server = (props) => {
 
   return (
     <Modal
-      width={544}
+      width={546}
       title={isEdit ? "编辑社区" : "新建社区"}
-      visible={visible}
+      open={visible}
       centered
       destroyOnClose={true}
       footer={<CreateServer isEdit={isEdit} onClick={onOk} hasEdit={hasEdit} />}

@@ -6,6 +6,7 @@
   background: #181818;
 
   .bgHover {
+    position: relative;
     display: flex;
     margin-top: 4px;
     padding-right: 4px;
@@ -16,6 +17,40 @@
     background: none;
     border-radius: 0 28px 28px 0;
     cursor: pointer;
+    .isInRoom{
+      position: absolute;
+      display: flex;
+      top: 4px;
+      left: 12px;
+      height: 48px;
+      width: 48px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 100%;
+      background: rgba(0, 0, 0, .3);
+      .isConnected{
+        height: 32px;
+        width: 32px;
+        background: url("../../../assets/images/connected.png") center;
+        background-size: cover;
+      }
+    }
+    .unReadNum {
+      display: inline-block;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      padding: 0 4px;
+      text-align: center;
+      height: 18px;
+      line-height: 18px;
+      font-family: 'PingFang HK';
+      font-size: 12px;
+      line-height: 14px;
+      background: #FF1477;
+      border: 2px solid #181818;
+      border-radius: 9px;
+    }
 
     &:hover {
       background: #4d4d4d;

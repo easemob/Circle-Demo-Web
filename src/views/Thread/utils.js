@@ -22,7 +22,7 @@ const THREAD_OPERATION = {
         iconName: "trash"
     },
 }
-const getOperationEl = (opList, cb) => {
+const getOperationEl = (opList) => {
     const itemList = []
     opList.forEach((item) => {
         itemList.push({
@@ -35,9 +35,7 @@ const getOperationEl = (opList, cb) => {
             ),
         })
     })
-    return (
-        <Menu items={itemList} onClick={cb} />
-    )
+    return itemList
 }
 
 export { THREAD_OPERATION, getOperationEl }

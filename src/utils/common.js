@@ -1,11 +1,13 @@
 import WebIM from "@/utils/WebIM";
 import moment from "moment";
 import store from "../store";
-import { ERROR_CODE } from "@/consts";
+import { ERROR_CODE, USER_ROLE } from "@/consts";
 import { CHAT_TYPE, SERVER_COVER_MAP } from "@/consts";
 import Icon from "@/components/Icon";
 import { message as messageTip } from "antd";
 import { emojiMap } from "@/consts/emoji";
+import { startBasicCall, endBasicCall } from "@/utils/basicVoiceCall"
+import http from "@/utils/axios"
 
 const { dispatch, getState } = store;
 
@@ -141,7 +143,7 @@ const getConfirmModalConf = ({
   okText = "确认",
   cancelText = "取消",
   onOk = () => { },
-  onCancel = () => { }
+  onCancel = () => { },
 }) => {
   return {
     className: "confirmModalWrap",
@@ -150,6 +152,7 @@ const getConfirmModalConf = ({
     okText,
     closable: true,
     cancelText,
+    autoFocusButton: null,
     closeIcon: <Icon name="xmark" color="#c7c7c7" size="16px" />,
     cancelButtonProps: {
       className: "circleBtnGray"
@@ -386,8 +389,10 @@ const insertServerList = (serverId, serverDetail) => {
   } else {
     addServer(serverDetail);
   }
+  //初始化当前社区的消息未读数
+  initServerIdUnread(serverId)
 };
-//加入、同意加入channel后列表插入数据
+//加入、同意加入channel后列表插入channel数据
 const insertChannelList = (serverId, channelId, channelDetail) => {
   checkIsHasServerInfo(serverId).then(() => {
     if (!channelDetail) {
@@ -398,6 +403,12 @@ const insertChannelList = (serverId, channelId, channelDetail) => {
       setChannelList(channelDetail);
     }
   });
+  //初始化channel未读数据
+  dispatch.app.setServerChannelMap({
+    serverId,
+    channelId,
+    unReadNum: 0,
+  })
 };
 const checkIsHasServerInfo = (serverId) => {
   return new Promise((resolve) => {
@@ -416,24 +427,23 @@ const checkIsHasServerInfo = (serverId) => {
   });
 };
 const setChannelList = (data) => {
-  const { serverId, isPublic } = data;
-  if (getState().server.channelMap.has(serverId)) {
-    const channelInfo = getState().server.channelMap.get(serverId);
+  const { channelCategoryId, isPublic } = data;
+  if (getState().server.channelMap.has(channelCategoryId)) {
+    const channelInfo = getState().server.channelMap.get(channelCategoryId);
     if (!channelInfo) return;
     if (isPublic) {
       const publicChannel = [...channelInfo?.public] || [];
       const channelList = filterData(publicChannel, [data], "channelId");
       if (channelList.length > 0) {
         publicChannel.splice(1, 0, data);
-        updateChannelList(serverId, channelInfo, publicChannel, "public");
+        updateChannelList(channelCategoryId, channelInfo, publicChannel, "public");
       }
     } else {
       const privateChannel = [...channelInfo?.private] || [];
       privateChannel.unshift(data);
-      updateChannelList(serverId, channelInfo, privateChannel, "private");
+      updateChannelList(channelCategoryId, channelInfo, privateChannel, "private");
     }
-  } else {
-  }
+  } else { }
 };
 
 //收到通知或者编辑server成功后更新server信息
@@ -540,7 +550,7 @@ const deleteLocalThread = (parentId, threadId) => {
 };
 
 //更新channel信息
-const updateLocalChannelDetail = (type, serverId, data) => {
+const updateLocalChannelDetail = (type, serverId, channelCategoryId, data) => {
   //type
   //收到channel更新的通知 "notify"
   //本账号编辑channel "edit"
@@ -552,8 +562,8 @@ const updateLocalChannelDetail = (type, serverId, data) => {
       ...data
     });
   }
-  if (getState().server.channelMap.has(serverId)) {
-    const channelInfo = getState().server.channelMap.get(serverId);
+  if (getState().server.channelMap.has(channelCategoryId)) {
+    const channelInfo = getState().server.channelMap.get(channelCategoryId);
     const publicChannel = [...channelInfo?.public] || [];
     const findIndex1 = publicChannel.findIndex((item) => item.channelId === id);
     if (findIndex1 > -1) {
@@ -562,7 +572,7 @@ const updateLocalChannelDetail = (type, serverId, data) => {
         ...data
       };
       publicChannel.splice(findIndex1, 1, newChannelInfo);
-      updateChannelList(serverId, channelInfo, publicChannel, "public");
+      updateChannelList(channelCategoryId, channelInfo, publicChannel, "public");
     } else {
       const privateChannel = [...channelInfo?.private] || [];
       const findIndex2 = privateChannel.findIndex(
@@ -574,46 +584,81 @@ const updateLocalChannelDetail = (type, serverId, data) => {
           ...data
         };
         privateChannel.splice(findIndex2, 1, newChannelInfo);
-        updateChannelList(serverId, channelInfo, privateChannel, "private");
+        updateChannelList(channelCategoryId, channelInfo, privateChannel, "private");
       }
     }
   }
 };
 //更新channel列表
 const updateChannelList = (
-  serverId,
+  channelCategoryId,
   channelInfo,
   channelList,
   type = "public"
 ) => {
   dispatch.server.setChannelMap({
-    serverId,
+    channelCategoryId,
     channelInfo: { ...channelInfo, [type]: channelList }
   });
 };
+/**
+ * 
+ * @param {*} serverId 操作频道的serverId
+ * @param {*} channelCategoryId 操作频道的分组ID
+ * @param {*} channelId 操作频道的ID
+ * @param {*} isDestroy 是否要删除数据，删除频道需要删除数据；所有成员离开公开频道不需要，user离开私有频道需要删除数据，owner moderator离开私有频道不需要删除数据
+ * @param {*} isTransfer 是否移动频道，如果是移动频道则都需要将当前数据移除
+ */
 //删除本地频道
-const deleteLocalChannel = (serverId, channelId, isDestroy = false) => {
-  if (getState().server.channelMap.has(serverId)) {
-    const channelInfo = getState().server.channelMap.get(serverId);
+const deleteLocalChannel = ({ serverId, channelCategoryId, channelId, isDestroy = false, isTransfer = false }) => {
+  if (getState().server.channelMap.has(channelCategoryId)) {
+    const channelInfo = getState().server.channelMap.get(channelCategoryId);
     const publicChannel = [...channelInfo?.public] || [];
     const findIndex1 = publicChannel.findIndex(
       (item) => item.channelId === channelId
     );
+    //移动频道
+    if (isTransfer) {
+      if (findIndex1 > -1) {
+        //公开频道删除
+        publicChannel.splice(findIndex1, 1);
+        dispatch.channel.deleteChannelThreadMap({ channelId });
+        updateChannelList(channelCategoryId, channelInfo, publicChannel, "public");
+      } else {
+        const privateChannel = [...channelInfo?.private] || [];
+        const findIndex2 = privateChannel.findIndex(
+          (item) => item.channelId === channelId
+        );
+        if (findIndex2 > -1) {
+          privateChannel.splice(findIndex2, 1);
+          dispatch.channel.deleteChannelThreadMap({ channelId });
+          updateChannelList(channelCategoryId, channelInfo, privateChannel, "private");
+        }
+      }
+      return
+    }
+    //删除或退出频道
+    //清空channel未读数据
+    dispatch.app.setServerChannelMap({
+      serverId,
+      channelId,
+      unReadNum: 0,
+    })
     if (findIndex1 > -1 && isDestroy) {
       //公开频道删除
       publicChannel.splice(findIndex1, 1);
       dispatch.channel.deleteChannelThreadMap({ channelId });
-      updateChannelList(serverId, channelInfo, publicChannel, "public");
+      updateChannelList(channelCategoryId, channelInfo, publicChannel, "public");
     } else {
       const privateChannel = [...channelInfo?.private] || [];
       const findIndex2 = privateChannel.findIndex(
         (item) => item.channelId === channelId
       );
-      let role = 'user';
-      if (getState().app.serverRole.has(serverId)) {
-        role = getState().app.serverRole.get[serverId]
+      let role = USER_ROLE.user;
+      if (Object.prototype.hasOwnProperty.call(getState().app.serverRole, serverId)) {
+        role = getState().app.serverRole[serverId]
       }
-      if (findIndex2 > -1 && role === 'user') {
+      if ((findIndex2 > -1 && role === USER_ROLE.user) || (findIndex2 > -1 && isDestroy && role === USER_ROLE.owner)) {
         privateChannel.splice(findIndex2, 1);
         dispatch.channel.deleteChannelThreadMap({ channelId });
         updateChannelList(serverId, channelInfo, privateChannel, "private");
@@ -784,6 +829,206 @@ const deleteReactions = ({ messageId, reaction }) => {
     });
 };
 
+//获取默认分组信息
+const getDefaultCategoryInfo = (categoryInfo) => {
+  if (!categoryInfo) return
+  return categoryInfo?.list?.find(item => item.defaultChannelCategory === 1) || {};
+}
+const updateCategoryMap = ({ type, categoryInfo }) => {
+  const { serverId, id } = categoryInfo
+  const ls = getState().server.categoryMap.get(serverId)?.list || [];
+  switch (type) {
+    case "add":
+      ls.push(categoryInfo)
+      break;
+    case "update":
+      const fd = ls.findIndex(item => item.id === id)
+      if (fd > -1) {
+        const newData = { ...ls[fd], ...categoryInfo }
+        ls.splice(fd, 1, newData)
+      }
+      break;
+    case "delete":
+      const findIndex = ls.findIndex(item => item.id === id)
+      if (findIndex > -1) {
+        ls.splice(findIndex, 1);
+        //将删除的分组下的频道移动到默认分组下
+        const channelInfo = getState().server.channelMap.get(categoryInfo.id);
+        const list = channelInfo
+          ? [...channelInfo?.public, ...channelInfo?.private]
+          : [];
+        const categoryInfoList = getState().server.categoryMap.get(categoryInfo.serverId);
+        list.forEach(item => {
+          item.channelCategoryId = getDefaultCategoryInfo(categoryInfoList).id
+          insertChannelList(item.serverId, item.channelId, item);
+        })
+      }
+      break;
+    default:
+      break;
+  }
+  dispatch.server.setCategoryMap({
+    serverId,
+    categoryInfo: {
+      ...getState().server.categoryMap.get(serverId),
+      list: ls
+    }
+  });
+}
+//根据分组ID、channelId,查询本地channelInfo
+const getChannelInfo = ({ categoryId, channelId }) => {
+  const channelData = getState().server.channelMap.get(categoryId);
+  const channelList = channelData
+    ? [...channelData?.public, ...channelData?.private]
+    : [];
+  return channelList.find(item => item.id === channelId)
+}
+//加入 rtcRoom
+const joinRtcRoom = (channelInfo) => {
+  const { channelId } = channelInfo
+  return new Promise((resolve) => {
+
+    WebIM.conn.getChatRoomAttributes({
+      chatRoomId: channelId
+    }).then(res => {
+      //记录当前加入的语聊房频道的kv属性
+      const rtcUserInfo = {};
+      getUsersInfo(Object.keys(res.data))
+      Object.keys(res.data).forEach(item => {
+        rtcUserInfo[item] = { agoraUid: res.data[item] }
+      })
+      dispatch.rtc.setRtcUserInfo(rtcUserInfo);
+      http("get", `http://a1.easemob.com/inside/token/rtc/channel/${channelId}`).then(res => {
+        startBasicCall({ accessToken: res.accessToken, channel: channelId, agoraUid: res.agoraUid }).then(() => {
+          // startBasicCall({ accessToken: "007eJxTYMhaI3D/eM2hJdcnpCyy3M8SelOaIf2Hsekzjjovu7rK/GwFhqREC1NTAxMzI0NjA5O0JAtLE3NLA3MDixQg19zSJO2K39bkhkBGhhPJxZyMDIwMLEAM4jOBSWYwyQIlkw2NjBkZDABJXiAQ", channel: "c123", agoraUid: null}).then(()=>{
+          //记录当前加入的语聊房频道
+          dispatch.channel.setCurRtcChannelInfo(channelInfo);
+          updateRtcMember({
+            type: "add",
+            channelId,
+            userId: getState().app.userInfo.username,
+          })
+          //设置聊天室kv属性
+          WebIM.conn.setChatRoomAttribute({
+            chatRoomId: channelId,
+            attributeKey: getState().app.userInfo.username,
+            attributeValue: res.agoraUid,
+            autoDelete: true,
+            isForced: false,
+          }).then(() => {
+            dispatch.rtc.setRtcUserInfo({
+              ...getState().rtc.rtcUserInfo,
+              [getState().app.userInfo.username]: {
+                agoraUid: res.agoraUid,
+              }
+            });
+            resolve()
+          })
+        })
+      })
+    })
+  });
+}
+
+//退出语聊房 a.退出circle channel;b.退出rtcRoom
+const leaveRtcChannel = ({ needLeave, serverId, channelId }) => {
+  return new Promise((resolve, reject) => {
+    if (needLeave) {
+      //退出rtcRoom
+      endBasicCall().then(() => {
+        //更新成员
+        updateRtcMember({
+          type: "delete",
+          channelId,
+          userId: getState().app.userInfo.username,
+        })
+        //清空当前加入的语聊房频道信息
+        dispatch.channel.setCurRtcChannelInfo({});
+        //移除聊天室kv
+        WebIM.conn.removeChatRoomAttribute({
+          chatRoomId: channelId,
+          attributeKey: getState().app.userInfo.username,
+          isForced: false,
+        }).then(() => {
+          //退出当前频道
+          WebIM.conn.leaveChannel({ serverId, channelId }).then(res => {
+            resolve();
+          })
+        })
+      }).catch(() => {
+        reject();
+      })
+    } else {
+      //用户被踢后不在聊天室，无法设置聊天室属性
+      //退出rtcRoom
+      endBasicCall().then(() => {
+        //更新成员
+        updateRtcMember({
+          type: "delete",
+          channelId,
+          userId: getState().app.userInfo.username,
+        })
+        //清空当前加入的语聊房频道信息
+        dispatch.channel.setCurRtcChannelInfo({});
+        //移除聊天室kv
+        resolve();
+      })
+    }
+  });
+}
+//语聊房成员更新
+const updateRtcMember = ({ type, channelId, userId }) => {
+  if (type === "add") {
+    let channelUserMap = getState().channel.channelUserMap.get(channelId) || {};
+    let list = channelUserMap?.list || [];
+    const findIndex = list.findIndex((item) => userId === item.uid);
+    if (findIndex < 0) {
+      list.push({ uid: userId });
+      dispatch.channel.setChannelUserMap({
+        id: channelId,
+        userListInfo: {
+          ...channelUserMap,
+          list
+        }
+      });
+    }
+  } else if (type === "delete") {
+    if (getState().channel.channelUserMap.get(channelId)) {
+      let channelUserMap = getState().channel.channelUserMap.get(channelId);
+      let list = channelUserMap?.list || [];
+      const findIndex = list.findIndex((item) => userId === item.uid);
+      if (findIndex > -1) {
+        list.splice(findIndex, 1);
+        dispatch.channel.setChannelUserMap({
+          id: channelId,
+          userListInfo: {
+            ...channelUserMap,
+            list
+          }
+        });
+      }
+    }
+  }
+}
+//初始化社区所有channel的未读数
+const initServerIdUnread = (id, cursor = "") => {
+  const { apiUrl, orgName, appName } = WebIM.conn;
+  http("get", `${apiUrl}/${orgName}/${appName}/circle/channel/user/joined/list?userId=${getState().app.userInfo.username}&serverId=${id}&limit=100&cursor=${cursor}`).then((res) => {
+    const { channelIds, cursor } = res;
+    channelIds.forEach(item => {
+      dispatch.app.setServerChannelMap({
+        serverId: id,
+        channelId: item,
+        unReadNum: 0,
+      })
+    })
+    if (cursor) {
+      initServerIdUnread(id, cursor);
+    }
+  })
+}
+
+
 export {
   getConfirmModalConf,
   getMessageFromId,
@@ -815,5 +1060,12 @@ export {
   deleteReactions,
   getEmojiHtml,
   formatterInputCount,
-  convertToMessage
+  convertToMessage,
+  getDefaultCategoryInfo,
+  updateCategoryMap,
+  getChannelInfo,
+  joinRtcRoom,
+  leaveRtcChannel,
+  updateRtcMember,
+  initServerIdUnread,
 };

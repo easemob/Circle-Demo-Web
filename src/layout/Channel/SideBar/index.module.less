@@ -1,13 +1,36 @@
 .sideBarWrap {
+  display: flex;
+  flex-direction: column;
+  position: relative;
   width: 280px;
   height: 100vh;
   background: #292929;
+  padding-bottom: 30px;
+
+  &.hasBottom {
+    padding-bottom: 146px;
+
+    .rtcWrap {
+      position: absolute;
+      bottom: 0;
+    }
+
+    .channelContentWrap {
+      height: calc(100vh - 346px);
+    }
+  }
 
   :global {
+    .ant-collapse-extra {
+      margin-right: 8px;
+    }
+
     .ant-collapse-expand-icon {
       display: flex;
       align-items: center;
+      margin-left: 8px;
       margin-right: 4px;
+      padding-inline-end: 0;
     }
 
     .ant-collapse-content {
@@ -36,7 +59,7 @@
   .serverCover {
     position: relative;
     width: 280px;
-    height: 120px;
+    height: 122px;
     border-radius: 1px;
     padding: 12px;
     background-image: url("https://p1.meituan.net/dpplatform/50dbe2fec3eca335c35fe5e128609bb93350245.jpg");
@@ -90,9 +113,9 @@
     display: flex;
     flex-flow: row wrap;
     position: absolute;
-    height: 16px;
+    height: 18px;
     bottom: 12px;
-    overflow: hidden;
+    width: 256px;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -100,13 +123,16 @@
   .channelWrap {
     margin-top: 7px;
 
-    :global {
-      .ant-collapse-header {
-        padding: 0 12px;
-        display: flex;
-        align-items: center;
-      }
+    .loading {
+      margin-left: 30px;
+      font-family: 'Noto Sans SC';
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 20px;
+      color: #767676;
+    }
 
+    :global {
       .ant-collapse-content-box {
         padding: 0;
       }
@@ -121,14 +147,34 @@
       }
     }
 
-    .customCollapse .customCollapsePanel {
+    .customCollapse .customCollapsePanel,
+    .customCollapse .default {
       border: 0;
       border-radius: 0;
       background: #292929;
 
       :global {
         .ant-collapse-header {
-          line-height: 20px;
+          height: 36px;
+          line-height: 36px;
+          border-radius: 8px;
+          display: flex;
+          width: 272px;
+          margin-left: 4px;
+          align-items: center;
+          padding: 0;
+
+          &:focus {
+            background: #333333;
+          }
+
+          .ant-collapse-header-text {
+            color: rgba(255, 255, 255, .74);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            word-break: break-all;
+          }
         }
       }
     }
@@ -155,7 +201,7 @@
   }
 
   .serverContentWrap {
-    padding: 8px 12px;
+    padding: 8px 12px 0 12px;
     color: #fff;
 
     .desc {
@@ -176,28 +222,53 @@
   }
 
   .textHeader {
+    width: 100%;
     font-size: 12px;
     line-height: 20px;
     color: #c7c7c7;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
   }
 
   .channelItemWrap {
     margin-top: 6px;
 
+    &:hover {
+      .countCon>.seatCount {
+        color: #B3B3B3;
+      }
+
+      .countCon>.hasBg {
+        color: #181818;
+      }
+    }
+
     :global {
+      .ant-collapse.ant-collapse-icon-position-start.ant-collapse-borderless {
+        .ant-collapse-header {
+          padding-left: 38px;
+        }
+
+        .ant-collapse-content-box {
+          padding-left: 38px;
+        }
+      }
+
       .ant-collapse-header-text {
         font-size: 12px;
         color: #767676;
       }
 
+      .ant-collapse-content-box {
+        text-align: left;
+        padding-left: 10px;
+      }
+
       .ant-collapse-header {
         padding: 0 20px;
         margin-top: 4px;
-      }
-
-      .ant-collapse-content-box {
-        text-align: left;
-        padding-left: 46px;
       }
     }
 
@@ -238,35 +309,16 @@
         white-space: nowrap;
         word-break: break-all;
       }
-    }
 
-    .public {
-      &::before {
-        content: "";
-        display: inline-block;
-        width: 24px;
-        height: 24px;
-        background-image: url("../../../assets/images/hashtag_2x.png");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-        border-radius: 50%;
+      .iconBg {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         margin-right: 8px;
-      }
-    }
-
-    .private {
-      &::before {
-        content: "";
-        display: inline-block;
-        width: 24px;
         height: 24px;
-        background-image: url("../../../assets/images/privateHash_2x.png");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-        border-radius: 50%;
-        margin-right: 8px;
+        width: 24px;
+        background: #1f1f1f;
+        border-radius: 100%;
       }
     }
 
@@ -283,6 +335,29 @@
     .unReadWrap {
       display: flex;
       align-items: center;
+    }
+
+    .countCon {
+      display: flex;
+      align-items: center;
+
+      .seatCount {
+        font-family: 'Roboto';
+        font-size: 12px;
+        line-height: 16px;
+        text-align: right;
+        color: #767676;
+        opacity: 0.74;
+      }
+
+      .hasBg {
+        display: inline-block;
+        padding: 0 4px;
+        border-radius: 8px;
+        height: 16px;
+        background: #14FF72;
+        color: #181818;
+      }
     }
 
     .threadItem {
@@ -342,7 +417,7 @@
 }
 
 .channelContentWrap {
-  height: calc(100vh - 200px);
+  height: 100vh;
   overflow: scroll;
 }
 
@@ -354,27 +429,8 @@
 
 .fold {
   display: inline-block;
-  transform: rotate(-90deg);
+  transform: rotate(-180deg);
   transition: transform 0.3s;
-}
-
-.tagItem {
-  display: flex;
-  align-items: center;
-  font-size: 12px;
-  color: #ccc;
-  margin-right: 11px;
-  line-height: 16px;
-  cursor: pointer;
-
-  &::before {
-    content: "";
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    background: url("../../../assets/images/tag.png");
-    background-size: 100%;
-  }
 }
 
 .expandIcon {
@@ -382,4 +438,8 @@
   cursor: pointer;
   color: #c7c7c7;
   margin-left: 12px;
+}
+
+.plusIcon {
+  cursor: pointer;
 }

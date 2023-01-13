@@ -1,7 +1,7 @@
 import React, { useRef, useState, memo, useEffect, useCallback } from "react";
 import ContentEditable from "react-contenteditable";
 import s from "./index.module.less";
-import { Dropdown, Menu, Upload, message } from "antd";
+import { Dropdown, Upload, message } from "antd";
 import {
   scrollToBottom,
   convertToMessage,
@@ -170,9 +170,9 @@ const Input = (props) => {
       }
     });
   };
-  const menu = (
-    <Menu
-      items={[
+  const menu = () => {
+    return (
+      [
         {
           key: "img",
           label: (
@@ -207,9 +207,14 @@ const Input = (props) => {
             </Upload>
           )
         }
-      ]}
-    />
-  );
+      ]
+    )
+  }
+  // const menu = (
+  //   <Menu
+  //     items={}
+  //   />
+  // );
 
   //创建thread，返回target
   const getTarget = useCallback(() => {
@@ -217,7 +222,7 @@ const Input = (props) => {
       if (isCreatingThread && isThread) {
         //创建thread
         if (!threadName) {
-          message.warn({ content: "子区名称不能为空！" });
+          message.warning({ content: "子区名称不能为空！" });
           return;
         }
         const options = {
@@ -228,11 +233,12 @@ const Input = (props) => {
         WebIM.conn.createChatThread(options).then((res) => {
           const threadId = res.data?.chatThreadId;
           setThreadInfo({
-            threadInfo: { ...currentThreadInfo, 
-              id:threadId,
-              name:options.name,
-              owner:WebIM.conn.user,
-              parentId:options.parentId,
+            threadInfo: {
+              ...currentThreadInfo,
+              id: threadId,
+              name: options.name,
+              owner: WebIM.conn.user,
+              parentId: options.parentId,
             },
             clearHistory: true
           });
@@ -364,7 +370,7 @@ const Input = (props) => {
       <div className={s.optWrap}>
         <EmojiPicker onEmojiSelect={onEmojiSelect} emojiIcon={"emoji"} disabled={threadName === "" && isCreatingThread} />
         <Dropdown
-          overlay={menu}
+          menu={{ items: menu() }}
           placement="top"
           overlayClassName="circleDropDown"
           trigger="click"

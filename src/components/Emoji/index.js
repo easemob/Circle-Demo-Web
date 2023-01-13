@@ -104,7 +104,7 @@ const EmojiPicker = (props) => {
             <EmojiPanel showFrequently={showFrequently} onSelect={onSelect} />
           }
           trigger="click"
-          visible={emojiVisible && !disabled}
+          open={emojiVisible && !disabled}
           destroyTooltipOnHide={{ keepParent: false }}
           overlayClassName={s.emojiPopover}
           placement="bottomRight"

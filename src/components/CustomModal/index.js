@@ -12,7 +12,7 @@ const CustomModal = (props) => {
         style={{ top: 0 }}
         getContainer={false}
         title={title}
-        visible={visible}
+        open={visible}
         mask={false}
         footer={false}
         destroyOnClose={true}

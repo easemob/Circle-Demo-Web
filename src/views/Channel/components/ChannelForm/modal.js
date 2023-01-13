@@ -32,9 +32,9 @@ const Channel = (props) => {
 
   return (
     <Modal
-      width={544}
+      width={546}
       title={isEdit ? "编辑频道" : "创建频道"}
-      visible={visible}
+      open={visible}
       destroyOnClose={true}
       closeIcon={<Icon name="xmark" color="#c7c7c7" size="16px" />}
       footer={<CreateChannel onClick={onOK} isEdit={isEdit} />}

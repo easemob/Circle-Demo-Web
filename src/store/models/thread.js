@@ -42,7 +42,7 @@ const thread = {
                 //关闭面板
                 state.showThreadPanel = false;
                 const warnText = operation === 'userRemove' ? "您被移除当前子区！" : "子区被销毁！";
-                message.warn({ content: warnText });
+                message.warning({ content: warnText });
                 return state;
             } else if (state.currentThreadInfo.id === id || state.currentThreadInfo.parentMessage?.id === messageId) {
                 //第二种情况：当前子区更新，或者创建thread中收到其他用户创建完成的消息，需要更新当前thread
@@ -53,7 +53,7 @@ const thread = {
                         state.currentThreadInfo = {};
                         //关闭面板
                         state.showThreadPanel = false;
-                        message.warn({ content: "消息已创建子区！" });
+                        message.warning({ content: "消息已创建子区！" });
                     } else {
                         state.threadHasHistory = false;
                         //create 事件下发时间大部分晚于update，收到create不处理messageCount字段，防止覆盖 messageCount 字段
@@ -182,11 +182,11 @@ const thread = {
         setThreadPanelStatus(showThreadPanel) {
             this.updateState({ showThreadPanel: showThreadPanel });
         },
-        setThreadInfo({threadInfo,clearHistory}) {
+        setThreadInfo({ threadInfo, clearHistory }) {
             this.updateState({ currentThreadInfo: threadInfo });
-            if(!clearHistory){
+            if (!clearHistory) {
                 this.updateState({ threadHasHistory: true });
-            }else{
+            } else {
                 this.updateState({ threadHasHistory: false });
             }
             this.updateState({ threadCursor: "" });

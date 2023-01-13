@@ -73,6 +73,7 @@ const CHANNEL_EVENT = {
 };
 
 const MULTI_DEVICE_EVENT = {
+  //server
   serverCreate: "serverCreate",
   serverDestroy: "serverDestroy",
   serverUpdate: "serverUpdate",
@@ -84,7 +85,7 @@ const MULTI_DEVICE_EVENT = {
   serverAcceptInvite: "serverAcceptInvite",
   serverRefuseInvite: "serverRefuseInvite",
   serverSetRole: "serverSetRole",
-
+  //channel
   channelCreate: "channelCreate",
   channelDestroy: "channelDestroy",
   channelUpdate: "channelUpdate",
@@ -96,11 +97,16 @@ const MULTI_DEVICE_EVENT = {
   channelUnMuteMember: "channelUnMuteMember",
   channelAcceptInvite: "channelAcceptInvite",
   channelRejectInvite: "channelRejectInvite",
-
+  //thread
   chatThreadCreate: "chatThreadCreate",
   chatThreadDestroy: "chatThreadDestroy",
   chatThreadJoin: "chatThreadJoin",
-  chatThreadLeave: "chatThreadLeave"
+  chatThreadLeave: "chatThreadLeave",
+  //category
+  categoryCreate: "categoryCreate",
+  categoryUpdate: "categoryUpdate",
+  categoryDestroy: "categoryDestroy",
+  categoryTransferChannel: "categoryTransferChannel",
 };
 
 const CHAT = {

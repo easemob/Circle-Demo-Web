@@ -1,11 +1,23 @@
 .privateWrap {
+  position: relative;
   display: flex;
   justify-content: space-between;
-
-  :global {
-    .ant-switch-checked {
-      background: #27ae60;
-    }
+  align-items: center;
+  margin-left: -16px;
+  padding: 18px 16px;
+  height: 57px;
+  width: 516px;
+  background: #333;
+  border-radius: 16px;
+  .tips{
+    position: absolute;
+    right: 12px;
+    top: 67px;
+    font-family: 'PingFang SC';
+    font-size: 12px;
+    line-height: 20px;
+    color: #747577;
+    opacity: 0.74;
   }
 }
 
@@ -34,13 +46,16 @@
       height: 54px;
       width: 38px;
     }
-    .ant-form-item-control-input{
+
+    .ant-form-item-control-input {
       line-height: 20px;
       min-height: 20px;
     }
-    .ant-input-affix-wrapper{
+
+    .ant-input-affix-wrapper {
       line-height: 20px;
-      input{
+
+      input {
         line-height: 20px;
       }
     }
@@ -52,12 +67,57 @@
     .ant-modal-footer {
       padding: 24px;
     }
-    .ant-col.ant-form-item-control{
+
+    .ant-col.ant-form-item-control {
       padding: 18px 16px;
     }
-    textarea.ant-input{
+
+    textarea.ant-input {
       line-height: 20px;
     }
 
+  }
+}
+
+.radioItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 514px;
+  height: 56px;
+  background: #333;
+  border-radius: 16px;
+  padding: 10px;
+  margin-left: -16px;
+  margin-bottom: 12px;
+  line-height: 56px;
+  .label{
+    display: flex;
+    align-items: center;
+  }
+
+  .iconStyle {
+    display: inline-flex;
+    height: 36px;
+    width: 36px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+  }
+
+  .radioLabel {
+    margin-left: 14px;
+    font-family: 'Noto Sans SC';
+    font-weight: 500;
+    font-size: 16px;
+    color: #FFFFFF;
+  }
+  .radioInput{
+    display: flex;
+    height: 30px;
+    width: 30px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
   }
 }
