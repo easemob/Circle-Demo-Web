@@ -1,0 +1,92 @@
+.sideBarWrap {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 280px;
+    height: 100%;
+    overflow: hidden;
+    background: #292929;
+
+    .info {
+        flex: 1 1 auto;
+        flex-direction: column;
+
+        .goBack {
+            display: flex;
+            align-items: center;
+            height: 60px;
+            cursor: pointer;
+            display: flex;
+
+            .iconStyle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 36px;
+                width: 36px;
+                line-height: 36px;
+                margin-left: 8px;
+            }
+
+            .title {
+                display: inline-block;
+                width: 100%;
+                font-family: 'PingFang SC';
+                font-weight: 500;
+                font-size: 14px;
+                height: 20px;
+                line-height: 20px;
+                color: #fff;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                word-break: break-all;
+            }
+        }
+
+        .operationList {
+            width: 100%;
+            padding: 0 8px;
+
+            .operationItem {
+                display: flex;
+                margin-bottom: 8px;
+                align-items: center;
+                height: 48px;
+                line-height: 48px;
+                width: 100%;
+                text-align: center;
+                border-radius: 8px;
+                font-family: 'PingFang SC';
+                font-weight: 500;
+                font-size: 14px;
+                color: #fff;
+                opacity: 0.71;
+                cursor: pointer;
+
+                &:hover {
+                    background: #3D3D3D;
+                    opacity: 1;
+                }
+
+                &.selected {
+                    background: #3D3D3D;
+                    opacity: 1;
+                }
+
+                .iconStyle {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 36px;
+                    width: 36px;
+                    margin-left: 8px;
+                }
+
+                .text {
+                    margin-left: 10px;
+                }
+            }
+        }
+    }
+
+}

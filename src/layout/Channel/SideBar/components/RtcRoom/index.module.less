@@ -1,0 +1,193 @@
+.layout {
+    display: flex;
+    width: 280px;
+    height: 146px;
+    align-items: center;
+    justify-content: center;
+
+    .main {
+        height: 130px;
+        width: 264px;
+        background: #404040;
+        border-radius: 8px;
+        padding: 8px;
+
+        .states {
+            display: flex;
+            width: 100%;
+            height: 24px;
+            justify-content: space-between;
+
+            .flags {
+                display: flex;
+                align-items: center;
+
+                .rtc {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 24px;
+                    width: 24px;
+                    background: #1f1f1f;
+                    border-radius: 100%;
+                }
+
+                .status {
+                    margin-left: 8px;
+                    font-family: 'Noto Sans SC';
+                    font-weight: 500;
+                    font-size: 16px;
+                    line-height: 20px;
+                    color: #fff;
+                }
+
+                .signal {
+                    display: flex;
+                    height: 32px;
+                    width: 32px;
+                    align-items: center;
+                    justify-content: center;
+
+                    .link {
+                        display: inline-block;
+                        height: 32px;
+                        width: 32px;
+                        background: url("../../../../../assets/images/link.png");
+                        background-size: contain;
+                    }
+
+                    .linking {
+                        display: inline-block;
+                        height: 32px;
+                        width: 32px;
+                        background: url("../../../../../assets/images/linking.png");
+                        background-size: contain;
+                    }
+                }
+            }
+
+            .operation {
+                display: flex;
+
+                .invite {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 24px;
+                    width: 24px;
+                    cursor: pointer;
+                }
+
+                .close {
+                    margin-left: 10px;
+                    margin-right: 2px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 24px;
+                    width: 24px;
+                    background: #4d4d4d;
+                    border-radius: 100%;
+                    cursor: pointer;
+
+                    .closeIcon {
+                        font-size: 20px;
+                        color: #F6324D;
+                    }
+
+                    &:hover {
+                        background: #F6324D;
+
+                        .closeIcon {
+                            color: #fff;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        .channelName {
+            margin-top: 10px;
+            height: 20px;
+            line-height: 20px;
+            font-family: 'Noto Sans SC';
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 20px;
+            color: rgba(255, 255, 255, .74);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .line {
+            margin-top: 12px;
+            margin-left: 2px;
+            height: 0;
+            width: 240px;
+            border: none;
+            border-bottom: 1px solid #4D4D4D;
+        }
+
+        .user {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 8px;
+            height: 40px;
+
+            .userInfo {
+                display: flex;
+                align-items: center;
+
+                .avatarCon {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 28px;
+                    width: 28px;
+                    border-radius: 100%;
+                }
+
+                .hasBorder {
+                    border: 2px solid #14FF72;
+                }
+
+                .userName {
+                    margin-left: 8px;
+                    font-family: 'Noto Sans SC';
+                    font-weight: 500;
+                    font-size: 14px;
+                    line-height: 20px;
+                    color: #fff;
+                }
+            }
+
+            .mic {
+                margin-right: 2px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 24px;
+                width: 24px;
+                background: #4d4d4d;
+                border-radius: 100%;
+                cursor: pointer;
+
+                .micIcon {
+                    font-size: 20px;
+                    color: #fff;
+                }
+
+                &:hover {
+                    background: #fff;
+
+                    .micIcon {
+                        color: #000;
+                    }
+                }
+            }
+        }
+    }
+}

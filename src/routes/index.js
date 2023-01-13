@@ -12,6 +12,8 @@ const UserInfoLayout = () => import("@/layout/UserInfo");
 const ThreadLayout = () => import("@/views/Thread");
 const ContactsOperation = () => import("@/views/ContactsOperation");
 const Chat = () => import("@/views/Chat");
+const ServerSetting = () => import("@/layout/ServerSetting");
+const ChannelSetting = () => import("@/layout/ChannelSetting");
 
 const routes = () => {
   return (
@@ -38,6 +40,8 @@ const routes = () => {
             element={lazy(ThreadLayout)}
           ></Route>
         </Route>
+        <Route path="server/:serverId/setting" element={lazy(ServerSetting)}></Route>
+        <Route path="channel/:serverId/:channelId/setting" element={lazy(ChannelSetting)}></Route>
         <Route path="server/*" element={lazy(ServerLayout)}>
           <Route path="discover" element={<div>Server Page</div>}></Route>
         </Route>

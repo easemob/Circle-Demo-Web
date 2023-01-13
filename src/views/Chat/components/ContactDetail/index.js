@@ -2,14 +2,14 @@ import React, { memo } from "react";
 import s from "./index.module.less";
 import AvatarInfo from "@/components/AvatarInfo";
 import { connect } from "react-redux";
-import { Modal, Dropdown, Menu } from 'antd';
+import { Modal, Dropdown } from 'antd';
 import { useNavigate } from "react-router-dom";
 import WebIM from "@/utils/WebIM";
 import Icon from "@/components/Icon";
 
 
 const ContactDetail = (props) => {
-    const { visible, userId, appUserInfo, contactsList, hasSentApply, handleCancel, setHasSentApply } = props;
+    const { open, userId, appUserInfo, contactsList, hasSentApply, handleCancel, setHasSentApply } = props;
     const navigate = useNavigate();
     const renderButton = () => {
         if (hasSentApply.indexOf(userId) > -1) {
@@ -33,38 +33,33 @@ const ContactDetail = (props) => {
         setHasSentApply([...hasSentApply, userId]);
     }
 
-    const menu = (uid, onDelete) => {
-        return (
-            <Menu
-                onClick={() => { onDelete(uid) }}
-                items={[
-                    {
-                        key: '1',
-                        label: (
-                            <div className="circleDropItem">
-                                <Icon name="trash" size="22px" iconClass="circleDropMenuIcon" />
-                                <span className="circleDropMenuOp">删除好友</span>
-                            </div>
-                        ),
-                    },
-                ]}
-            />
-        )
+    const menu = (uid) => {
+        return ([
+            {
+                key: uid,
+                label: (
+                    <div className="circleDropItem">
+                        <Icon name="trash" size="22px" iconClass="circleDropMenuIcon" />
+                        <span className="circleDropMenuOp">删除好友</span>
+                    </div>
+                ),
+            },
+        ])
     }
     //删除联系人
-    const deleteContact = (uid) => {
-        WebIM.conn.deleteContact(uid);
+    const deleteContact = (data) => {
+        WebIM.conn.deleteContact(data.key);
     }
     return (
         <Modal
-            visible={visible}
+            open={open}
             width="545px"
             wrapClassName={s.detailWrap}
             footer={null}
             onCancel={handleCancel}
         >
             <div className={s.bg}>
-                {contactsList.indexOf(userId) > -1 && <Dropdown overlay={menu(userId, deleteContact)} placement="bottomRight" trigger={['click']} overlayClassName="circleDropDown">
+                {contactsList.indexOf(userId) > -1 && <Dropdown menu={{ items: menu(userId), onClick: deleteContact }} placement="bottomRight" trigger={['click']} overlayClassName="circleDropDown">
                     <div className={s.contactOp}>
                         <Icon size="26px" name="ellipsis" color="#fff" />
                     </div>

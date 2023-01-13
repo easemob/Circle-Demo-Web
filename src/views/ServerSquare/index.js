@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState, useRef, useCallback } from "react";
+import React, { memo, useEffect, useState, useRef, useCallback, createRef } from "react";
 import s from "./index.module.less";
 import WebIM from "@/utils/WebIM";
 import { Card, List, message, Modal } from 'antd';
@@ -10,6 +10,8 @@ import { getConfirmModalConf, insertServerList, getServerCover, createMsg, deliv
 import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { CHAT_TYPE, ACCEPT_INVITE_TYPE } from "@/consts";
+import SearchMenu from "./components/SearchMenu";
+import TagList from "@/components/TagList";
 const EnterKeyCode = 13;
 
 const ServerSquare = (props) => {
@@ -28,7 +30,8 @@ const ServerSquare = (props) => {
         const { apiUrl, orgName, appName } = WebIM.conn;
         http("get", `${apiUrl}/${orgName}/${appName}/circle/server/recommend/list`).then(res => {
             res.servers.length > 0 && res.servers.forEach((item) => {
-                item.id = item.server_id
+                item.id = item.server_id;
+                item.backgroundUrl = item.background_url;
                 item.tags.forEach((tag) => {
                     tag.tagId = tag.server_tag_id;
                     tag.tagName = tag.tag_name;
@@ -46,17 +49,21 @@ const ServerSquare = (props) => {
     const emptyVal = () => {
         setSearchVal("");
     }
+    const [type, setSearchType] = useState("serverName");
+    const selectType = ((type) => {
+        setSearchType(type)
+    })
     const search = useCallback(() => {
         if (searchVal === "") {
             setServerList()
             return
         }
-        WebIM.conn.getServers({ keyword: searchVal }).then((res) => {
+        WebIM.conn.getServers({ keyword: searchVal, type }).then((res) => {
             setShowList(res.data.list);
         }).catch((err) => {
             console.log("根据Server名称搜索失败", err)
         })
-    }, [searchVal])
+    }, [searchVal,type])
     //加入社区
     const joinServer = (info) => {
         const server_id = info.id || info.server_id;
@@ -91,9 +98,9 @@ const ServerSquare = (props) => {
 
                     }).catch((err) => {
                         if (err.message === "User is already in server.") {
-                            message.warn({ content: "已经在server了！" });
+                            message.warning({ content: "已经在server了！" });
                         } else {
-                            message.warn({ content: "加入失败，请重试！" });
+                            message.warning({ content: "加入失败，请重试！" });
                         }
                     })
                 }
@@ -110,7 +117,7 @@ const ServerSquare = (props) => {
                 Modal.confirm(conf);
             }
         }).catch(() => {
-            message.warn({ content: "查询失败，请重试！" });
+            message.warning({ content: "查询失败，请重试！" });
         })
 
     }
@@ -135,6 +142,7 @@ const ServerSquare = (props) => {
                 _inputRef?.current?.removeEventListener("keydown", onKeyDown);
         };
     }, [onKeyDown]);
+    
 
     return (
         <div className={s.container}>
@@ -144,6 +152,9 @@ const ServerSquare = (props) => {
                     <span className={s.text}>环信超级社区</span>
                 </div>
                 <div className={s.search}>
+                    <div className={s.searchType}>
+                        <SearchMenu onClick={selectType} />
+                    </div>
                     <div className={s.searchInputCon}>
                         <input ref={searchEl} className={s.searchInput} placeholder="搜索社区" value={searchVal} onChange={setSearchServer} />
                         {searchVal !== "" && <span className={s.empty} onClick={emptyVal}>
@@ -157,17 +168,17 @@ const ServerSquare = (props) => {
                 <List className={s.serverList}
                     grid={{
                         gutter: 12,
-                        xs: 2,
-                        sm: 2,
+                        xs: 1,
+                        sm: 1,
                         md: 2,
-                        lg: 3,
-                        xl: 4,
-                        xxl: 5,
+                        lg: 2,
+                        xl: 3,
+                        xxl: 4,
                     }}
                     dataSource={showList}
                     renderItem={item => (
                         <List.Item >
-                            <Card key={item.server_id} className={`${s.serverItem}`} style={{ backgroundImage: `url(${getServerCover(item.id)})` }} onClick={() => { joinServer(item) }}>
+                            <Card key={item.server_id} className={`${s.serverItem}`} style={{ backgroundImage: item.backgroundUrl? `url(${item.backgroundUrl})`:`url(${getServerCover(item.id)})` }} onClick={() => { joinServer(item) }}>
                                 <div className={s.serverInfo}>
                                     <div className={s.avatar}>
                                         <AvatarInfo size={48} isServer={true} src={item.icon_url} />
@@ -175,14 +186,7 @@ const ServerSquare = (props) => {
                                     <div className={s.name}>{item.name}</div>
                                     <div className={s.des}>{item.description || "群主有点懒，就不写介绍。"}</div>
                                     <div className={s.tags}>
-                                        {item.tags && item.tags.length > 0 && item.tags.map((tag) => {
-                                            return (
-                                                <div className={s.tag} key={tag.tagId}>
-                                                    <Icon name="label" color="rgba(255,255,255,.74)" size="12px" />
-                                                    <span className={s.tagText}>{tag.tagName}</span>
-                                                </div>
-                                            )
-                                        })}
+                                        <TagList tags={item.tags} />
                                     </div>
                                 </div>
                             </Card>

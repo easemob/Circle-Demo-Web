@@ -29,6 +29,8 @@
 │   │   │   ├── InviteUser //邀请用户加入频道
 │   │   │   ├── SideBar // 频道列表及当前server展示页面
 │   │   │   └──  index.js //频道页面入口
+│   │   ├── ChannelSetting //频道设置页面
+│   │   │   └──  index.js //频道设置页面入口
 │   │   ├── Contacts
 │   │   │   ├── SideBar 联系人列表页面
 │   │   │   └──  index.js //联系人页面入口
@@ -39,6 +41,8 @@
 │   │   ├── Server
 │   │   │   ├── SideBar //广场菜单页面
 │   │   │   └──  index.js //广场页面入口
+│   │   ├── ServerSetting //频道设置页面
+│   │   │   └──  index.js //频道设置页面入口
 │   │   └── UserInfo
 │   │       ├── SideBar //用户信息页面
 │   │       └──  index.js //用户信息页面入口
@@ -50,12 +54,20 @@
 │   │       ├── channel.js //频道数据管理
 │   │       ├── contact.js //联系人数据管理
 │   │       ├── server.js //社区数据管理
+│   │       ├── rtc.js //音视频数据管理
 │   │       └── thread.js //子区数据管理
 │   ├── utils sdk及公用方法
 │   └── views //页面组件
 │       ├── Channel
-│       │   ├── components 频道聊天页面组件
+│       │   ├── components //频道聊天页面组件
 │       │   └── index.js //频道聊天页面
+│       ├── ChannelSetting
+│       │   ├── components //频道设置页面组件
+│       │   └── index.js //频道设置页面
+│       ├── ServerSetting
+│       │   ├── components //社区设置页面组件
+│       │   └── index.js //社区设置页面
+
 │       ├── Chat
 │       │   ├── components //联系人聊天页面组件
 │       │   └── index.js //联系人聊天页面

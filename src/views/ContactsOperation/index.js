@@ -8,23 +8,18 @@ import { Dropdown, Menu, Popover, message, Tooltip } from 'antd';
 import Icon from "@/components/Icon";
 import { useNavigate } from "react-router-dom";
 
-const menu = (uid, onDelete) => {
-    return (
-        <Menu
-            onClick={() => { onDelete(uid) }}
-            items={[
-                {
-                    key: '1',
-                    label: (
-                        <div className="circleDropItem">
-                            <Icon name="trash" size="22px" iconClass="circleDropMenuIcon" />
-                            <span className="circleDropMenuOp">删除好友</span>
-                        </div>
-                    ),
-                },
-            ]}
-        />
-    )
+const menu = (uid) => {
+    return [
+        {
+            key: uid,
+            label: (
+                <div className="circleDropItem">
+                    <Icon name="trash" size="22px" iconClass="circleDropMenuIcon" />
+                    <span className="circleDropMenuOp">删除好友</span>
+                </div>
+            ),
+        },
+    ]
 }
 const emptyDom = (txt) => {
     return (
@@ -110,14 +105,14 @@ const ContactsOperation = (props) => {
         if (searchContact === "") {
             return
         } else if (!/^1\d{10}$/.test(searchContact)) {
-            message.warn({ content: "请输入合法手机号！" });
+            message.warning({ content: "请输入合法手机号！" });
             return;
         } else if (searchContact === WebIM.conn.user) {
-            message.warn({ content: "不可以添加自己为好友哦" });
+            message.warning({ content: "不可以添加自己为好友哦" });
             setSearchContact("");
             return
         } else if (contactsList.indexOf(searchContact) > -1) {
-            message.warn({ content: "不能重复添加好友哦" });
+            message.warning({ content: "不能重复添加好友哦" });
             setSearchContact("");
             return
         }
@@ -136,8 +131,8 @@ const ContactsOperation = (props) => {
     }
 
     //删除联系人
-    const deleteContact = (uid) => {
-        WebIM.conn.deleteContact(uid);
+    const deleteContact = (data) => {
+        WebIM.conn.deleteContact(data.key);
     }
     //同意、拒绝添加联系人
     const handleApply = (operation, uid) => {
@@ -151,7 +146,7 @@ const ContactsOperation = (props) => {
                 applyList.splice(index, 1);
                 setApplyInfo(applyList);
             }
-            message.warn({ content: "已拒绝申请" });
+            message.warning({ content: "已拒绝申请" });
         }
     }
 
@@ -184,10 +179,10 @@ const ContactsOperation = (props) => {
                     <Popover overlayClassName={s.searchResultPop}
                         placement="bottomLeft"
                         trigger="click"
-                        visible={visible}
-                        onVisibleChange={handleVisibleChange}
+                        open={visible}
+                        onOpenChange={handleVisibleChange}
                         content={<SearchResult
-                            visible={visible}
+                            open={visible}
                             appUserInfo={appUserInfo}
                             searchList={searchList}
                             hoverSearchUid={hoverSearchUid}
@@ -227,7 +222,7 @@ const ContactsOperation = (props) => {
                         return (
                             <ContactEl
                                 source="list"
-                                visible={visible}
+                                open={visible}
                                 key={item} uid={item}
                                 userInfo={appUserInfo[item]}
                                 onChat={startChat}
@@ -235,7 +230,7 @@ const ContactsOperation = (props) => {
                                 hoverContactUid={hoverContactUid}
                                 onHoverFn={handlerContactHover} />
                         )
-                    }) : emptyDom(tab==="all"?"您还没有好友":"当前没有在线好友")}
+                    }) : emptyDom(tab === "all" ? "您还没有好友" : "当前没有在线好友")}
                 </div>}
             {showAddDialog && <div className={s.addContact}>
                 <div className={s.dialog}>
@@ -266,7 +261,7 @@ const SearchResult = (props) => {
                     return (
                         <ContactEl
                             source="search"
-                            visible={visible}
+                            open={visible}
                             key={item}
                             uid={item}
                             userInfo={appUserInfo[item]}
@@ -292,7 +287,14 @@ const ContactEl = (props) => {
                     <span className={s.chatIcon}><Icon name="message_retangle" size="22px" iconClass='opIcon' /></span>
                 </span>
             </Tooltip>
-            <Dropdown overlay={menu(uid, onDelete)} placement="bottomRight" trigger={['click']} overlayClassName="circleDropDown"
+            <Dropdown
+                menu={{ 
+                    items: menu(uid),
+                    onClick: onDelete,
+                }}
+                placement="bottomRight" 
+                trigger={['click']} 
+                overlayClassName="circleDropDown"
                 getPopupContainer={() =>
                     memberParent.current ? memberParent.current : document.body
                 }>

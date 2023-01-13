@@ -7,12 +7,115 @@
 .menuWrap {
   display: flex;
   align-items: center;
-  color:rgba(255, 255, 255, 0.74);
-  .iconfont{
-    color: #c1c1c1;
+  height: 38px;
+  color: rgba(255, 255, 255, 0.74);
+  border-radius: 8px;
+
+  &.disable {
+    color: #474747;
+
+    &:hover {
+      color: #474747;
+      background: #292929;
+    }
   }
+
   &:hover {
+    background: #333;
     color: #fff;
+
+    &.selected {
+      color: #979797;
+    }
   }
-  
+
+
+  .menuIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+    height: 30px;
+    width: 30px;
+
+    &.open {
+      position: absolute;
+      right: 0;
+    }
+  }
+
+  .menuText {
+    margin-left: 8px;
+    font-family: 'Noto Sans SC';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .subMenuWrap {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    width: 100%;
+
+    .name {
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      word-break: break-all;
+    }
+  }
+
+
+  .noticeWrap {
+    height: 54px;
+    line-height: 54px;
+  }
+
+  &.noticeWrap {
+    height: 54px;
+  }
+
+  .noticeCon {
+    height: 100%;
+    margin-left: 8px;
+
+    .menuText {
+      display: block;
+      margin-top: 9px;
+      margin-left: 0;
+      height: 20px;
+      font-family: Noto Sans SC;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      text-align: left;
+    }
+
+    .selected {
+      display: block;
+      font-family: Noto Sans SC;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+      letter-spacing: 0px;
+      text-align: left;
+      color: #979797;
+    }
+  }
+}
+
+:global {
+  .ant-menu-vertical>.ant-menu-submenu>.ant-menu-submenu-title {
+    height: auto;
+
+    &:hover {
+      background: #333;
+      border-radius: 8px;
+      color: #fefefe;
+    }
+  }
 }

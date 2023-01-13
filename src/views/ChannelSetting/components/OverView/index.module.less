@@ -1,0 +1,109 @@
+.layout {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    background: #1F1F1F;
+    height: 100vh;
+
+    .header {
+        display: flex;
+        align-items: center;
+        height: 58px;
+
+        .icon {
+            display: inline-flex;
+            margin-left: 4px;
+            align-items: center;
+            justify-content: center;
+            height: 36px;
+            height: 36px;
+        }
+
+        .title {
+            display: inline-flex;
+            justify-content: center;
+            margin-left: 8px;
+            font-family: 'PingFang SC';
+            font-weight: 600;
+            font-size: 16px;
+            align-items: center;
+            color: #fff;
+        }
+    }
+
+    .main {
+        margin: 6px auto;
+        width: 840px;
+        height: 100vh;
+        overflow-y: auto;
+
+        .settingItem {
+            padding: 6px 8px;
+
+            .default {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                padding: 16px 18px 16px 20px;
+                background: #333;
+                border-radius: 16px;
+
+                .content {
+                    display: flex;
+                    flex: 1;
+                    flex: 1;
+                }
+
+                .categoryList {
+                    display: flex;
+                    flex: 1;
+                    flex-direction: column;
+
+                    .listCon {
+                        max-height: 280px;
+                        overflow-y: auto;
+                    }
+
+                    .category {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 0 14px 0 16px;
+                        margin-top: 12px;
+                        width: 792px;
+                        height: 44px;
+                        border-radius: 12px;
+                        cursor: pointer;
+
+                        &:hover {
+                            background: #979797;
+                        }
+
+                        .categoryName {
+                            font-family: 'Noto Sans SC';
+                            font-weight: 500;
+                            font-size: 16px;
+                            line-height: 24px;
+                            color: #fff;
+                            width: 100%;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            word-break: break-all;
+                        }
+                    }
+
+                    .buttonLayout {
+                        display: flex;
+                        flex-direction: row-reverse;
+                        margin-top: 20px;
+                    }
+                }
+
+                &.channelCategory {
+                    flex-direction: column;
+                }
+            }
+        }
+    }
+}

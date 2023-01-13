@@ -57,9 +57,9 @@ const CustomMsg = (props) => {
         })
         .catch((err) => {
           if (err.message === "User is already in server.") {
-            messageWarn.warn({ content: "已经在社区了！" });
+            messageWarn.warning({ content: "已经在社区了！" });
           } else {
-            messageWarn.warn({ content: "加入失败，请重试！" });
+            messageWarn.warning({ content: "加入失败，请重试！" });
           }
         });
     } else {
@@ -87,9 +87,9 @@ const CustomMsg = (props) => {
         })
         .catch((err) => {
           if (err.message === "User is already in channel.") {
-            messageWarn.warn({ content: "已经在频道了！" });
+            messageWarn.warning({ content: "已经在频道了！" });
           } else {
-            messageWarn.warn({ content: "加入失败，请重试！" });
+            messageWarn.warning({ content: "加入失败，请重试！" });
           }
         });
     }

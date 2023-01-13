@@ -39,7 +39,7 @@ const ThreadHeader = (props) => {
         if (currentThreadInfo?.owner === WebIM.conn.user && role !== USER_ROLE.owner) {
             opList = ["threadMember", "editThread", "leaveThread"];
         }
-        return getOperationEl(opList, handleOperation)
+        return getOperationEl(opList)
     }
     const handleOperation = ({ key }) => {
         switch (key) {
@@ -83,7 +83,7 @@ const ThreadHeader = (props) => {
                 WebIM.conn.changeChatThreadName({ chatThreadId: currentThreadInfo.id, name: nameValue }).then(res => {
                     setNameValue("");
                 }).catch(e => {
-                    message.warn({ content: "名称编辑失败，请重试！" });
+                    message.warning({ content: "名称编辑失败，请重试！" });
                 })
                 break;
             case "leaveThread":
@@ -94,7 +94,7 @@ const ThreadHeader = (props) => {
                         navigate(`/main/channel/${serverId}/${channelId}`);
                     }
                 }).catch(e => {
-                    message.warn({ content: "离开子区失败，请重试！" });
+                    message.warning({ content: "离开子区失败，请重试！" });
                 })
                 break;
             case "destroyThread":
@@ -107,7 +107,7 @@ const ThreadHeader = (props) => {
                         }
                     })
                 }).catch(e => {
-                    message.warn({ content: "删除子区失败，请重试！" });
+                    message.warning({ content: "删除子区失败，请重试！" });
                 })
                 break;
             default:
@@ -186,7 +186,7 @@ const ThreadHeader = (props) => {
                     </div>
 
                 </div>
-                <Dropdown overlay={menu(role)} placement="bottomLeft" trigger={['click']} overlayClassName="circleDropDown">
+                <Dropdown menu={{items:menu(role),onClick:handleOperation }} placement="bottomLeft" trigger={['click']} overlayClassName="circleDropDown">
                     <div className={s.editIcon}>
                         <Icon name="ellipsis" size="22px" color="rgba(255, 255, 255, 0.74)" />
                     </div>
@@ -197,10 +197,10 @@ const ThreadHeader = (props) => {
                 <Icon name="xmark" size="18px" color="rgba(255, 255, 255, 0.74)"></Icon>
             </span>}
             <div className={s.membersCon}>
-                <Popover content={<ThreadMember close={hide} visible={visible} />} placement="bottomRight" trigger="click" visible={visible} onVisibleChange={handleVisibleChange} overlayClassName={s.threadMember}>
+                <Popover content={<ThreadMember close={hide} visible={visible} />} placement="bottomRight" trigger="click" open={visible} onOpenChange={handleVisibleChange} overlayClassName={s.threadMember}>
                 </Popover>
             </div>
-            <Modal className={`userInfoModal`} destroyOnClose={true} title="编辑子区" visible={isModalVisible === "editThread"} onCancel={handleCancel} footer={null} closeIcon={<CloseIcon />}>
+            <Modal className={`userInfoModal`} destroyOnClose={true} title="编辑子区" open={isModalVisible === "editThread"} onCancel={handleCancel} footer={null} closeIcon={<CloseIcon />}>
                 <div className={s.updateNickname}>
                     <span className={s.title}>子区名称</span>
                     <div className={s.updateCon}>
@@ -211,7 +211,7 @@ const ThreadHeader = (props) => {
                     <div className={`circleBtn circleBtn106 ${s.confirm} ${nameValue === "" ? "disable" : null}`} onClick={handleOk}>确认</div>
                 </div>
             </Modal>
-            <Modal className={`logoutModal`} title={isModalVisible === "leaveThread" ? "退出子区" : "删除子区"} width={546} destroyOnClose={true} visible={isModalVisible === "leaveThread" || isModalVisible === "destroyThread"} onCancel={handleCancel} footer={null} closeIcon={<CloseIcon />}>
+            <Modal className={`logoutModal`} title={isModalVisible === "leaveThread" ? "退出子区" : "删除子区"} width={546} destroyOnClose={true} open={isModalVisible === "leaveThread" || isModalVisible === "destroyThread"} onCancel={handleCancel} footer={null} closeIcon={<CloseIcon />}>
                 <div className={s.logoutCon}>
                     {isModalVisible === "leaveThread" ? <span className={s.content}>确认退出子区<span className={s.name}>&nbsp;{currentThreadInfo?.name}</span></span> : <span className={s.content}>确认删除子区&nbsp;<span className={s.name}>{currentThreadInfo?.name}？</span>本操作不可恢复。</span>}
 

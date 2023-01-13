@@ -115,7 +115,7 @@ const Chat = (props) => {
             >
               {messageInfo?.list?.map((item) => {
                 return (
-                  <div key={item.localId ||item.id}>
+                  <div key={item.localId || item.id}>
                     <MessageLeft
                       message={item}
                       onHandleOperation={handleOperation}
@@ -132,7 +132,7 @@ const Chat = (props) => {
         </div>
       </div>
       <ContactDetail
-        visible={visible}
+        open={visible}
         userId={userId}
         handleCancel={() => setVisible(false)}
       />

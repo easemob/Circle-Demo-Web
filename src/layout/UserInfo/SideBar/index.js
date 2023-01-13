@@ -52,7 +52,7 @@ const SideBar = (props) => {
         });
       })
       .catch((e) => {
-        message.warn({ content: "头像修改失败，请重试！" });
+        message.warning({ content: "头像修改失败，请重试！" });
       });
   };
   return (
@@ -61,6 +61,7 @@ const SideBar = (props) => {
         <div className={s.avatar}>
           <UploadImg
             update={onChange}
+            title={"上传头像"}
             innerNode={
               <div>
                 <AvatarInfo size={90} src={userInfo.avatarurl} />
@@ -102,7 +103,7 @@ const SideBar = (props) => {
         width={546}
         destroyOnClose={true}
         maskClosable={false}
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCancel}
         footer={null}
         closeIcon={<CloseIcon />}

@@ -15,12 +15,17 @@ import {
   updateLocalChannelDetail,
   formatterInputCount
 } from "@/utils/common";
+import Icon from "@/components/Icon";
 
+const channelMode = [
+  { mode: 0, text: "文字频道", icon: "hashtag", color: "rgba(255,255,255,.74)" },
+  { mode: 1, text: "语聊房频道", icon: "mic", color: "#fff" }
+]
 const ChannelForm = forwardRef((props, ref) => {
-  const { isEdit = false } = props;
+  const { isEdit = false,channelCategoryId } = props;
   const [form] = Form.useForm();
   const { serverId, channelId } = useParams();
-  const [isPrivate, setIsPrivate] = useState(false);
+  const [isPublic, setIsPublic] = useState(true);
   const navigate = useNavigate();
 
   const submit = (onSuccess = () => { }, onError = () => { }) => {
@@ -56,14 +61,16 @@ const ChannelForm = forwardRef((props, ref) => {
         } else {
           const dt = {
             serverId,
-            isPublic: isPrivate ? false : true,
+            isPublic,
+            mode,
+            channelCategoryId,
             ...values
           };
           WebIM.conn
             .createChannel(dt)
             .then((res) => {
               message.success("创建频道成功");
-              getChannelDetail(serverId, res.data.channelId);
+              getChannelDetail(serverId,res.data.channelId);
               onSuccess();
             })
             .catch(() => {
@@ -82,16 +89,18 @@ const ChannelForm = forwardRef((props, ref) => {
     WebIM.conn
       .getChannelDetail({ serverId, channelId })
       .then((res) => {
-        const { name, description, isPublic } = res.data;
+        const { name, description, isPublic, mode } = res.data;
         if (isEdit) {
           form.setFieldsValue({
             name,
             description
           });
-          setIsPrivate(!isPublic);
+          setIsPublic(isPublic);
         } else {
           insertChannelList(serverId, channelId, res.data);
-          navigate(`/main/channel/${serverId}/${channelId}`);
+          if(mode === 0){
+            navigate(`/main/channel/${serverId}/${channelId}`);
+          }
         }
       })
       .catch((e) => { });
@@ -106,9 +115,25 @@ const ChannelForm = forwardRef((props, ref) => {
       getChannelDetail(serverId, channelId);
     }
   }, []);
+  const [mode ,setMode] = useState(0);
 
   return (
     <Form ref={ref} className="customForm" form={form} layout={"vertical"}>
+      <Form.Item label="频道类型" className="formRadioGroup">
+        {channelMode.map((item, index) => {
+          return (
+            <div className={s.radioItem} key={index}>
+              <div className={s.label}>
+                <div className={s.iconStyle} style={{ background: item.mode === 1 ? "#27AE60" : "#1f1f1f" }}><Icon name={item.icon} color={item.color} size="26px"></Icon></div>
+                <span className={s.radioLabel} >{item.text}</span></div>
+              <div className={s.radioInput}>
+                {mode !== index && <Icon name="circle" color="#fff" size="22px" onClick={()=>setMode(index)}></Icon>}
+                {mode === index && <Icon name="radio-01" color="#27AE60" size="22px"></Icon>}
+              </div>
+            </div>
+          )
+        })}
+      </Form.Item>
       <Form.Item label="频道名称" name="name">
         <Input
           showCount={{ formatter: formatterInputCount }}
@@ -117,37 +142,39 @@ const ChannelForm = forwardRef((props, ref) => {
           autoComplete="off"
         />
       </Form.Item>
-      <Form.Item label="频道简介" name="description">
+      {/* <Form.Item label="频道简介" name="description">
         <Input.TextArea
           rows={5}
           placeholder="请输入频道简介"
           maxLength={120}
           showCount={{ formatter: formatterInputCount }}
         />
-      </Form.Item>
-      <Form.Item className="customFormItem">
+      </Form.Item> */}
+      <Form.Item className="customFormItem" label="频道类型">
         <div className={s.privateWrap}>
           <span
             className={s.isPrivate}
             style={isEdit ? { color: "#545454" } : {}}
           >
-            私密频道
+            是否为公开频道
           </span>
           <Switch
             disabled={isEdit ? true : false}
-            checked={isPrivate}
+            checked={isPublic}
             onChange={(e) => {
-              setIsPrivate(e);
+              setIsPublic(e);
             }}
           />
+          <span className={s.tips}>仅通过邀请的用户可以加入私密频道</span>
         </div>
       </Form.Item>
-    </Form>
+    </Form >
   );
 });
-const mapStateToProps = ({ server, app }) => {
+const mapStateToProps = ({ server, channel }) => {
   return {
-    channelMap: server.channelMap
+    channelMap: server.channelMap,
+    channelCategoryId: channel.createChannelCategoryId,
   };
 };
 const mapDispatchToProps = (dispatch) => {

@@ -1,7 +1,6 @@
 import React, { memo, useState, useEffect } from "react";
 import s from "./index.module.less";
 import MemberItem from "@/components/MemberItem";
-import Icon from "@/components/Icon";
 import { connect } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import WebIM from "@/utils/WebIM";

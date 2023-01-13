@@ -1,13 +1,12 @@
 import s from "./index.module.less";
 import React, { memo, createRef } from "react";
 import Icon from "@/components/Icon";
-import { Dropdown, Menu, message, Tooltip } from "antd";
+import { Dropdown, Tooltip } from "antd";
 import EmojiPicker from "../Emoji";
 import WebIM from "@/utils/WebIM";
 import { addReactions } from "@/utils/common";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
-const antdMessage = message;
 const Operation = (props) => {
   const { type, canCreateThread, parent, operation, message, source } = props;
 
@@ -52,7 +51,7 @@ const Operation = (props) => {
         )
       });
     }
-    return <Menu items={itemList} onClick={handleOperation} />;
+    return itemList;
   };
   const handleOperation = ({ key }) => {
     operation(OPERATION[key]);
@@ -105,7 +104,7 @@ const Operation = (props) => {
         }
         {showMoreIcon && (
           <Dropdown
-            overlay={menu(type)}
+            menu={{items:menu(type),onClick: handleOperation}}
             placement="bottomRight"
             trigger={["click"]}
             overlayClassName="circleDropDown"

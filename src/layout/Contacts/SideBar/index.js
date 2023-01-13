@@ -48,6 +48,7 @@ const SideBar = (props) => {
           }
         });
       conversationList.length > 0 && getUsersInfo(conversationList);
+      if(conversationData.length > 0 && conversationList.length === 0) return;
       setConversationList(conversationList);
     });
   }, []);

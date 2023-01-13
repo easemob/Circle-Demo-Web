@@ -37,9 +37,11 @@ const MemberMenuChildren = (selfRole, userRole, item) => {
     if (userRole === USER_ROLE.user) {
       menu1 = {
         label: (
-          <div>
-            <Icon name="person_nut" size="24px" />
-            <span>设为管理员</span>
+          <div className={s.menuCon}>
+            <span className={s.menuIcon}>
+              <Icon name="person_nut" size="24px" />
+            </span>
+            <span className={s.menuText}>设为管理员</span>
           </div>
         ),
         key: "setAdmin"
@@ -47,9 +49,11 @@ const MemberMenuChildren = (selfRole, userRole, item) => {
     } else if (userRole === USER_ROLE.moderator) {
       menu1 = {
         label: (
-          <div>
-            <Icon name="person_normal" size="22px" />
-            <span>取消管理员</span>
+          <div className={s.menuCon}>
+            <span className={s.menuIcon}>
+              <Icon name="person_normal" size="22px" />
+            </span>
+            <span className={s.menuText}>取消管理员</span>
           </div>
         ),
         key: "removeAdmin"
@@ -60,9 +64,11 @@ const MemberMenuChildren = (selfRole, userRole, item) => {
   if (item?.uid !== WebIM.conn.user) {
     menu.push({
       label: (
-        <div>
-          <Icon name="minus_in_circle" size="16px" />
-          <span>踢出社区</span>
+        <div className={s.menuCon}>
+          <span className={s.menuIcon}>
+            <Icon name="minus_in_circle" size="16px" />
+          </span>
+          <span className={s.menuText}>踢出社区</span>
         </div>
       ),
       key: "kick"
@@ -205,7 +211,7 @@ const MemberModal = (props) => {
   }, [visible]);
 
   return (
-    <CustomModal
+      <CustomModal
       title={<Title />}
       visible={visible}
       onCancel={() => {

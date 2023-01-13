@@ -2,7 +2,7 @@ import React, { memo, useState } from "react";
 import s from "../index.module.less";
 import Icon from "@/components/Icon";
 
-const MAX_DESC_LENGTH = 38;
+const MAX_DESC_LENGTH = 36;
 
 const ServerDesc = ({ desc = "" }) => {
   const [isExpand, setIsExpand] = useState(false);

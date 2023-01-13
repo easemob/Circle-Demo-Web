@@ -3,7 +3,7 @@ import s from "./index.module.less";
 import Header from "./components/Header";
 import { connect } from "react-redux";
 import MemberModal from "./components/MemberModal";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import MessageLeft from "@/components/MessageLeft";
 import Input from "@/components/Input";
 import {
@@ -85,10 +85,11 @@ const Channel = (props) => {
     joinedServerInfo,
     currentThreadInfo,
     setThreadMap,
+    setInviteChannelInfo,
   } = props;
 
   const { serverId, channelId } = useParams();
-
+  const navigate = useNavigate();
   const ref = useRef();
 
   const messageInfo = useMemo(() => {
@@ -139,7 +140,7 @@ const Channel = (props) => {
                   channel_name: res.data.name
                 }
               });
-              deliverMsg({msg,needShow: true}).then();
+              deliverMsg({ msg, needShow: true }).then();
             });
         }
       });
@@ -179,7 +180,7 @@ const Channel = (props) => {
     // 切换channel 关闭thread面板
     handleThreadPanel(false);
     //清空thread数据
-    setThreadInfo({threadInfo:{}});
+    setThreadInfo({ threadInfo: {} });
     getHistoryMsg({ cursor: "" });
   }, [channelId]);
 
@@ -189,9 +190,11 @@ const Channel = (props) => {
       case "createThread":
         setChannelMemberVisible(false);
         setIsCreatingThread(true);
-        setThreadInfo({threadInfo:{
-          parentMessage: data
-        }});
+        setThreadInfo({
+          threadInfo: {
+            parentMessage: data
+          }
+        });
         handleThreadPanel(true);
         setThreadHasHistory(false);
         break;
@@ -213,17 +216,19 @@ const Channel = (props) => {
               //用户已经在子区了
               changeThreadStatus(data, from);
             } else if (e.type === 1300) {
-              message.warn({ content: "该子区已经被销毁" });
+              message.warning({ content: "该子区已经被销毁" });
             }
           });
         break;
       case "showMember":
-        setThreadInfo({threadInfo:{}});
+        setThreadInfo({ threadInfo: {} });
         handleThreadPanel(false);
         setChannelMemberVisible(!channelMemberVisible);
         break;
       case "setting":
-        setChannelFormVisible("edit");
+        // setChannelFormVisible("edit");
+        //编辑频道
+        navigate(`/main/channel/${serverId}/${channelId}/setting`);
         break;
       case "recall":
         recallMessage(data, isChatThread);
@@ -252,7 +257,7 @@ const Channel = (props) => {
           ? getThreadParentMsg(data.parentId, data.messageId)
           : data;
       let parentMessage = findMsg ? { ...findMsg, chatThreadOverview: {} } : {};
-      setThreadInfo({threadInfo:{...res.data, parentMessage}});
+      setThreadInfo({ threadInfo: { ...res.data, parentMessage } });
       //open threadPanel
       handleThreadPanel(true);
     });
@@ -304,7 +309,7 @@ const Channel = (props) => {
             >
               {messageInfo?.list?.map((item) => {
                 return (
-                  <div key={item.localId ||item.id}>
+                  <div key={item.localId || item.id}>
                     <MessageLeft
                       parentId={channelId}
                       message={item}
@@ -334,7 +339,7 @@ const Channel = (props) => {
         <div className={s.drawerWrap}>
           <ChannelMemberHeader
             channelInfo={currentChannelInfo}
-            onInvite={setInviteVisible}
+            onInvite={(data) => { setInviteChannelInfo({ inviteChannelInfo: currentChannelInfo }); setInviteVisible(data); }}
             onClose={() => {
               setChannelMemberVisible(false);
             }}
@@ -425,6 +430,12 @@ const mapDispatchToProps = (dispatch) => {
     setThreadMap: (params) => {
       return dispatch({
         type: "channel/setThreadMap",
+        payload: params
+      });
+    },
+    setInviteChannelInfo: (params) => {
+      return dispatch({
+        type: "channel/setInviteChannelInfo",
         payload: params
       });
     },

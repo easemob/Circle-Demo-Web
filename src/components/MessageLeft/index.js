@@ -116,8 +116,8 @@ const Message = (props) => {
             destroyTooltipOnHide={true}
             overlayClassName={s.channelUserInfo}
             content={<UserDetail userId={message.from} />}
-            visible={showUserPanel}
-            onVisibleChange={handleUserPanel}
+            open={showUserPanel}
+            onOpenChange={handleUserPanel}
             trigger="click"
           >
             <AvatarInfo size={36} src={appUserInfo[message.from]?.avatarurl} />

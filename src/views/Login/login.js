@@ -72,13 +72,13 @@ function Login(props) {
     if (!inputValue.username) {
       // !inputValue.password ||
       // inputValue.password.replace(/(^\s*)|(\s*$)/g, "") === ""
-      message.warn({ content: "请输入用户名！" });
+      message.warning({ content: "请输入用户名！" });
       return;
     } else if (!/^1\d{10}$/.test(inputValue.username)) {
-      message.warn({ content: "请输入合法手机号！" });
+      message.warning({ content: "请输入合法手机号！"});
       return;
     } else if (!inputValue.agree) {
-      message.warn({
+      message.warning({
         content: (
           <span>
             体验本Demo您需要同意
@@ -145,11 +145,11 @@ function Login(props) {
             })
             .catch((e) => {
               setLoginStatus(false);
-              message.warn({ content: "注册失败，请重试！" });
+              message.warning({ content: "注册失败，请重试！" });
             });
         } else {
           setLoginStatus(false);
-          message.warn({ content: "用户名或密码错误！" });
+          message.warning({ content: "用户名或密码错误！" });
         }
       });
   }, [

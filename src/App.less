@@ -30,8 +30,11 @@ body {
   overflow: hidden;
 }
 
-div.ant-message-notice-content {
-  background: #181818;
+.ant-message-notice .ant-message-notice-content {
+  background: #181818 !important;
+  height: 52px;
+  line-height: 52px;
+  padding: 0 28px;
   color: #fff;
   font-family: "PingFang SC";
   font-size: 14px;
@@ -40,6 +43,10 @@ div.ant-message-notice-content {
   .ant-message-warning,
   .anticon {
     color: #e6e6e6;
+  }
+
+  .anticon {
+    padding-block: 2px;
   }
 
   a {
@@ -72,23 +79,113 @@ span.ant-input-suffix {
   border: none;
 }
 
+//一级分组菜单
 .ant-menu-dark .ant-menu-sub,
-.ant-menu.ant-menu-dark .ant-menu-sub {
+.ant-menu.ant-menu-dark .ant-menu-sub,
+.ant-dropdown-menu{
   width: 238px;
   background: #292929;
-  border-radius: 12px;
+  border-radius: 8px;
   color: #ccc;
   font-size: 14px;
   line-height: 20px;
   font-weight: 500;
-  padding: 8px 8px;
-  border: 1px solid #4d4d4d;
+  padding: 8px;
+  border: 1px solid rgba(77, 77, 77, 0.6);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 24px 36px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(16px);
+
+  .ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-vertical {
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    .ant-dropdown-menu-submenu-expand-icon{
+      display: none;
+    }
+  }
+}
+.ant-menu-submenu-popup .ant-menu-vertical>.ant-menu-item {
+  height: auto;
+  overflow: auto;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  // padding-left: 4px;
+}
+.ant-dropdown-menu-submenu .ant-dropdown-menu .ant-dropdown-menu-item:not(:first-child) {
+  margin-top: 8px;
+}
+
+.ant-dropdown-menu-submenu .ant-dropdown-menu .ant-dropdown-menu-item:hover {
+  background: #333;
+}
+//二级分组菜单
+.subMenuStyle {
+  padding: 0;
+  background: none;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  width: 200px!important;
+ 
+  .ant-dropdown-menu,.ant-menu.ant-menu-sub.ant-menu-vertical {
+    padding: 8px;
+    width: 200px;
+    border-radius: 8px;
+    background: #292929;
+    max-height: 100vh;
+    overflow-y: scroll;
+    border: 1px solid rgba(77, 77, 77, 0.6);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 24px 36px rgba(0, 0, 0, 0.24);
+    .ant-menu-item{
+      padding-left: 0;
+    }
+
+    .ant-dropdown-menu-item {
+      padding: 0;
+      &:hover{
+        background: transparent!important;
+      }
+    }
+    .ant-menu-item {
+      &:hover{
+        background: transparent!important;
+      }
+    }
+  }
+  .ant-dropdown-menu-submenu-expand-icon {
+    display: none
+  }
+}
+.ant-dropdown-menu-title-content{
+  width: 100%;
 }
 
 .ant-menu-dark .ant-menu-item {
   border-radius: 8px;
-  height: 38px;
+  height: auto;
+  overflow: auto;
   color: #c4c5c6;
+}
+
+.ant-menu-vertical>.ant-menu-item+.ant-menu-item,
+.ant-menu-vertical>.ant-menu-item+.ant-menu-submenu,
+.ant-menu-vertical>.ant-menu-submenu+.ant-menu-item,
+.ant-menu-vertical>.ant-menu-submenu+.ant-menu-submenu {
+  margin-top: 8px;
+}
+
+.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item:not(.ant-menu-item-selected):hover {
+  background: #333;
+}
+
+.ant-menu-vertical>.ant-menu-submenu>.ant-menu-submenu-title {
+  padding: 0;
+  margin: 0;
+  margin-block: 0;
+  width: 100%;
 }
 
 .ant-menu-item .anticon+span {
@@ -101,7 +198,7 @@ span.ant-input-suffix {
 }
 
 .ant-menu-dark .ant-menu-item:hover {
-  background: #474747;
+  background: #ccc;
   border-radius: 8px;
   color: #fefefe;
 }
@@ -109,6 +206,10 @@ span.ant-input-suffix {
 .ant-menu-dark.ant-menu-horizontal>.ant-menu-item,
 .ant-menu-dark.ant-menu-horizontal>.ant-menu-submenu {
   padding: 0;
+}
+
+.ant-menu.ant-menu-dark .ant-menu-sub .ant-menu-submenu-title .ant-menu-submenu-arrow {
+  display: none;
 }
 
 .customForm {
@@ -179,20 +280,27 @@ span.ant-input-suffix {
   }
 }
 
+.customForm .formRadioGroup .ant-form-item-control {
+  background: none;
+}
+
 .ant-modal-root {
   .ant-modal-title {
     color: #fff;
-    width: 100%;
+    width: calc(100% - 20px);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     word-break: break-all;
+    line-height: 22px;
   }
 
   .ant-modal-header {
     padding-right: 40px;
     background: #3a3a3a;
     border: none;
+    padding: 16px 24px;
+    margin-bottom: 0;
   }
 
   .ant-modal-content {
@@ -202,6 +310,7 @@ span.ant-input-suffix {
     border: 1px solid #4d4d4d;
     box-shadow: 0px 24px 36px rgba(0, 0, 0, 0.12),
       8px 0px 24px rgba(0, 0, 0, 0.08);
+    padding: 0;
   }
 
   .ant-modal-footer {
@@ -226,10 +335,15 @@ span.ant-input-suffix {
 }
 
 .logoutModal {
+  padding-bottom: 0;
   .ant-modal-header {
-    background: none;
+    background: #3A3A3A;
+    height: 60px;
   }
-
+  
+  .ant-modal-content  .ant-modal-close{
+    height: 60px;
+  }
   .ant-modal-body {
     padding: 0;
   }
@@ -242,12 +356,24 @@ span.ant-input-suffix {
 .img-crop-modal {
   .ant-modal-content {
     border: none;
-    .ant-modal-close
-    .ant-modal-close-x {
-      display:block;
+
+    .ant-modal-close .ant-modal-close-x {
+      display: block;
       color: #c7c7c7;
       font-size: 18px;
       width: 54px;
+    }
+
+    .ant-modal-body {
+      padding: 24px;
+    }
+
+    .ant-modal-close {
+
+      &:hover,
+      &:active {
+        background: none;
+      }
     }
   }
 
@@ -256,7 +382,8 @@ span.ant-input-suffix {
   }
 
   .ant-btn-primary {
-    background: unset;
+    background: transparent !important;
+    box-shadow: none;
     border: none;
     padding: 0;
     text-shadow: none;
@@ -396,7 +523,24 @@ span.ant-input-suffix {
   }
 
   .ant-modal-body {
-    padding: 16px 24px 24px 24px !important;
+    .ant-modal-confirm-title {
+      padding-left: 24px;
+      display: flex;
+      align-items: center;
+      height: 60px;
+      background: #393939;
+    }
+
+    .ant-modal-confirm-content {
+      min-height: 64px;
+      margin: 26px 24px 0 22px;
+      margin-block-start: 26px !important;
+      box-sizing: border-box;
+    }
+
+    .ant-modal-confirm-btns {
+      margin: 24px;
+    }
   }
 
   .ant-btn-default {
@@ -409,8 +553,20 @@ span.ant-input-suffix {
     text-shadow: none;
   }
 
-  .ant-modal-close-x {
-    width: 38px;
+  .ant-modal-close {
+    display: flex;
+    height: 60px !important;
+    align-items: center;
+    margin-right: 14px;
+
+    .ant-modal-close-x {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+    }
+
   }
 }
 
@@ -429,7 +585,7 @@ span.ant-input-suffix {
 }
 
 .circleDropDown {
-  border: 1px solid #444;
+  // border: 1px solid #444;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 24px 36px rgba(0, 0, 0, 0.24);
   border-radius: 12px;
   box-sizing: border-box;
@@ -438,9 +594,11 @@ span.ant-input-suffix {
     padding: 8px;
     width: 238px;
     background: #292929;
-    border-radius: 12px;
+    border-radius: 8px;
 
-    .ant-dropdown-menu-item {
+    .ant-dropdown-menu-item,
+    .ant-dropdown-menu-submenu-title,
+    .ant-dropdown-menu-item-group-list>.ant-dropdown-menu-item {
       padding: 0;
       width: 100%;
       height: 38px;
@@ -448,21 +606,42 @@ span.ant-input-suffix {
       border-radius: 8px;
 
       &:hover {
-        background: #474747;
+        background: #333;
       }
 
       .ant-dropdown-menu-title-content {
         display: flex;
-        align-items: center;
+        // align-items: center;
         height: 100%;
-        flex: 1 1 auto;
+        width: 100%;
       }
     }
 
-    .ant-dropdown-menu-item:not(:first-child) {
+    .ant-dropdown-menu-item:not(:first-child),
+    .ant-dropdown-menu-submenu:not(:first-child) {
       margin-top: 8px;
     }
   }
+}
+
+.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item-group-list {
+  margin: 8px 0 0 0;
+}
+
+.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item-group-title {
+  height: 38px;
+  line-height: 28px !important;
+  background: #333333;
+  border-radius: 8px;
+  font-family: 'Noto Sans SC';
+  font-weight: 700;
+  font-size: 16px;
+  color: #fff;
+  width: 222px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: break-all;
 }
 
 .circleDropItem {
@@ -501,6 +680,7 @@ span.ant-input-suffix {
   }
 }
 
+
 .ant-empty {
   display: flex;
   flex: 1;
@@ -510,6 +690,7 @@ span.ant-input-suffix {
 
 .toolTip {
   .ant-tooltip-content {
+    --antd-arrow-background-color: #3A3A3A;
 
     .ant-tooltip-inner {
       padding: 8px;
@@ -536,12 +717,42 @@ span.ant-input-suffix {
   }
 }
 
+.toolTip2 {
+  --antd-arrow-background-color: #181818;
+
+  .ant-tooltip-inner {
+    padding: 8px;
+    background: #181818;
+    font-family: 'Noto Sans SC';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    border-radius: 6px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.9);
+    filter: drop-shadow(0px 0px 12px rgba(0, 0, 0, 0.2));
+    white-space: nowrap;
+  }
+
+  .ant-tooltip-arrow {
+    .ant-tooltip-arrow-content {
+      background-color: #181818 !important;
+    }
+  }
+
+  .ant-tooltip-arrow-content {
+    --antd-arrow-background-color: #181818;
+    ;
+  }
+}
+
 .ant-menu-horizontal {
   line-height: normal;
 }
 
-.ant-popover-inner {
-  background: none;
+.ant-popover .ant-popover-inner {
+  padding: none;
+  background: transparent;
 }
 
 .ant-image-mask-info {
@@ -563,6 +774,7 @@ span.ant-input-suffix {
     border-radius: 100%;
     cursor: pointer;
     background: #0F0F0F;
+
     .opIcon {
       font-size: 22px;
       color: #474747;
@@ -570,19 +782,66 @@ span.ant-input-suffix {
   }
 
   &:hover {
-    .opBg{
+    .opBg {
       background: #181818;
+
       .opIcon {
         font-size: 22px;
         color: #fff;
       }
     }
-    
+
   }
 }
-.messageOperationIcon{
+
+.messageOperationIcon {
   color: #c9c9c9;
-  &:hover{
+
+  &:hover {
     color: #fff;
+  }
 }
+
+//滑块相关样式
+.ant-slider .ant-slider-rail {
+  background: #fff !important;
+}
+
+//所有Modal的关闭按钮
+.ant-modal .ant-modal-close {
+  top: 0;
+  right: 0;
+  height: 54px;
+  width: auto;
+
+  &:hover,
+  &:active {
+    background-color: transparent;
+  }
+}
+
+//取消、确认按钮样式
+.ant-btn-default:not(:disabled) {
+  &:hover {
+    color: #fff;
+    border-color: #595959;
+  }
+
+  &:active {
+    color: #fff;
+    border-color: #262626;
+  }
+
+}
+
+.ant-btn-primary:not(:disabled) {
+  &:hover {
+    color: #fff;
+    background: #2dc76e;
+  }
+
+  &:active {
+    color: #fff;
+    background: #219452;
+  }
 }

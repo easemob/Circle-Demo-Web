@@ -34,7 +34,7 @@ const renderEmptyDom = () => {
 };
 message.config({
   duration: 3,
-  maxCount: 2
+  maxCount: 2,
 });
 
 function App() {
@@ -42,7 +42,12 @@ function App() {
     initListener();
   }, []);
   return (
-    <ConfigProvider renderEmpty={renderEmptyDom} autoInsertSpaceInButton={false}>
+    <ConfigProvider renderEmpty={renderEmptyDom} autoInsertSpaceInButton={false}
+    theme={{
+      token: {
+        colorPrimary: '#27AE60',
+      },
+    }}>
       <div className="App">
         <Provider store={store}>
           <Routes />

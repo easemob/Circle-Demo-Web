@@ -8,6 +8,9 @@
         .ant-list-grid .ant-col>.ant-list-item {
             margin-bottom: 12px;
         }
+        .ant-list .ant-list-item{
+            padding:0;
+        }
     }
 
     .title {
@@ -34,11 +37,19 @@
         }
 
         .search {
+            position: relative;
             display: flex;
             height: 36px;
             margin-top: 68px;
             align-items: center;
             padding-right: 20px;
+
+            .searchType {
+                position: absolute;
+                top: -10px;
+                left: -128px;
+                z-index: 10;
+            }
 
             .searchInputCon {
                 position: relative;
@@ -107,7 +118,7 @@
             position: relative;
             background-size: cover;
             border-radius: 8px;
-            height: 300px;
+            height: 324px;
             border: none;
             cursor: pointer;
             background-position: center;
@@ -169,29 +180,8 @@
 
             .tags {
                 display: flex;
+                height: 28px;
                 margin-top: 12px;
-                height: 12px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                font-family: 'Noto Sans SC';
-                font-weight: 500;
-                font-size: 12px;
-                line-height: 12px;
-                color: #FFFFFF;
-
-                .tag {
-                    display: flex;
-                    align-items: center;
-
-                    .tagText {
-                        margin-left: 2px;
-                    }
-                }
-
-                .tag:not(:first-child) {
-                    margin-left: 8px;
-                }
             }
         }
     }

@@ -8,6 +8,7 @@
 const Server = {
   state: {
     joinedServerInfo: {},
+    categoryMap: new Map(),
     channelMap: new Map(),
     serverUserMap: new Map(),
     serverMultiDeviceEvent: {},//event,data
@@ -27,13 +28,24 @@ const Server = {
       };
     },
     updateChannelMap(state, payload) {
-      const { serverId, channelInfo } = payload;
+      const { channelCategoryId, channelInfo } = payload;
       const { channelMap } = state;
       return {
         ...state,
         channelMap: new Map([
           ...channelMap,
-          ...new Map().set(serverId, channelInfo)
+          ...new Map().set(channelCategoryId, channelInfo)
+        ])
+      };
+    },
+    updateCategoryMap(state, payload) {
+      const { serverId, categoryInfo } = payload;
+      const { categoryMap } = state;
+      return {
+        ...state,
+        categoryMap: new Map([
+          ...categoryMap,
+          ...new Map().set(serverId, categoryInfo)
         ])
       };
     },
@@ -53,8 +65,8 @@ const Server = {
     setJoinedServerInfo(joinedServerInfo) {
       this.updateState({ joinedServerInfo });
     },
-    setChannelMap({ serverId, channelInfo }) {
-      this.updateChannelMap({ serverId, channelInfo });
+    setChannelMap({ channelCategoryId, channelInfo }) {
+      this.updateChannelMap({ channelCategoryId, channelInfo });
     },
     deleteChannelMap(channelMap) {
       this.updateState(channelMap)
@@ -71,6 +83,9 @@ const Server = {
     setCurrentServerTag(currentServerTag) {
       this.updateState({ currentServerTag });
     },
+    setCategoryMap({ serverId, categoryInfo }) {
+      this.updateCategoryMap({ serverId, categoryInfo })
+    }
   }
 };
 export default Server;

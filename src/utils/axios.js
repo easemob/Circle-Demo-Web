@@ -4,7 +4,6 @@
 import axios from "axios";
 import store from "../store";
 const { getState } = store;
-const token = getState().app.userInfo.accessToken;
 
 axios.defaults.timeout = 100000;
 
@@ -16,7 +15,7 @@ axios.interceptors.request.use(
         config.data = JSON.stringify(config.data);
         config.headers = {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            "Authorization": `Bearer ${getState().app?.userInfo?.accessToken}`,
         };
         return config;
     },

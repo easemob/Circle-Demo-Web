@@ -1,0 +1,57 @@
+.layout {
+    display: flex;
+    margin-top: 2px;
+    height: 40px;
+    align-items: center;
+    width: 234px;
+    border-radius: 8px;
+    padding: 0 8px;
+    justify-content: space-between;
+
+    &:hover,
+    &:active,
+    &:focus {
+        background: #333;
+    }
+
+    .info {
+        display: flex;
+    }
+
+    .ava {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 24px;
+        width: 24px;
+        border-radius: 100%;
+    }
+
+    .avaBorder {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 24px;
+        width: 24px;
+        border: 2px solid #14FF72;
+        border-radius: 100%;
+    }
+
+    .name {
+        margin-left: 8px;
+        font-family: 'Noto Sans SC';
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 20px;
+        color: #fff;
+    }
+
+    .enabled {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 24px;
+        width: 24px;
+    }
+}

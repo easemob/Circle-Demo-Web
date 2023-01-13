@@ -74,6 +74,7 @@ const InviteUser = (props) => {
     setContactsList,
     appUserInfo,
     serverList,
+    inviteChannelInfo,
   } = props;
   const [contactMap, setContactMap] = useState({});
 
@@ -118,7 +119,7 @@ const InviteUser = (props) => {
         }
       });
     }
-    deliverMsg({msg,needShow: true}).then();
+    deliverMsg({ msg, needShow: true }).then();
   };
 
   const getContacts = useCallback(() => {
@@ -155,14 +156,14 @@ const InviteUser = (props) => {
 
   return (
     <Modal
-      width={544}
+      width={546}
       className={`${s.inviteModal}`}
       title={
         isInviteServer
           ? `邀请好友加入社区  ${serverName}`
           : `邀请好友加入  ${serverName} - ${channelName}频道`
       }
-      visible={visible}
+      open={visible}
       footer={null}
       closeIcon={<Icon name="xmark" color="#c7c7c7" size="16px" />}
       destroyOnClose={true}
@@ -203,7 +204,7 @@ const InviteUser = (props) => {
                     {...item}
                     type={visible}
                     serverId={serverId}
-                    channelId={channelId}
+                    channelId={visible === INVITE_TYPE.inviteServer ? channelId : inviteChannelInfo.channelId}
                     onSend={() => {
                       onSend(item.uid, channelName, visible);
                     }}

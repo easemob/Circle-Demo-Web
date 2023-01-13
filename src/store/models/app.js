@@ -26,6 +26,7 @@ const App = {
     reactionMap: new Map(), // reaction Map
     currentChannelInfo: {},
     currentChatInfo: {}, //当前聊天对象的信息{chatType:"singleChat" "groupChat"  id:string}
+    serverChannelMap: {},//server下channel映射关系及未读消息数(单独处理)
   },
   reducers: {
     /**
@@ -124,7 +125,7 @@ const App = {
       return state
     },
     //本地发送的附件消息上传成功后url更新
-    changeChatMessageUrl(state, {id, to , url}) {
+    changeChatMessageUrl(state, { id, to, url }) {
       if (to === state.currentChatInfo.id) {
         const chatType = state.currentChatInfo.chatType
         const dt = state.chatMap[chatType].get(to)
@@ -164,13 +165,32 @@ const App = {
           });
           WebIM.conn.send(msg);
         }
+        //当前聊天 拉取历史消息后会重置未读消息为0
         return state;
       }
       let dt = {};
       if (chatType && state.chatMap[chatType].has(fromId)) {
         dt = state.chatMap[chatType].get(fromId);
       }
-      let unReadNum = dt.unReadNum ? dt.unReadNum + number : number;
+      let unReadNum = number === "reset" ? 0 : dt.unReadNum ? dt.unReadNum + number : number;
+      if (chatType === CHAT_TYPE.groupChat) {
+        //channel server 未读消息数单独处理
+        const info = { ...state.serverChannelMap };
+        let sId = ""
+        Object.keys(info).forEach(item => {
+          const channelInfo = info[item];
+          if (Object.keys(channelInfo).indexOf(fromId) > -1) {
+            sId = item
+          }
+        })
+        const map = { ...state.serverChannelMap };
+        map[sId][fromId] = map[sId][fromId]+unReadNum;
+        state = {
+          ...state,
+          serverChannelMap: map
+        }
+        return state;
+      }
       return {
         ...state,
         chatMap: {
@@ -225,7 +245,7 @@ const App = {
       return state;
     },
     //删除未发送成功的本地消息
-    deleteLocalMessage(state,{ id, fromId, chatType }){
+    deleteLocalMessage(state, { id, fromId, chatType }) {
       const dt = state.chatMap[chatType].get(fromId);
       if (state.chatMap[chatType].has(fromId)) {
         let ls = [...dt?.list];
@@ -390,6 +410,22 @@ const App = {
           ...new Map().set(messageId, ls)
         ])
       };
+    },
+    //更新channel未读
+    updateServerChannelMap(state, { serverId, channelId, unReadNum }) {
+      const map = { ...state.serverChannelMap };
+      if (map[serverId]) {
+        map[serverId][channelId] = unReadNum;
+      } else {
+        map[serverId] = {
+          [channelId]: unReadNum
+        }
+      }
+      state = {
+        ...state,
+        serverChannelMap: map
+      }
+      return state;
     }
   },
   effects: (dispatch) => ({
@@ -467,12 +503,15 @@ const App = {
     updateChatMessageUrl({ id, to, url }) {
       this.changeChatMessageUrl({ id, to, url })
     },
-    updateOnline(isOnline){
-      this.updateState({isOnline});
+    updateOnline(isOnline) {
+      this.updateState({ isOnline });
     },
     deleteFailedMessage({ id, fromId, chatType }) {
       this.deleteLocalMessage({ id, fromId, chatType });
     },
+    setServerChannelMap({ serverId, channelId, unReadNum }) {
+      this.updateServerChannelMap({ serverId, channelId, unReadNum })
+    }
   })
 };
 

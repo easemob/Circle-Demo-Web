@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3514593 */
-  src: url('iconfont.woff2?t=1663840377193') format('woff2'),
-       url('iconfont.woff?t=1663840377193') format('woff'),
-       url('iconfont.ttf?t=1663840377193') format('truetype');
+  src: url('iconfont.woff2?t=1672305396279') format('woff2'),
+       url('iconfont.woff?t=1672305396279') format('woff'),
+       url('iconfont.ttf?t=1672305396279') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,126 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-mic_n_lock:before {
+  content: "\5c";
+}
+
+.icon-power_line-01:before {
+  content: "\b7";
+}
+
+.icon-power_in_circle:before {
+  content: "\ff01";
+}
+
+.icon-arrow_topright:before {
+  content: "\40";
+}
+
+.icon-unlock-01:before {
+  content: "\24";
+}
+
+.icon-lock-01:before {
+  content: "\23";
+}
+
+.icon-hand_up_dot-01:before {
+  content: "\25";
+}
+
+.icon-handup-01:before {
+  content: "\2c6";
+}
+
+.icon-logout-01-01:before {
+  content: "\26";
+}
+
+.icon-a-2_arrows_gathering:before {
+  content: "\2a";
+}
+
+.icon-mic_slash:before {
+  content: "\ff09";
+}
+
+.icon-a-4_arrows_gathering:before {
+  content: "\ff08";
+}
+
+.icon-a-4_arrows_separation:before {
+  content: "\2b";
+}
+
+.icon-phone_down:before {
+  content: "\3d";
+}
+
+.icon-video_slash:before {
+  content: "\2d";
+}
+
+.icon-phone:before {
+  content: "\39";
+}
+
+.icon-mic:before {
+  content: "\38";
+}
+
+.icon-bell-01:before {
+  content: "\37";
+}
+
+.icon-bell_slash:before {
+  content: "\36";
+}
+
+.icon-group:before {
+  content: "\35";
+}
+
+.icon-info-01:before {
+  content: "\34";
+}
+
+.icon-video-01:before {
+  content: "\33";
+}
+
+.icon-voice-01:before {
+  content: "\32";
+}
+
+.icon-a-2_arrows-01:before {
+  content: "\31";
+}
+
+.icon-radio-01:before {
+  content: "\30";
+}
+
+.icon-camera-01:before {
+  content: "\7a";
+}
+
+.icon-get_top-01:before {
+  content: "\79";
+}
+
+.icon-msg_check-01:before {
+  content: "\78";
+}
+
+.icon-bell_gear:before {
+  content: "\77";
+}
+
+.icon-house-01-01:before {
+  content: "\76";
 }
 
 .icon-circle_arrow_clockwise:before {

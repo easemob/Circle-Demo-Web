@@ -7,9 +7,12 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import Icon from "@/components/Icon";
 import { CHAT_TYPE } from "@/consts"
 import Number from "@/components/Number";
-import { createMsg, deliverMsg, filterData, addServer, deleteServer, deleteLocalThread } from "@/utils/common";
+import { createMsg, deliverMsg, filterData, addServer, deleteServer, deleteLocalThread, initServerIdUnread } from "@/utils/common";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { MULTI_DEVICE_EVENT } from "@/consts"
+import { Tooltip, Dropdown } from "antd";
+import { SERVER_ICON_MENU_TYPES, getServeIconMenu } from "../const"
+
 
 const ScrollBar = (props) => {
   const {
@@ -34,10 +37,14 @@ const ScrollBar = (props) => {
     selected,
     setSelected,
     appUserInfo,
+    serverChannelMap,
+    setServerChannelMap,
+    curRtcChannelInfo
   } = props;
   const SCROLL_WARP_ID = "serverScrollWrapId";
   const LIMIT = 20;
   const location = useLocation();
+  // const { apiUrl, orgName, appName } = WebIM.conn;
 
   const setSelectedVal = (loc) => {
     if (serverId) {
@@ -64,12 +71,16 @@ const ScrollBar = (props) => {
       })
       .then((res) => {
         const { list, cursor } = res.data;
-        if (cursor === "" && list.length > 0 && serverId) {
-          const { id, defaultChannelId } = list[0];
+        const { id, defaultChannelId } = list[0];
+        if (list.length > 0 && serverId) {
           navigate(`/main/channel/${id}/${defaultChannelId}`);
         }
         let ls = [];
-
+        //未读消息初始值设置&&获取server 和channel映射关系
+        list.length > 0 && list.forEach(item => {
+          // getChannelIds(item.id);
+          initServerIdUnread(item.id)
+        })
         if (joinedServerInfo?.list?.length) {
           //筛选已存在列表中的server(创建或加入时列表已自动插入server数据)
           const resList = filterData(joinedServerInfo.list, list, "id");
@@ -83,12 +94,7 @@ const ScrollBar = (props) => {
           cursor,
           loadCount: list.length
         });
-        if (!cursor) {
-          if (res.data.list.length > 0 && serverId) {
-            const { id, defaultChannelId } = res.data.list[0];
-            navigate(`/main/channel/${id}/${defaultChannelId}`);
-          }
-        }
+
       });
   };
 
@@ -124,7 +130,7 @@ const ScrollBar = (props) => {
         type: "channel",
         to: userId
       });
-      deliverMsg({msg}).then(() => {
+      deliverMsg({ msg }).then(() => {
         setUnReadNumber({
           chatType: CHAT_TYPE.single,
           fromId: userId,
@@ -261,7 +267,7 @@ const ScrollBar = (props) => {
     if (deleteThreadEvent.event && deleteThreadEvent.event !== "") {
       deleteLocalThread(deleteThreadEvent.parentId, deleteThreadEvent.threadId).then(() => {
         if (threadId && threadId === deleteThreadEvent.threadId) {
-          setThreadInfo({threadInfo:{}});
+          setThreadInfo({ threadInfo: {} });
           handleThreadPanel(false);
           navigate(`/main/channel/${serverId}/${channelId}`);
         }
@@ -269,6 +275,28 @@ const ScrollBar = (props) => {
     }
   }, [deleteThreadEvent])
 
+  //点击社区头像
+  const clickServerIcon = (e, id) => {
+    if (e.key === SERVER_ICON_MENU_TYPES.setUnread) {
+      const channelIds = Object.keys(serverChannelMap[id]);
+      channelIds.forEach(item => {
+        setServerChannelMap({
+          serverId: id,
+          channelId: item,
+          unReadNum: 0,
+        })
+      })
+    }
+  }
+  // 社区未读数
+  const getUnreadNum = (id) => {
+    const channelIdUnreadInfo = serverChannelMap[id];
+    let num = 0;
+    if (channelIdUnreadInfo) {
+      Object.values(channelIdUnreadInfo).forEach(item => num = num + item)
+    }
+    return num;
+  }
   return (
     <div className={s.menuNav}>
       <div className={s.basis}>
@@ -312,19 +340,40 @@ const ScrollBar = (props) => {
           >
             {joinedServerInfo?.list?.map((item, index) => {
               return (
-                <div
-                  key={index}
-                  className={`${s.bgHover} ${selected === item.id ? s.selected : ""
-                    }`}
-                  onClick={() => {
-                    setSelected(item.id);
-                    navigate(
-                      `/main/channel/${item.id}/${item.defaultChannelId}`
-                    );
-                  }}
+                <Tooltip
+                  title={item.name}
+                  placement="right"
+                  overlayClassName="toolTip2"
+                  key={item.id}
                 >
-                  <AvatarInfo size={48} src={item.icon} isServer={true} />
-                </div>
+                  <Dropdown
+                    menu={{
+                      items: getServeIconMenu(item.name),
+                      onClick: (e) => clickServerIcon(e, item.id),
+                      triggerSubMenuAction: "click"
+                    }}
+                    overlayClassName="circleDropDown"
+                    trigger={['contextMenu']}>
+                    <div
+                      key={item.id}
+                      className={`${s.bgHover} ${selected === item.id ? s.selected : ""
+                        }`}
+                      onClick={() => {
+                        setSelected(item.id);
+                        navigate(
+                          `/main/channel/${item.id}/${item.defaultChannelId}`
+                        );
+                      }}
+                      onContextMenu={(e) => { e.preventDefault(); }}
+                    >
+                      <AvatarInfo size={48} src={item.icon} isServer={true} />
+                      {curRtcChannelInfo?.serverId === item.id && <div className={s.isInRoom}>
+                        <div className={s.isConnected}></div>
+                      </div>}
+                      {getUnreadNum(item.id) > 0 && <div className={s.unReadNum}>{getUnreadNum(item.id) > 99 ? "99+" : getUnreadNum(item.id)}</div>}
+                    </div>
+                  </Dropdown>
+                </Tooltip>
               );
             })}
           </InfiniteScroll>
@@ -359,7 +408,7 @@ const ScrollBar = (props) => {
   );
 };
 
-const mapStateToProps = ({ app, server, contact, thread }) => {
+const mapStateToProps = ({ app, server, contact, thread, channel }) => {
   return {
     loginSuccess: app.loginSuccess,
     userInfo: app.userInfo,
@@ -374,6 +423,8 @@ const mapStateToProps = ({ app, server, contact, thread }) => {
     applyNum: contact.applyInfo.length,
     serverUserMap: server.serverUserMap,
     selected: app.selectedTab,
+    serverChannelMap: app.serverChannelMap,
+    curRtcChannelInfo: channel.curRtcChannelInfo,
   };
 };
 
@@ -430,6 +481,12 @@ const mapDispatchToProps = (dispatch) => {
     setSelected: (params) => {
       return dispatch({
         type: "app/setSelectedTab",
+        payload: params
+      });
+    },
+    setServerChannelMap: (params) => {
+      return dispatch({
+        type: "app/setServerChannelMap",
         payload: params
       });
     },
