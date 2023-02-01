@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState } from "react";
+import React, { memo, useEffect, useMemo, useState } from "react";
 import s from "./index.module.less";
 import { connect } from "react-redux";
 import HeaderWrap from "@/components/HeaderWrap";
@@ -17,7 +17,7 @@ const getCategoryInfo = ({ serverId = "", categoryMap = new Map() }) => {
     return categoryMap.get(serverId);
 };
 const ChannelOverView = (props) => {
-    const { currentChannelInfo, categoryMap } = props;
+    const { currentChannelInfo, categoryMap, setCurrentChannelInfo } = props;
     const { serverId, channelId } = useParams();
     const Header = () => {
         return (<div className={s.header}>
@@ -63,14 +63,18 @@ const ChannelOverView = (props) => {
     const categoryInfo = useMemo(() => {
         return getCategoryInfo({ serverId, categoryMap });
     }, [categoryMap, serverId]);
-    const [curCategoryId, setCurCategoryId] = useState(currentChannelInfo.channelCategoryId);
+    const [curCategoryId, setCurCategoryId] = useState("");
+    useEffect(() => {
+        setCurCategoryId(currentChannelInfo.channelCategoryId)
+    }, [currentChannelInfo])
     const changeChannelCategoryId = () => {
-        WebIM.conn.transferChannelCategory({
+        WebIM.conn.transferChannel({
             serverId,
             channelId,
             channelCategoryId: curCategoryId,
         }).then(() => {
             message.success("移动频道到其他分组成功");
+            setIsEditCategory(false)
             const info = { ...currentChannelInfo, channelCategoryId: curCategoryId };
             //被移动前的分组删除channel
             deleteLocalChannel({
@@ -82,7 +86,9 @@ const ChannelOverView = (props) => {
             })
             //移动到的分组增加channel
             insertChannelList(serverId, channelId, info);
+            setCurrentChannelInfo({ ...info })
         }).catch(() => {
+            setIsEditCategory(false)
             message.error("移动频道到其他分组失败，请重试！");
         })
     }
@@ -170,12 +176,17 @@ const ChannelOverView = (props) => {
 const mapStateToProps = ({ server, app }) => {
     return {
         joinedServerInfo: server.joinedServerInfo,
-        currentChannelInfo: app.currentChannelInfo,
         categoryMap: server.categoryMap,
     };
 };
 const mapDispatchToProps = (dispatch) => {
     return {
+        setCurrentChannelInfo: (params) => {
+            return dispatch({
+                type: "app/setCurrentChannelInfo",
+                payload: params,
+            })
+        },
     };
 };
 export default memo(connect(mapStateToProps, mapDispatchToProps)(ChannelOverView));

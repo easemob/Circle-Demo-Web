@@ -11,11 +11,11 @@ const RtcMember = ({ curUser, isInChannel, userInfo, rtcUserInfo }) => {
             <div className={s.info}>
                 <div className={s.ava}>
                     <AvatarInfo size={26} src={userInfo?.avatarurl} />
-                    {rtcUserInfo[userInfo?.uid]?.volume >= 60 && <div className={s.avaBorder}></div>}
+                    {rtcUserInfo[userInfo?.uid]?.volume >= 60 && ((userInfo?.uid !== curUser.username && rtcUserInfo[userInfo?.uid]?.enabled) || (userInfo?.uid === curUser.username && rtc.localAudioTrack?.enabled)) && <div className={s.avaBorder}></div>}
                 </div>
                 <div className={s.name}>{userInfo?.nickname || userInfo?.uid}</div>
             </div>
-            {((userInfo?.uid !== curUser.username && rtcUserInfo[userInfo?.uid]?.enabled === false) ||
+            {((userInfo?.uid !== curUser.username && !rtcUserInfo[userInfo?.uid]?.enabled) ||
                 ((userInfo?.uid === curUser.username) && (!rtc.localAudioTrack?.enabled))) &&
                 isInChannel &&
                 <div className={s.enabled}>

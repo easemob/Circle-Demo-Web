@@ -4,10 +4,11 @@ import store from "../store";
 import { ERROR_CODE, USER_ROLE } from "@/consts";
 import { CHAT_TYPE, SERVER_COVER_MAP } from "@/consts";
 import Icon from "@/components/Icon";
-import { message as messageTip } from "antd";
+import { message as messageTip, Modal } from "antd";
 import { emojiMap } from "@/consts/emoji";
 import { startBasicCall, endBasicCall } from "@/utils/basicVoiceCall"
 import http from "@/utils/axios"
+import { rtc } from "@/utils/basicVoiceCall"
 
 const { dispatch, getState } = store;
 
@@ -556,9 +557,15 @@ const updateLocalChannelDetail = (type, serverId, channelCategoryId, data) => {
   //本账号编辑channel "edit"
   const { id } = data;
   const currentChannelInfo = getState().app.currentChannelInfo;
+  const currentRtcChannelInfo = getState().channel.curRtcChannelInfo;
   if (currentChannelInfo.serverId === serverId && currentChannelInfo.channelId === data.id) {
     dispatch.app.setCurrentChannelInfo({
       ...currentChannelInfo,
+      ...data
+    });
+  } else if (currentRtcChannelInfo?.serverId === serverId && currentRtcChannelInfo.channelId === data.id) {
+    dispatch.channel.setCurRtcChannelInfo({
+      ...currentRtcChannelInfo,
       ...data
     });
   }
@@ -658,10 +665,10 @@ const deleteLocalChannel = ({ serverId, channelCategoryId, channelId, isDestroy 
       if (Object.prototype.hasOwnProperty.call(getState().app.serverRole, serverId)) {
         role = getState().app.serverRole[serverId]
       }
-      if ((findIndex2 > -1 && role === USER_ROLE.user) || (findIndex2 > -1 && isDestroy && role === USER_ROLE.owner)) {
+      if (findIndex2 > -1 && (role === USER_ROLE.user || isDestroy)) {
         privateChannel.splice(findIndex2, 1);
         dispatch.channel.deleteChannelThreadMap({ channelId });
-        updateChannelList(serverId, channelInfo, privateChannel, "private");
+        updateChannelList(channelCategoryId, channelInfo, privateChannel, "private");
       }
     }
   }
@@ -852,16 +859,19 @@ const updateCategoryMap = ({ type, categoryInfo }) => {
       const findIndex = ls.findIndex(item => item.id === id)
       if (findIndex > -1) {
         ls.splice(findIndex, 1);
+        //重新拉取默认分组数据
+        dispatch.server.setTransferCategory(true);
         //将删除的分组下的频道移动到默认分组下
-        const channelInfo = getState().server.channelMap.get(categoryInfo.id);
-        const list = channelInfo
-          ? [...channelInfo?.public, ...channelInfo?.private]
-          : [];
-        const categoryInfoList = getState().server.categoryMap.get(categoryInfo.serverId);
-        list.forEach(item => {
-          item.channelCategoryId = getDefaultCategoryInfo(categoryInfoList).id
-          insertChannelList(item.serverId, item.channelId, item);
-        })
+        // const channelInfo = getState().server.channelMap.get(categoryInfo.id);
+        // const list = channelInfo
+        //   ? [...channelInfo?.public, ...channelInfo?.private]
+        //   : [];
+        // const categoryInfoList = getState().server.categoryMap.get(categoryInfo.serverId);
+        // const defaultCategoryId = getDefaultCategoryInfo(categoryInfoList).id;
+        // list.forEach(item => {
+        //   item.channelCategoryId = defaultCategoryId;
+        //   insertChannelList(item.serverId, item.channelId, item);
+        // })
       }
       break;
     default:
@@ -898,8 +908,9 @@ const joinRtcRoom = (channelInfo) => {
         rtcUserInfo[item] = { agoraUid: res.data[item] }
       })
       dispatch.rtc.setRtcUserInfo(rtcUserInfo);
-      http("get", `http://a1.easemob.com/inside/token/rtc/channel/${channelId}`).then(res => {
+      http("get", `https://a1.easemob.com/inside/token/rtc/channel/${channelId}`).then(res => {
         startBasicCall({ accessToken: res.accessToken, channel: channelId, agoraUid: res.agoraUid }).then(() => {
+          rtc.localAudioTrack.setEnabled(false);
           // startBasicCall({ accessToken: "007eJxTYMhaI3D/eM2hJdcnpCyy3M8SelOaIf2Hsekzjjovu7rK/GwFhqREC1NTAxMzI0NjA5O0JAtLE3NLA3MDixQg19zSJO2K39bkhkBGhhPJxZyMDIwMLEAM4jOBSWYwyQIlkw2NjBkZDABJXiAQ", channel: "c123", agoraUid: null}).then(()=>{
           //记录当前加入的语聊房频道
           dispatch.channel.setCurRtcChannelInfo(channelInfo);
@@ -932,6 +943,7 @@ const joinRtcRoom = (channelInfo) => {
 
 //退出语聊房 a.退出circle channel;b.退出rtcRoom
 const leaveRtcChannel = ({ needLeave, serverId, channelId }) => {
+  const { channelCategoryId, isPublic } = getState().channel.curRtcChannelInfo
   return new Promise((resolve, reject) => {
     if (needLeave) {
       //退出rtcRoom
@@ -953,6 +965,16 @@ const leaveRtcChannel = ({ needLeave, serverId, channelId }) => {
           //退出当前频道
           WebIM.conn.leaveChannel({ serverId, channelId }).then(res => {
             resolve();
+            //如果是私有频道，更新列表
+            if(!isPublic){
+              deleteLocalChannel({
+                serverId,
+                channelCategoryId,
+                channelId,
+                isDestroy: false,
+                isTransfer: false
+              })
+            }
           })
         })
       }).catch(() => {
@@ -977,13 +999,13 @@ const leaveRtcChannel = ({ needLeave, serverId, channelId }) => {
   });
 }
 //语聊房成员更新
-const updateRtcMember = ({ type, channelId, userId }) => {
+const updateRtcMember = ({ type, channelId, userId, role }) => {
   if (type === "add") {
     let channelUserMap = getState().channel.channelUserMap.get(channelId) || {};
     let list = channelUserMap?.list || [];
     const findIndex = list.findIndex((item) => userId === item.uid);
     if (findIndex < 0) {
-      list.push({ uid: userId });
+      list.push({ uid: userId, role });
       dispatch.channel.setChannelUserMap({
         id: channelId,
         userListInfo: {
@@ -1027,7 +1049,23 @@ const initServerIdUnread = (id, cursor = "") => {
     }
   })
 }
-
+//更新频道列表用户角色
+const updateUserRole = ({ serverId, channelId, userId, role }) => {
+  let dt = getState().channel.channelUserMap.get(channelId);
+  const userList = dt?.list || [];
+  const index = userList.findIndex(item => item.uid === userId);
+  if (index > -1) {
+    const info = { ...userList[index], role };
+    userList.splice(index, 1, info)
+    dispatch.channel.setChannelUserMap({
+      channelId: getState().channel.curRtcChannelInfo.channelId,
+      userListInfo: {
+        ...dt,
+        list: userList
+      }
+    });
+  }
+}
 
 export {
   getConfirmModalConf,
@@ -1068,4 +1106,5 @@ export {
   leaveRtcChannel,
   updateRtcMember,
   initServerIdUnread,
+  updateUserRole,
 };

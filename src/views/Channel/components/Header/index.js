@@ -43,10 +43,10 @@ const ChannelHeader = (props) => {
     serverRole,
     channelMemberVisible,
     categoryMap,
-    currentChannelInfo,
     setInviteVisible,
     setInviteChannelInfo,
-    setServerChannelMap
+    setServerChannelMap,
+    setCurrentChannelInfo
   } = props;
   //操作thread列表
   const [visibleThread, setVisibleThread] = useState(false);
@@ -62,7 +62,7 @@ const ChannelHeader = (props) => {
   const onMenuClick = (e) => {
     switch (e.key) {
       case CHANNEL_MENU_TYPES.invite:
-        setInviteChannelInfo({ inviteChannelInfo: currentChannelInfo });
+        setInviteChannelInfo({ inviteChannelInfo: channelInfo });
         setInviteVisible(INVITE_TYPE.inviteChannel);
         break;
       case CHANNEL_MENU_TYPES.setUnread:
@@ -73,7 +73,7 @@ const ChannelHeader = (props) => {
         })
         break;
       default:
-        WebIM.conn.transferChannelCategory({
+        WebIM.conn.transferChannel({
           serverId,
           channelId,
           channelCategoryId: e.key
@@ -89,6 +89,7 @@ const ChannelHeader = (props) => {
           })
           //移动到的分组增加channel
           insertChannelList(serverId, channelId, info);
+          setCurrentChannelInfo({ ...info })
           message.success("移动频道到其他分组成功");
         }).catch(() => {
           message.error("移动频道到其他分组失败，请重试！");
@@ -101,10 +102,9 @@ const ChannelHeader = (props) => {
     return getCategoryInfo({ serverId, categoryMap });
   }, [categoryMap, serverId]);
   //菜单信息
-  const menuInfo = useMemo(()=>{
+  const menuInfo = useMemo(()=>{console.log("====8888",channelInfo,categoryInfo)
     return getChannelItems(channelInfo, userRole, categoryInfo)
   },[channelInfo, userRole, categoryInfo])
-
   return (
     <HeaderWrap>
       <span className={`${s.name} ${channelInfo?.isPublic
@@ -159,7 +159,6 @@ const ChannelHeader = (props) => {
           selectable={false}
           triggerSubMenuAction="click"
           mode="horizontal"
-          // items={getChannelItems(channelInfo, userRole, categoryInfo)}
           items={menuInfo}
         ></Menu>
       </div>
@@ -174,7 +173,6 @@ const mapStateToProps = ({ app, server, channel }) => {
     serverRole: app.serverRole,
     channelMemberVisible: channel.channelMemberVisible,
     categoryMap: server.categoryMap,
-    currentChannelInfo: app.currentChannelInfo,
   };
 };
 
@@ -197,6 +195,12 @@ const mapDispatchToProps = (dispatch) => {
         type: "app/setServerChannelMap",
         payload: params
       });
+    },
+    setCurrentChannelInfo: (params) => {
+      return dispatch({
+        type: "app/setCurrentChannelInfo",
+        payload: params,
+      })
     },
   };
 };

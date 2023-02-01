@@ -10,6 +10,7 @@ const Server = {
     joinedServerInfo: {},
     categoryMap: new Map(),
     channelMap: new Map(),
+    transferCategory: false, //移动频道后重新拉去默认分组数据
     serverUserMap: new Map(),
     serverMultiDeviceEvent: {},//event,data
     channelEvent: {},//event,data
@@ -85,6 +86,9 @@ const Server = {
     },
     setCategoryMap({ serverId, categoryInfo }) {
       this.updateCategoryMap({ serverId, categoryInfo })
+    },
+    setTransferCategory(transferCategory){
+      this.updateState({ transferCategory });
     }
   }
 };

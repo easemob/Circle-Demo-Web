@@ -76,7 +76,8 @@ const ChannelItem = (props) => {
     setServerChannelMap,
     serverChannelMap,
     currentChannelInfo,
-    setCurrentChannelInfo
+    setCurrentChannelInfo,
+    setSettingChannelInfo,
   } = props;
   const selfRole = serverRole && serverRole[serverId];
   const { threadId } = useParams();
@@ -212,6 +213,7 @@ const ChannelItem = (props) => {
 
   //右击频道
   const clickChannelMenu = (e, serverId, channelId) => {
+    e.domEvent.stopPropagation();
     switch (e.key) {
       case CHANNEL_MENU_TYPES.invite:
         setInviteChannelInfo({ inviteChannelInfo: channelInfo });
@@ -225,10 +227,11 @@ const ChannelItem = (props) => {
         })
         break;
       case CHANNEL_MENU_TYPES.editChannel:
+        setSettingChannelInfo(channelInfo);
         navigate(`/main/channel/${serverId}/${channelId}/setting`);
         break;
       default:
-        WebIM.conn.transferChannelCategory({
+        WebIM.conn.transferChannel({
           serverId,
           channelId,
           channelCategoryId: e.key
@@ -244,8 +247,8 @@ const ChannelItem = (props) => {
           })
           //移动到的分组增加channel
           insertChannelList(serverId, channelId, info);
-          if(currentChannelInfo.channelId === channelInfo.channelId){
-            setCurrentChannelInfo({...info})
+          if (currentChannelInfo.channelId === channelInfo.channelId) {
+            setCurrentChannelInfo({ ...info })
           }
           message.success("移动频道到其他分组成功");
         }).catch(() => {
@@ -284,12 +287,12 @@ const ChannelItem = (props) => {
             channelId
           }).then(() => {
             joinRtcRoom(channelInfo);
+          }).catch(e => {
+            if (JSON.parse(e.data).error_description === "The number of channel users is full.") {
+              message.error({ content: "语聊房已满！" });
+            }
           })
-      } else if (mode === 1) {
-        if (channelMemberInfo?.list?.length && channelMemberInfo?.list?.length === channelInfo.seatCount) {
-          message.error("语聊房已满！");
-          return
-        }
+      } else {
         if (curRtcChannelInfo?.channelId !== channelId) {
           //提示已经在别的rtc频道了
           const conf = getConfirmModalConf({
@@ -301,8 +304,7 @@ const ChannelItem = (props) => {
             ),
             cancelText: "我再想想",
             onOk: () => {
-              const { serverId, channelId } = curRtcChannelInfo;
-              leaveRtcChannel({ needLeave: true, serverId, channelId }).then(() => {
+              leaveRtcChannel({ needLeave: true, serverId: curRtcChannelInfo.serverId, channelId: curRtcChannelInfo.channelId }).then(() => {
                 //加入新频道
                 WebIM.conn
                   .joinChannel({
@@ -310,8 +312,14 @@ const ChannelItem = (props) => {
                     channelId
                   }).then(() => {
                     joinRtcRoom(channelInfo);
+                  }).catch(e => {
+                    if (JSON.parse(e.data).error_description === "The number of channel users is full.") {
+                      message.error({ content: "语聊房已满！" });
+                    }else {
+                      message.error({ content: "加入语聊房失败，请重试！" });
+                    }
                   })
-              }).catch(() => {
+              }).catch((e) => {
                 message.error({ content: "加入语聊房失败，请重试！" });
               })
             }
@@ -350,8 +358,8 @@ const ChannelItem = (props) => {
       return channelInfo.seatCount
     }
   }
-  const  menuDisable = mode === 1 && curRtcChannelInfo?.channelId !== channelId && selfRole === "user"
-  
+  const menuDisable = mode === 1 && curRtcChannelInfo?.channelId !== channelId && selfRole === "user"
+
   return (
     <div className={s.channelItemWrap}>
       <Dropdown
@@ -364,12 +372,12 @@ const ChannelItem = (props) => {
             role: selfRole,
             categorylist: categoryInfo?.list || []
           }),
-          onClick: (e) => clickChannelMenu(e, serverId, channelId),
+          onClick: (e) => clickChannelMenu(e, serverId, channelId, channelInfo),
           triggerSubMenuAction: "hover",
         }}
         overlayClassName="circleDropDown"
         destroyPopupOnHide={true}
-        disabled={ menuDisable}
+        disabled={menuDisable}
         trigger={['contextMenu']}
       >
         <div
@@ -444,7 +452,7 @@ const ChannelItem = (props) => {
             {channelMemberInfo?.list?.map((item) => {
               return (
                 <div key={item.uid}>
-                  {item.uid !== userInfo.username ? <Dropdown
+                  <Dropdown
                     menu={{
                       items: getRtcMemberMenu(selfRole, item),
                       onClick: (e) => clickRtcMember(e, item),
@@ -452,13 +460,13 @@ const ChannelItem = (props) => {
                     }}
                     overlayClassName="circleDropDown"
                     destroyPopupOnHide={true}
-                    trigger={['contextMenu']}>
+                    trigger={['contextMenu']}
+                    disabled={item.uid === userInfo.username}
+                  >
                     <div>
                       <RtcMember userInfo={appUserInfo[item.uid]} isInChannel={curRtcChannelInfo?.channelId === channelId} />
                     </div>
-                  </Dropdown> :
-                    <RtcMember userInfo={appUserInfo[item.uid]} isInChannel={curRtcChannelInfo?.channelId === channelId} />
-                  }
+                  </Dropdown>
                 </div>
 
               );
@@ -548,6 +556,12 @@ const mapDispatchToProps = (dispatch) => {
     setCurrentChannelInfo: (params) => {
       return dispatch({
         type: "app/setCurrentChannelInfo",
+        payload: params,
+      })
+    },
+    setSettingChannelInfo: (params) => {
+      return dispatch({
+        type: "channel/setSettingChannelInfo",
         payload: params,
       })
     },

@@ -53,12 +53,17 @@ const ServerOverView = (props) => {
     const changeRemoveTag = (tagName) => {
         //存储一个数组
         const findIndex = showTagList.findIndex((item) => item.tagName === tagName);
+        const index = addTag.indexOf(tagName)
         if (findIndex >= 0) {
             const find = showTagList[findIndex];
             if (find.tagId !== undefined) {
                 setRemoveTag([...removeTag, find.tagId]);
+            }else if(index>-1){
+               addTag.splice(index, 1);
+               setAddTag([...addTag])
             }
             showTagList.splice(findIndex, 1);
+            setShowTagList([...showTagList])
         }
     }
 

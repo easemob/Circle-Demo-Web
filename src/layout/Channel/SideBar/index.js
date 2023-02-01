@@ -88,6 +88,7 @@ const SideBar = (props) => {
     const serverInfo = useMemo(() => {
         return getServerInfoById({ serverId, serverList: joinedServerInfo.list });
     }, [serverId, joinedServerInfo]);
+   
     //分组信息
     const categoryInfo = useMemo(() => {
         return getCategoryInfo({ serverId, categoryMap });
@@ -317,6 +318,7 @@ const SideBar = (props) => {
     }
     //分组菜单操作
     const editCategory = (e, item) => {
+        e.domEvent.stopPropagation()
         switch (e.key) {
             case CATEGORY_MENU_TYPES.edit:
                 setShowUpdateCategory(true);
@@ -368,7 +370,7 @@ const SideBar = (props) => {
                 <Dropdown
                     menu={{
                         items: getCategoryMenu(selfRole),
-                        onClick: (e) => editCategory(e, item),
+                        onClick: (e) => {editCategory(e, item)},
                         triggerSubMenuAction: "click"
                     }}
                     overlayClassName="circleDropDown"
@@ -488,7 +490,7 @@ const SideBar = (props) => {
                 </InfiniteScroll>
             </div>
             {isInRtcRoom && <div className={s.rtcWrap}>
-                <RtcRoom leave={leaveRtcRoom} invite={inviteUser} /></div>}
+                <RtcRoom leave={leaveRtcRoom} invite={inviteUser} serverInfo={serverInfo}/></div>}
             <NameModal
                 title={showUpdateCategory ? "编辑分组" : "创建频道分组"}
                 inputName="分组名称"

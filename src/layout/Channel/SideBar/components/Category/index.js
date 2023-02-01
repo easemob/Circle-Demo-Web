@@ -6,10 +6,9 @@ import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { DownOutlined } from "@ant-design/icons";
 import WebIM from "@/utils/WebIM";
-import { filterData } from "@/utils/common";
+import { filterData, getDefaultCategoryInfo } from "@/utils/common";
+import { CHANNEL_PAGE_SIZE } from "@/consts"
 
-// const LIMIT = 20;
-const LIMIT = 5;
 
 const getChannelInfo = ({ channelCategoryId = "", channelMap = new Map() }) => {
     return channelMap.get(channelCategoryId);
@@ -21,6 +20,8 @@ const CategoryItem = (props) => {
         channelMap,
         setServerChannelMap,
         categoryInfo,
+        transferCategory,
+        setTransferCategory,
     } = props;
     const { serverId, channelId, threadId } = useParams();
     const [hasMorePublic, setHasMorePublic] = useState(true);
@@ -46,13 +47,13 @@ const CategoryItem = (props) => {
                 .getCategoryPublicChannels({
                     serverId,
                     channelCategoryId,
-                    pageSize: LIMIT,
+                    pageSize: CHANNEL_PAGE_SIZE,
                     cursor
                 })
                 .then((res) => {
                     setLoading(false);
                     let ls = [];
-                    if (!channelInfo?.public) {
+                    if (cursor === "") {
                         ls = res.data.list;
                     } else {
                         const resList = filterData(
@@ -69,14 +70,14 @@ const CategoryItem = (props) => {
                         privateCursor: "",
                         loadCount: res.data.list.length
                     };
-                    if (res.data.list.length < LIMIT) {
+                    if (res.data.list.length < CHANNEL_PAGE_SIZE) {
                         setHasMorePublic(false);
                         setLoading(true);
                         WebIM.conn
                             .getCategoryVisiblePrivateChannels({
                                 serverId,
                                 channelCategoryId,
-                                pageSize: LIMIT,
+                                pageSize: CHANNEL_PAGE_SIZE,
                                 cursor: ""
                             })
                             .then((privateRes) => {
@@ -118,7 +119,7 @@ const CategoryItem = (props) => {
             .getCategoryVisiblePrivateChannels({
                 serverId,
                 channelCategoryId,
-                pageSize: LIMIT,
+                pageSize: CHANNEL_PAGE_SIZE,
                 cursor,
             })
             .then((res) => {
@@ -141,10 +142,12 @@ const CategoryItem = (props) => {
             })
     };
     useEffect(() => {
-        if (!channelMap.has(categoryId) && categoryId) {
+        if ((!channelMap.has(categoryId) && categoryId) || (transferCategory && categoryId === getDefaultCategoryInfo(categoryInfo)?.id)) {
+            setHasMorePublic(true);
             getCategoryPublicChannels({ cursor: "", channelCategoryId: categoryId });
+            transferCategory && setTransferCategory(false);
         }
-    }, [categoryId, channelMap]);
+    }, [categoryId, channelMap, transferCategory]);
     const LoadBtn = ({ onClick }) => {
         return (
             <div className={s.loadBtn} onClick={onClick}>
@@ -172,7 +175,7 @@ const CategoryItem = (props) => {
                         </List.Item>
                     )}
                 />}
-                {channelInfo?.loadCount === LIMIT ? (
+                {channelInfo?.loadCount === CHANNEL_PAGE_SIZE ? (
                     <LoadBtn
                         onClick={loadMoreData}
                     />
@@ -190,6 +193,7 @@ const mapStateToProps = ({ server, app }) => {
         joinedServerInfo: server.joinedServerInfo,
         channelMap: server.channelMap,
         tags: server.currentServerTag,
+        transferCategory: server.transferCategory
     };
 };
 
@@ -198,6 +202,12 @@ const mapDispatchToProps = (dispatch) => {
         setServerChannelMap: (params) => {
             return dispatch({
                 type: "server/setChannelMap",
+                payload: params
+            });
+        },
+        setTransferCategory: (params) => {
+            return dispatch({
+                type: "server/setTransferCategory",
                 payload: params
             });
         },

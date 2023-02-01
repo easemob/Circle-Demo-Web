@@ -90,7 +90,6 @@ const CHANNEL_MENU_TYPES = {
   invite: "invite",
   setUnread: "setUnread",
   editChannel: "editChannel",
-  transferChannelCategory: "transferChannelCategory",
 }
 
 const CHANNEL_MENU_CHILDREN = [
@@ -274,7 +273,7 @@ const getRtcMemberMenu = (role, userInfo) => {
       ),
       key: RTC_MEMBER_MENU.chat
     }];
-  if (role === USER_ROLE.owner || (role === USER_ROLE.role && userInfo.role === USER_ROLE.user)) {
+  if (role === USER_ROLE.owner || (role === USER_ROLE.moderator && userInfo.role === USER_ROLE.user)) {
     items.push({
       label: (
         <div className={s.menuWrap}>

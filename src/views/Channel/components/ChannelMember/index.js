@@ -70,7 +70,6 @@ const ChannelMember = (props) => {
         } else {
           ls = userRoleList;
         }
-
         setChannelUserMap({
           channelId,
           userListInfo: {
