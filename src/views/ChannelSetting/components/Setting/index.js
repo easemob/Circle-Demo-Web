@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { connect } from "react-redux";
 import s from "./index.module.less";
 import HeaderWrap from "@/components/HeaderWrap";
@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom";
 const ChannelSetting = (props) => {
     const { currentChannelInfo } = props;
     const { serverId, channelId } = useParams();
+    const [isPublic, setIsPublic] = useState(currentChannelInfo.isPublic)
     const Header = () => {
         return (<div className={s.header}>
             <span className={s.icon}><Icon name="gear" size="24px" /></span>
@@ -32,6 +33,7 @@ const ChannelSetting = (props) => {
                 message.error("编辑频道失败");
             });
     }
+    const [count, setCount] = useState(currentChannelInfo?.seatCount || 8)
 
     return (
         <div className={s.layout}>
@@ -47,17 +49,16 @@ const ChannelSetting = (props) => {
                                     <Slider
                                         min={1}
                                         max={20}
-                                        defaultValue={currentChannelInfo.seatCount || 8}
-                                        value={currentChannelInfo.seatCount || 8}
+                                        defaultValue={count}
                                         style={{ width: "660px" }}
                                         tooltip={{
                                             open: false,
                                         }}
-                                        onChange={(count) => editChannel("seatCount", count)}
+                                        onChange={(count) => { setCount(count); editChannel("seatCount", count) }}
                                     />
                                 </div>
                             </div>
-                            <div className={s.totalNum}>{currentChannelInfo.seatCount || 8}</div>
+                            <div className={s.totalNum}>{count}</div>
                         </div>
                     </div>
                     <div className={s.desc}>仅通过邀请的用户可以加入私密频道</div>
@@ -67,7 +68,7 @@ const ChannelSetting = (props) => {
                     <div className={s.setItem}>
                         <div className={s.content}>
                             <span className={s.isPublic}>是否为公开频道</span>
-                            <Switch checked={currentChannelInfo.isPublic} onChange={(checked) => editChannel("isPublic", checked)} />
+                            <Switch checked={isPublic} onChange={(checked) => {editChannel("isPublic", checked);setIsPublic(checked)}} />
                         </div>
                     </div>
                     <div className={s.desc}>仅通过邀请的用户可以加入私密频道</div>
@@ -78,7 +79,6 @@ const ChannelSetting = (props) => {
 };
 const mapStateToProps = ({ app }) => {
     return {
-        currentChannelInfo: app.currentChannelInfo,
     };
 };
 export default memo(connect(mapStateToProps, null)(ChannelSetting));

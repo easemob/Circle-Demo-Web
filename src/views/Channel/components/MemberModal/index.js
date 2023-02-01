@@ -7,7 +7,7 @@ import HeaderWrap from "@/components/HeaderWrap";
 import MemberItem from "@/components/MemberItem";
 import WebIM from "@/utils/WebIM";
 import { useParams } from "react-router-dom";
-import { getUsersInfo } from "@/utils/common";
+import { getUsersInfo, updateUserRole as updateChannelUserRole } from "@/utils/common";
 import { message } from "antd";
 import Icon from "@/components/Icon";
 import MemberOpt from "../MemberOpt";
@@ -92,7 +92,8 @@ const MemberModal = (props) => {
     appUserInfo,
     setServerUserMap,
     serverUserMap,
-    serverRole
+    serverRole,
+    channelMemberVisible,
   } = props;
 
   const { serverId, channelId } = useParams();
@@ -144,7 +145,13 @@ const MemberModal = (props) => {
         .then(() => {
           onKick(uid);
           message.success("踢出成功");
-        });
+        }).catch(e => {
+          if (JSON.parse(e.data).error_description === "The current user has no operation permission.") {
+            message.error("没有权限！请刷新列表重试！");
+          } else {
+            message.error("踢出成员失败！请刷新列表重试！");
+          }
+        })
     } else if (e.key === "setAdmin") {
       let options = {
         serverId: serverId,
@@ -152,6 +159,9 @@ const MemberModal = (props) => {
       };
       WebIM.conn.setServerAdmin(options).then(() => {
         updateUserRole(serverId, uid, USER_ROLE.moderator);
+        if (channelMemberVisible) {
+          updateChannelUserRole({ serverId, channelId, userId: uid, role: USER_ROLE.moderator })
+        }
       });
     } else if (e.key === "removeAdmin") {
       let options = {
@@ -160,6 +170,9 @@ const MemberModal = (props) => {
       };
       WebIM.conn.removeServerAdmin(options).then(() => {
         updateUserRole(serverId, uid, "user");
+        if (channelMemberVisible) {
+          updateChannelUserRole({ serverId, channelId, userId: uid, role: USER_ROLE.user })
+        }
       });
     }
   };
@@ -211,7 +224,7 @@ const MemberModal = (props) => {
   }, [visible]);
 
   return (
-      <CustomModal
+    <CustomModal
       title={<Title />}
       visible={visible}
       onCancel={() => {
@@ -262,7 +275,8 @@ const mapStateToProps = ({ channel, app, server }) => {
     visible: channel.memberVisible,
     appUserInfo: app.appUserInfo,
     serverUserMap: server.serverUserMap,
-    serverRole: app.serverRole
+    serverRole: app.serverRole,
+    channelMemberVisible: channel.channelMemberVisible
   };
 };
 

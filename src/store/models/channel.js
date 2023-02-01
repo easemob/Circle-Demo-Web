@@ -21,6 +21,7 @@ const channel = {
     channelUserMap: new Map(),
     createChannelCategoryId: "", //创建频道的分组id
     curRtcChannelInfo: {},
+    settingChannelInfo: {},
   },
   reducers: {
     /**
@@ -131,6 +132,9 @@ const channel = {
     },
     setCurRtcChannelInfo(curRtcChannelInfo) {
       this.updateState({ curRtcChannelInfo })
+    },
+    setSettingChannelInfo(settingChannelInfo) {
+      this.updateState({ settingChannelInfo })
     }
   }
 };

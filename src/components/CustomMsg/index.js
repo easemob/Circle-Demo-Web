@@ -7,10 +7,10 @@ import { getConfirmModalConf, createMsg, deliverMsg, insertServerList } from "@/
 import { message as messageWarn, Modal } from "antd";
 import InviteModal from "@/components/InviteModal";
 import { connect } from "react-redux";
-import { insertChannelList } from "@/utils/common"
+import { insertChannelList, joinRtcRoom, leaveRtcChannel } from "@/utils/common"
 
 const CustomMsg = (props) => {
-  const { message, appUserInfo, setServerRole } = props;
+  const { message, appUserInfo, setServerRole, curRtcChannelInfo } = props;
   const isServerInvite = message.customEvent === INVITE_TYPE.inviteServer;
   const acceptInviteEvent =
     message.customEvent === ACCEPT_INVITE_TYPE.acceptInviteServer ||
@@ -48,7 +48,7 @@ const CustomMsg = (props) => {
               server_name: message.customExts?.server_name
             }
           });
-          deliverMsg({msg,needShow: true}).then(() => {
+          deliverMsg({ msg, needShow: true }).then(() => {
             const serverId = message.customExts?.server_id || "";
             WebIM.conn.getServerRole({ serverId }).then((res) => {
               setServerRole({ serverId, role: res.data.role });
@@ -72,22 +72,37 @@ const CustomMsg = (props) => {
         .then((res) => {
           //插入数据
           insertChannelList(message.customExts?.server_id, message.customExts?.channel_id, res.data);
-          //发送消息
-          let msg = createMsg({
-            chatType: CHAT_TYPE.groupChat,
-            type: "custom",
-            to: message.customExts?.channel_id,
-            customEvent: ACCEPT_INVITE_TYPE.acceptInviteChannel,
-            customExts: {
-              server_name: message.customExts?.server_name,
-              channel_name: message.customExts?.channel_name
+          if (res.data.mode === 0) {
+            //发送消息
+            let msg = createMsg({
+              chatType: CHAT_TYPE.groupChat,
+              type: "custom",
+              to: message.customExts?.channel_id,
+              customEvent: ACCEPT_INVITE_TYPE.acceptInviteChannel,
+              customExts: {
+                server_name: message.customExts?.server_name,
+                channel_name: message.customExts?.channel_name
+              }
+            });
+            deliverMsg({ msg, needShow: true }).then();
+          } else {
+            if (JSON.stringify(curRtcChannelInfo) === "{}") {
+              joinRtcRoom(res.data)
+            }else{
+              if(curRtcChannelInfo?.channelId !== res.data.channelId){
+                leaveRtcChannel({ needLeave: true, serverId: curRtcChannelInfo.serverId, channelId: curRtcChannelInfo.channelId}).then(() => {
+                  //加入新频道
+                  joinRtcRoom(res.data);
+                })
+              }
             }
-          });
-          deliverMsg({msg,needShow: true}).then();
+          }
         })
         .catch((err) => {
           if (err.message === "User is already in channel.") {
             messageWarn.warning({ content: "已经在频道了！" });
+          } else if(JSON.parse(err.data).error_description === "The number of channel users is full."){
+            messageWarn.warning({ content: "语聊房已满！" });
           } else {
             messageWarn.warning({ content: "加入失败，请重试！" });
           }
@@ -160,9 +175,10 @@ const CustomMsg = (props) => {
     );
   }
 };
-const mapStateToProps = ({ app }) => {
+const mapStateToProps = ({ app, channel }) => {
   return {
-    appUserInfo: app.appUserInfo
+    appUserInfo: app.appUserInfo,
+    curRtcChannelInfo: channel.curRtcChannelInfo,
   };
 };
 const mapDispatchToProps = (dispatch) => {

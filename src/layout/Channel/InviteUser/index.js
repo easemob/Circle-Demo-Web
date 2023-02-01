@@ -114,7 +114,7 @@ const InviteUser = (props) => {
           server_name: serverInfo.name,
           icon: serverInfo.icon,
           desc: serverInfo.description,
-          channel_id: channelId,
+          channel_id: inviteChannelInfo.channelId,
           channel_name: channelName
         }
       });

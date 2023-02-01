@@ -48,8 +48,7 @@ const UploadEl = (props) => {
   const uploadProps = {
     showUploadList: false,
     maxCount: 1,
-    action: `https://a1.easemob.com/easemob-demo/circle/chatfiles`,
-    // action: `${WebIM.conn.apiUrl}/${WebIM.conn.orgName}/${WebIM.conn.appName}/chatfiles`,
+    action: `${WebIM.conn.apiUrl}/${WebIM.conn.orgName}/${WebIM.conn.appName}/chatfiles`,
     onChange: onChange,
     beforeUpload: beforeCheck,
   };

@@ -11,6 +11,7 @@ import {
   updateRtcMember,
   joinRtcRoom,
   leaveRtcChannel,
+  updateUserRole,
 } from "@/utils/common";
 import { message, Modal } from "antd";
 import InviteModal from "@/components/InviteModal";
@@ -30,6 +31,7 @@ import {
 } from "@/consts";
 
 const { dispatch, getState } = store;
+
 export default function initListener() {
   //登录登出
   WebIM.conn.addEventHandler("login", {
@@ -125,37 +127,67 @@ export default function initListener() {
       const { operator, operation, id, name, to, serverInfo, channelCategoryId } = e;
       switch (operation) {
         case CHANNEL_EVENT.destroy:
-          dispatch.server.setChannelEvent({
-            event: CHANNEL_EVENT.destroy,
-            data: e
-          });
-          deleteLocalChannel({
-            serverId: serverInfo.id,
-            channelCategoryId,
-            channelId: id,
-            isDestroy: true,
-            isTransfer: false
-          })
+          //如果是rtc频道，需要退出频道
+          if (getState().channel.curRtcChannelInfo?.channelId === id) {
+            leaveRtcChannel({ needLeave: false, serverId: serverInfo.id, channelId: id }).then(() => {
+              dispatch.server.setChannelEvent({
+                event: CHANNEL_EVENT.destroy,
+                data: e
+              });
+              deleteLocalChannel({
+                serverId: serverInfo.id,
+                channelCategoryId,
+                channelId: id,
+                isDestroy: true,
+                isTransfer: false
+              })
+            })
+          } else {
+            dispatch.server.setChannelEvent({
+              event: CHANNEL_EVENT.destroy,
+              data: e
+            });
+            deleteLocalChannel({
+              serverId: serverInfo.id,
+              channelCategoryId,
+              channelId: id,
+              isDestroy: true,
+              isTransfer: false
+            })
+          }
           break;
         case CHANNEL_EVENT.update:
           updateLocalChannelDetail("notify", serverInfo.id, channelCategoryId, e);
           break;
         case CHANNEL_EVENT.removed:
           //如果是rtc频道，需要退出频道
-          if(getState().channel.curRtcChannelInfo?.channelId === id){
-            leaveRtcChannel({ needLeave: false, serverId: serverInfo.id, channelId: id })
+          if (getState().channel.curRtcChannelInfo?.channelId === id) {
+            leaveRtcChannel({ needLeave: false, serverId: serverInfo.id, channelId: id }).then(() => {
+              dispatch.server.setChannelEvent({
+                event: CHANNEL_EVENT.removed,
+                data: e
+              });
+              deleteLocalChannel({
+                serverId: serverInfo.id,
+                channelCategoryId,
+                channelId: id,
+                isDestroy: false,
+                isTransfer: false
+              })
+            })
+          } else {
+            dispatch.server.setChannelEvent({
+              event: CHANNEL_EVENT.removed,
+              data: e
+            });
+            deleteLocalChannel({
+              serverId: serverInfo.id,
+              channelCategoryId,
+              channelId: id,
+              isDestroy: false,
+              isTransfer: false
+            })
           }
-          dispatch.server.setChannelEvent({
-            event: CHANNEL_EVENT.removed,
-            data: e
-          });
-          deleteLocalChannel({
-            serverId: serverInfo.id,
-            channelCategoryId,
-            channelId: id,
-            isDestroy: false,
-            isTransfer: false
-          })
           break;
         case CHANNEL_EVENT.inviteToJoin:
           const conf = getConfirmModalConf({
@@ -187,15 +219,28 @@ export default function initListener() {
                       to: id,
                       customEvent: ACCEPT_INVITE_TYPE.acceptInviteChannel,
                       customExts: {
-                        server_name: name,
+                        server_name: e.serverInfo.name,
                         channel_name: name
                       }
                     });
                     deliverMsg({ msg, needShow: true }).then();
                   } else {
-                    joinRtcRoom(res.data);
+                    if (JSON.stringify(getState().channel.curRtcChannelInfo) === "{}") {
+                      joinRtcRoom(res.data)
+                    }else{
+                      if(getState().channel.curRtcChannelInfo?.channelId !== res.data.channelId){
+                        leaveRtcChannel({ needLeave: true, serverId: getState().channel.curRtcChannelInfo.serverId, channelId: getState().channel.curRtcChannelInfo.channelId}).then(() => {
+                          //加入新频道
+                          joinRtcRoom(res.data);
+                        })
+                      }
+                    }
                   }
-                });
+                }).catch(e=>{
+                  if (JSON.parse(e.data).error_description === "The number of channel users is full.") {
+                    message.error({ content: "语聊房已满！" });
+                  }
+                })
             },
             onCancel: () => {
               WebIM.conn.rejectChannelInvite({
@@ -214,6 +259,7 @@ export default function initListener() {
             type: "add",
             channelId: id,
             userId: operator,
+            role: e.serverRole
           })
           break;
         case CHANNEL_EVENT.memberAbsence:
@@ -363,6 +409,16 @@ export default function initListener() {
               serverId,
               role: e.role
             });
+          } else if (e.serverId === getState().channel?.curRtcChannelInfo?.serverId) {
+            const { serverId, channelId } = getState().channel?.curRtcChannelInfo;
+            updateUserRole({ serverId, channelId, userId: e.userId, role: e.role })
+          } else if (e.serverId === getState().app.currentChannelInfo?.serverId) {
+            const { serverId, channelId } = getState().app.currentChannelInfo;
+            if (getState().channel.channelMemberVisible) {
+              updateUserRole({ serverId, channelId, userId: e.userId, role: e.role })
+            } else if (getState().channel.memberVisible) {
+              //serverMember目前不更新
+            }
           }
           break;
         default:
@@ -406,8 +462,8 @@ export default function initListener() {
             })
             //移动到的分组增加channel
             insertChannelList(serverId, channelId, newInfo);
-            if(getState().app.currentChannelInfo?.channelId === channelId){
-              dispatch.app.setCurrentChannelInfo({...newInfo})
+            if (getState().app.currentChannelInfo?.channelId === channelId) {
+              dispatch.app.setCurrentChannelInfo({ ...newInfo })
             }
           });
           break;
@@ -583,8 +639,8 @@ export default function initListener() {
             getUsersInfo([from])
             dispatch.rtc.setRtcUserInfo({
               ...getState().rtc.rtcUserInfo,
-              [from]:{
-                agoraUid:attributes[from],
+              [from]: {
+                agoraUid: attributes[from],
               }
             });
           }
@@ -593,8 +649,8 @@ export default function initListener() {
           if (id === getState().channel.curRtcChannelInfo?.channelId) {
             //更新当前加入的语聊房频道的kv属性
             const rtcUserInfo = getState().rtc.rtcUserInfo;
-            if(rtcUserInfo[from]){
-              delete(rtcUserInfo[from]);
+            if (rtcUserInfo[from]) {
+              delete (rtcUserInfo[from]);
               dispatch.rtc.setRtcUserInfo(rtcUserInfo);
             }
           }

@@ -6,9 +6,8 @@ import { connect } from "react-redux";
 import { Tooltip } from "antd";
 import { rtc } from "@/utils/basicVoiceCall"
 
-
 const RtcRoom = (props) => {
-    const { userInfo, invite, leave, curRtcChannelInfo, rtcUserInfo } = props;
+    const { userInfo, invite, leave, curRtcChannelInfo, rtcUserInfo, serverInfo } = props;
     const handleMicState = (state) => {
         rtc.localAudioTrack.setEnabled(state);
     }
@@ -44,7 +43,7 @@ const RtcRoom = (props) => {
                         </Tooltip>
                     </div>
                 </div>
-                <div className={s.channelName}>{curRtcChannelInfo.name}</div>
+                <div className={s.channelName}>{serverInfo.name} - #{curRtcChannelInfo.name}</div>
                 <div className={s.line}></div>
                 <div className={s.user}>
                     <div className={s.userInfo}>
@@ -68,7 +67,7 @@ const RtcRoom = (props) => {
     );
 };
 
-const mapStateToProps = ({ app, channel, rtc }) => {
+const mapStateToProps = ({ app, channel, rtc ,server}) => {
     return {
         userInfo: app.userInfo,
         curRtcChannelInfo: channel.curRtcChannelInfo,
