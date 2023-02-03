@@ -32,6 +32,7 @@ const ServerSquare = (props) => {
             res.servers.length > 0 && res.servers.forEach((item) => {
                 item.id = item.server_id;
                 item.backgroundUrl = item.background_url;
+                item.icon = item.icon_url;
                 item.tags.forEach((tag) => {
                     tag.tagId = tag.server_tag_id;
                     tag.tagName = tag.tag_name;
@@ -181,7 +182,7 @@ const ServerSquare = (props) => {
                             <Card key={item.server_id} className={`${s.serverItem}`} style={{ backgroundImage: item.backgroundUrl? `url(${item.backgroundUrl})`:`url(${getServerCover(item.id)})` }} onClick={() => { joinServer(item) }}>
                                 <div className={s.serverInfo}>
                                     <div className={s.avatar}>
-                                        <AvatarInfo size={48} isServer={true} src={item.icon_url} />
+                                        <AvatarInfo size={48} isServer={true} src={item.icon} />
                                     </div>
                                     <div className={s.name}>{item.name}</div>
                                     <div className={s.des}>{item.description || "群主有点懒，就不写介绍。"}</div>
