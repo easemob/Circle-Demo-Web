@@ -102,10 +102,10 @@ const ServerSetting = (props) => {
                 goBack={goBack}
             />
             {currentTab === 0 && <OverView
-                currentChannelInfo={settingChannelInfo}
+                currentSettingChannelInfo={settingChannelInfo}
             />}
             {currentTab === 1 && <Setting
-                currentChannelInfo={settingChannelInfo}
+                currentSettingChannelInfo={settingChannelInfo}
             />}
         </div>
     );

@@ -102,7 +102,7 @@ const ChannelHeader = (props) => {
     return getCategoryInfo({ serverId, categoryMap });
   }, [categoryMap, serverId]);
   //菜单信息
-  const menuInfo = useMemo(()=>{console.log("====8888",channelInfo,categoryInfo)
+  const menuInfo = useMemo(()=>{
     return getChannelItems(channelInfo, userRole, categoryInfo)
   },[channelInfo, userRole, categoryInfo])
   return (

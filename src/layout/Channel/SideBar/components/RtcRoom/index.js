@@ -56,18 +56,20 @@ const RtcRoom = (props) => {
                         title={rtc.localAudioTrack.enabled ? "静音" : "取消静音"}
                         overlayClassName="toolTip2"
                     >
-                        <span className={s.mic}>
-                            {rtc.localAudioTrack.enabled && <Icon name="mic" iconClass={s.micIcon} onClick={() => handleMicState(false)} />}
-                            {!rtc.localAudioTrack.enabled && <Icon name="mic_slash" iconClass={s.micIcon} onClick={() => { handleMicState(true) }} />}
-                        </span>
-                    </Tooltip>
-                </div>
+                        {rtc.localAudioTrack.enabled && <span className={s.micLight}>
+                            <Icon name="mic" iconClass={s.micIcon} onClick={() => handleMicState(false)} />
+                        </span>}
+                        {!rtc.localAudioTrack.enabled && <span className={s.mic}>
+                            <Icon name="mic_slash" iconClass={s.micIcon} onClick={() => { handleMicState(true) }} /></span>}
+
+                </Tooltip>
             </div>
         </div>
+        </div >
     );
 };
 
-const mapStateToProps = ({ app, channel, rtc ,server}) => {
+const mapStateToProps = ({ app, channel, rtc, server }) => {
     return {
         userInfo: app.userInfo,
         curRtcChannelInfo: channel.curRtcChannelInfo,

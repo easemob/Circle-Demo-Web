@@ -17,7 +17,7 @@ const getCategoryInfo = ({ serverId = "", categoryMap = new Map() }) => {
     return categoryMap.get(serverId);
 };
 const ChannelOverView = (props) => {
-    const { currentChannelInfo, categoryMap, setCurrentChannelInfo } = props;
+    const { currentSettingChannelInfo, categoryMap, setCurrentChannelInfo, currentChannelInfo, setSettingChannelInfo } = props;
     const { serverId, channelId } = useParams();
     const Header = () => {
         return (<div className={s.header}>
@@ -65,8 +65,8 @@ const ChannelOverView = (props) => {
     }, [categoryMap, serverId]);
     const [curCategoryId, setCurCategoryId] = useState("");
     useEffect(() => {
-        setCurCategoryId(currentChannelInfo.channelCategoryId)
-    }, [currentChannelInfo])
+        setCurCategoryId(currentSettingChannelInfo.channelCategoryId)
+    }, [currentSettingChannelInfo])
     const changeChannelCategoryId = () => {
         WebIM.conn.transferChannel({
             serverId,
@@ -75,18 +75,21 @@ const ChannelOverView = (props) => {
         }).then(() => {
             message.success("移动频道到其他分组成功");
             setIsEditCategory(false)
-            const info = { ...currentChannelInfo, channelCategoryId: curCategoryId };
+            const info = { ...currentSettingChannelInfo, channelCategoryId: curCategoryId };
             //被移动前的分组删除channel
             deleteLocalChannel({
                 serverId,
-                channelCategoryId: currentChannelInfo.channelCategoryId,
+                channelCategoryId: currentSettingChannelInfo.channelCategoryId,
                 channelId,
                 isDestroy: true,
                 isTransfer: true,
             })
             //移动到的分组增加channel
             insertChannelList(serverId, channelId, info);
-            setCurrentChannelInfo({ ...info })
+            setSettingChannelInfo({ ...info })
+            if (currentChannelInfo.channelId === currentSettingChannelInfo.channelId) {
+                setCurrentChannelInfo({ ...info })
+            }
         }).catch(() => {
             setIsEditCategory(false)
             message.error("移动频道到其他分组失败，请重试！");
@@ -102,7 +105,7 @@ const ChannelOverView = (props) => {
                         <div className={s.content}>
                             {!isEditName ?
                                 <SettingDefaultContent
-                                    content={currentChannelInfo.name}
+                                    content={currentSettingChannelInfo.name}
                                     onEdit={() => { setIsEditName(true) }}
                                 />
                                 :
@@ -117,7 +120,7 @@ const ChannelOverView = (props) => {
                         </div>
                     </div>
                 </div>
-                {currentChannelInfo.mode === 0 && <div className={s.settingItem}>
+                {currentSettingChannelInfo.mode === 0 && <div className={s.settingItem}>
                     <div className={`${s.default}`}>
                         <SettingItemTitle title="频道简介" />
                         <div className={s.content}>
@@ -145,8 +148,8 @@ const ChannelOverView = (props) => {
                         <div className={s.content}>
                             {!isEditCategory ?
                                 <SettingDefaultContent
-                                    contentIsEmpty={!Boolean(currentChannelInfo.description)}
-                                    content={getName(currentChannelInfo.channelCategoryId)}
+                                    contentIsEmpty={!Boolean(currentSettingChannelInfo.description)}
+                                    content={getName(currentSettingChannelInfo.channelCategoryId)}
                                     onEdit={() => { setIsEditCategory(true) }}
                                 />
                                 :
@@ -177,6 +180,7 @@ const mapStateToProps = ({ server, app }) => {
     return {
         joinedServerInfo: server.joinedServerInfo,
         categoryMap: server.categoryMap,
+        currentChannelInfo: app.currentChannelInfo,
     };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -184,6 +188,12 @@ const mapDispatchToProps = (dispatch) => {
         setCurrentChannelInfo: (params) => {
             return dispatch({
                 type: "app/setCurrentChannelInfo",
+                payload: params,
+            })
+        },
+        setSettingChannelInfo: (params) => {
+            return dispatch({
+                type: "channel/setSettingChannelInfo",
                 payload: params,
             })
         },

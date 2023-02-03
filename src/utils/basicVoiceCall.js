@@ -8,8 +8,7 @@ let rtc = {
 
 let options = {
     // Pass your App ID here.
-    // appId: "Your App ID",
-    appId: "15cb0d28b87b425ea613fc46f7c9f974",//测试代码，发布demo需要删除
+    appId: "Your App ID",
     // Set the channel name.
     channel: "test",
     // Pass your temp token here.
