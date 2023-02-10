@@ -135,7 +135,7 @@ const CHANNEL_MENU_CHILDREN = [
     label: (
       <div className={s.menuWrap}>
         <div className={s.menuIcon}>
-          <Icon name="msg_check-01" size="22px" />
+          <Icon name="gear" size="22px" />
         </div>
         <span className={s.menuText}>编辑频道</span>
       </div>
@@ -147,13 +147,13 @@ const CHANNEL_MENU_CHILDREN = [
 /**
  * 
  * @param {*} mode 频道类型
- * @param {*} channelCategoryId 所属分组Id
+ * @param {*} categoryId 所属分组Id
  * @param {*} role 角色
  * @param {*} pos 位置 "list"-频道列表  "bar"-导航处
  * @param {*} categorylist 分组列表
  * @returns 
  */
-const getChannelMenu = ({isInRtcChannel=false, mode = 0, channelCategoryId, role, pos, categorylist=[]}) => {
+const getChannelMenu = ({isInRtcChannel=false, mode = 0, categoryId, role, pos, categorylist=[]}) => {
   const items = [];
   if (pos === "bar") {
     CHANNEL_MENU_CHILDREN[2].popupOffset = [15, 0];
@@ -168,8 +168,8 @@ const getChannelMenu = ({isInRtcChannel=false, mode = 0, channelCategoryId, role
         items.push(CHANNEL_MENU_CHILDREN[1]);
       // }
       if (role !== USER_ROLE.user) {
-        const children = getCategoryDetail(channelCategoryId, categorylist);
-        const key = channelCategoryId + 'trans'
+        const children = getCategoryDetail(categoryId, categorylist);
+        const key = categoryId + 'trans'
         items.push({
           ...CHANNEL_MENU_CHILDREN[2],
           children,
@@ -185,8 +185,8 @@ const getChannelMenu = ({isInRtcChannel=false, mode = 0, channelCategoryId, role
         items.push(CHANNEL_MENU_CHILDREN[0]);
       }
       if (role !== USER_ROLE.user) {
-        const children = getCategoryDetail(channelCategoryId, categorylist);
-        const key = channelCategoryId + 'trans'
+        const children = getCategoryDetail(categoryId, categorylist);
+        const key = categoryId + 'trans'
         items.push({
           ...CHANNEL_MENU_CHILDREN[2],
           children,
@@ -202,20 +202,20 @@ const getChannelMenu = ({isInRtcChannel=false, mode = 0, channelCategoryId, role
   }
   return items
 }
-const getCategoryDetail = (channelCategoryId, categorylist) => {
+const getCategoryDetail = (categoryId, categorylist) => {
   const details = [];
   categorylist.forEach((item) => {
     details.push(
       {
         label: (
-          <div className={`${s.menuWrap} ${item.id === channelCategoryId ? s.disable : null}`}>
+          <div className={`${s.menuWrap} ${item.id === categoryId ? s.disable : null}`}>
             <div className={s.subMenuWrap}>
-              <span className={s.name}>{item.defaultChannelCategory === 1 ? "不属于任何分组" : item.name}</span>
+              <span className={s.name}>{item.defaultCategory ? "不属于任何分组" : item.name}</span>
             </div>
           </div>
         ),
         key: item.id,
-        disabled: item.id === channelCategoryId ? true : false,
+        disabled: item.id === categoryId ? true : false,
       }
     )
   })

@@ -119,6 +119,11 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
         }
 
         .line {
@@ -163,7 +168,8 @@
                     color: #fff;
                 }
             }
-            .micLight{
+
+            .micLight {
                 margin-right: 2px;
                 display: flex;
                 align-items: center;
@@ -173,6 +179,7 @@
                 background: #fff;
                 border-radius: 100%;
                 cursor: pointer;
+
                 .micIcon {
                     font-size: 20px;
                     color: #000;

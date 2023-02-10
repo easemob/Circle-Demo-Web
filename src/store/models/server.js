@@ -29,13 +29,13 @@ const Server = {
       };
     },
     updateChannelMap(state, payload) {
-      const { channelCategoryId, channelInfo } = payload;
+      const { categoryId, channelInfo } = payload;
       const { channelMap } = state;
       return {
         ...state,
         channelMap: new Map([
           ...channelMap,
-          ...new Map().set(channelCategoryId, channelInfo)
+          ...new Map().set(categoryId, channelInfo)
         ])
       };
     },
@@ -66,8 +66,8 @@ const Server = {
     setJoinedServerInfo(joinedServerInfo) {
       this.updateState({ joinedServerInfo });
     },
-    setChannelMap({ channelCategoryId, channelInfo }) {
-      this.updateChannelMap({ channelCategoryId, channelInfo });
+    setChannelMap({ categoryId, channelInfo }) {
+      this.updateChannelMap({ categoryId, channelInfo });
     },
     deleteChannelMap(channelMap) {
       this.updateState(channelMap)

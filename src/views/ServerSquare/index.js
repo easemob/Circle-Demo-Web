@@ -12,6 +12,8 @@ import { connect } from "react-redux";
 import { CHAT_TYPE, ACCEPT_INVITE_TYPE } from "@/consts";
 import SearchMenu from "./components/SearchMenu";
 import TagList from "@/components/TagList";
+import defaultCover from "@/assets/images/default_cover.png";
+
 const EnterKeyCode = 13;
 
 const ServerSquare = (props) => {
@@ -64,7 +66,7 @@ const ServerSquare = (props) => {
         }).catch((err) => {
             console.log("根据Server名称搜索失败", err)
         })
-    }, [searchVal,type])
+    }, [searchVal, type])
     //加入社区
     const joinServer = (info) => {
         const server_id = info.id || info.server_id;
@@ -143,7 +145,7 @@ const ServerSquare = (props) => {
                 _inputRef?.current?.removeEventListener("keydown", onKeyDown);
         };
     }, [onKeyDown]);
-    
+
 
     return (
         <div className={s.container}>
@@ -157,7 +159,7 @@ const ServerSquare = (props) => {
                         <SearchMenu onClick={selectType} />
                     </div>
                     <div className={s.searchInputCon}>
-                        <input ref={searchEl} className={s.searchInput} placeholder="搜索社区" value={searchVal} onChange={setSearchServer} />
+                        <input ref={searchEl} className={s.searchInput} placeholder={type === "serverName" ? "搜索社区名称" : "搜索社区标签"} value={searchVal} onChange={setSearchServer} />
                         {searchVal !== "" && <span className={s.empty} onClick={emptyVal}>
                             <Icon name="xmark_in_circle" size="20px" color="#e4e4e4" />
                         </span>}
@@ -166,7 +168,7 @@ const ServerSquare = (props) => {
                 </div>
             </div>
             <div className={s.main}>
-                <List className={s.serverList}
+                {showList.length > 0 ? <List className={s.serverList}
                     grid={{
                         gutter: 12,
                         xs: 1,
@@ -179,7 +181,8 @@ const ServerSquare = (props) => {
                     dataSource={showList}
                     renderItem={item => (
                         <List.Item >
-                            <Card key={item.server_id} className={`${s.serverItem}`} style={{ backgroundImage: item.backgroundUrl? `url(${item.backgroundUrl})`:`url(${getServerCover(item.id)})` }} onClick={() => { joinServer(item) }}>
+                            <Card key={item.server_id} className={`${s.serverItem}`} onClick={() => { joinServer(item) }}>
+                                <div className={s.serverBg} style={{ backgroundImage: item.backgroundUrl ? `url(${item.backgroundUrl})` : `url(${defaultCover})` }}></div>
                                 <div className={s.serverInfo}>
                                     <div className={s.avatar}>
                                         <AvatarInfo size={48} isServer={true} src={item.icon} />
@@ -193,7 +196,11 @@ const ServerSquare = (props) => {
                             </Card>
                         </List.Item>
                     )}
-                />
+                /> : <div className={s.noApply}>
+                        <div className={s.noApplyIcon}></div>
+                        <p className={s.noApplyText}>未搜索到符合条件的社区</p>
+                </div>}
+
             </div>
         </div>
     );

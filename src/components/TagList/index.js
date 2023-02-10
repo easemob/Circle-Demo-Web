@@ -38,12 +38,12 @@ const TagList = (props) => {
     const showMoreTags = (e) => {
         e.stopPropagation();
         setShowAllTags(true);
-        setTagWidth(tagWrap.current.clientWidth + 14);
+        setTagWidth(tagWrap.current.clientWidth + 12);
     }
     const TagItem = ({ tag }) => {
         return (
             <div className={s.tag} key={tag.tagId}>
-                <Icon name="label" color="rgba(255,255,255,.74)" size="12px" />
+                <Icon name="label" color="#fff)" size="14px" />
                 <span className={s.tagText}>{tag.tagName}</span>
             </div>
         )
@@ -65,7 +65,7 @@ const TagList = (props) => {
             </Tooltip>}
             {showAllTags &&
                 <div className={s.allListCon} ref={moreRef} onClick={(e) => { e.stopPropagation(); }}>
-                    <div className={`${s.list} ${s.allList}`} style={{ width: isBar ? "270px" : tagWidth + 'px' }}>
+                    <div className={`${s.list} ${s.allList}`} style={{ width: isBar ? "268px" : tagWidth + 'px' }}>
                         {tags && tags.length > 0 && tags.map((tag) => {
                             return (
                                 <TagItem tag={tag} key={tag.tagName} />

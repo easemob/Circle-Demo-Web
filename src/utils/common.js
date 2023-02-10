@@ -428,21 +428,21 @@ const checkIsHasServerInfo = (serverId) => {
   });
 };
 const setChannelList = (data) => {
-  const { channelCategoryId, isPublic } = data;
-  if (getState().server.channelMap.has(channelCategoryId)) {
-    const channelInfo = getState().server.channelMap.get(channelCategoryId);
+  const { categoryId, isPublic } = data;
+  if (getState().server.channelMap.has(categoryId)) {
+    const channelInfo = getState().server.channelMap.get(categoryId);
     if (!channelInfo) return;
     if (isPublic) {
       const publicChannel = [...channelInfo?.public] || [];
       const channelList = filterData(publicChannel, [data], "channelId");
       if (channelList.length > 0) {
         publicChannel.splice(1, 0, data);
-        updateChannelList(channelCategoryId, channelInfo, publicChannel, "public");
+        updateChannelList(categoryId, channelInfo, publicChannel, "public");
       }
     } else {
       const privateChannel = [...channelInfo?.private] || [];
       privateChannel.unshift(data);
-      updateChannelList(channelCategoryId, channelInfo, privateChannel, "private");
+      updateChannelList(categoryId, channelInfo, privateChannel, "private");
     }
   } else { }
 };
@@ -551,13 +551,20 @@ const deleteLocalThread = (parentId, threadId) => {
 };
 
 //更新channel信息
-const updateLocalChannelDetail = (type, serverId, channelCategoryId, data) => {
+const updateLocalChannelDetail = (type, serverId, categoryId, data) => {
   //type
   //收到channel更新的通知 "notify"
   //本账号编辑channel "edit"
   const { id } = data;
   const currentChannelInfo = getState().app.currentChannelInfo;
+  const settingChannelInfo = getState().channel.settingChannelInfo;
   const currentRtcChannelInfo = getState().channel.curRtcChannelInfo;
+  if(settingChannelInfo.serverId === serverId && settingChannelInfo.channelId === data.id){
+    dispatch.channel.setSettingChannelInfo({
+      ...settingChannelInfo,
+      ...data
+    })
+  }
   if (currentChannelInfo.serverId === serverId && currentChannelInfo.channelId === data.id) {
     dispatch.app.setCurrentChannelInfo({
       ...currentChannelInfo,
@@ -569,8 +576,8 @@ const updateLocalChannelDetail = (type, serverId, channelCategoryId, data) => {
       ...data
     });
   }
-  if (getState().server.channelMap.has(channelCategoryId)) {
-    const channelInfo = getState().server.channelMap.get(channelCategoryId);
+  if (getState().server.channelMap.has(categoryId)) {
+    const channelInfo = getState().server.channelMap.get(categoryId);
     const publicChannel = [...channelInfo?.public] || [];
     const findIndex1 = publicChannel.findIndex((item) => item.channelId === id);
     if (findIndex1 > -1) {
@@ -579,7 +586,7 @@ const updateLocalChannelDetail = (type, serverId, channelCategoryId, data) => {
         ...data
       };
       publicChannel.splice(findIndex1, 1, newChannelInfo);
-      updateChannelList(channelCategoryId, channelInfo, publicChannel, "public");
+      updateChannelList(categoryId, channelInfo, publicChannel, "public");
     } else {
       const privateChannel = [...channelInfo?.private] || [];
       const findIndex2 = privateChannel.findIndex(
@@ -591,35 +598,35 @@ const updateLocalChannelDetail = (type, serverId, channelCategoryId, data) => {
           ...data
         };
         privateChannel.splice(findIndex2, 1, newChannelInfo);
-        updateChannelList(channelCategoryId, channelInfo, privateChannel, "private");
+        updateChannelList(categoryId, channelInfo, privateChannel, "private");
       }
     }
   }
 };
 //更新channel列表
 const updateChannelList = (
-  channelCategoryId,
+  categoryId,
   channelInfo,
   channelList,
   type = "public"
 ) => {
   dispatch.server.setChannelMap({
-    channelCategoryId,
+    categoryId,
     channelInfo: { ...channelInfo, [type]: channelList }
   });
 };
 /**
  * 
  * @param {*} serverId 操作频道的serverId
- * @param {*} channelCategoryId 操作频道的分组ID
+ * @param {*} categoryId 操作频道的分组ID
  * @param {*} channelId 操作频道的ID
  * @param {*} isDestroy 是否要删除数据，删除频道需要删除数据；所有成员离开公开频道不需要，user离开私有频道需要删除数据，owner moderator离开私有频道不需要删除数据
  * @param {*} isTransfer 是否移动频道，如果是移动频道则都需要将当前数据移除
  */
 //删除本地频道
-const deleteLocalChannel = ({ serverId, channelCategoryId, channelId, isDestroy = false, isTransfer = false }) => {
-  if (getState().server.channelMap.has(channelCategoryId)) {
-    const channelInfo = getState().server.channelMap.get(channelCategoryId);
+const deleteLocalChannel = ({ serverId, categoryId, channelId, isDestroy = false, isTransfer = false }) => {
+  if (getState().server.channelMap.has(categoryId)) {
+    const channelInfo = getState().server.channelMap.get(categoryId);
     const publicChannel = [...channelInfo?.public] || [];
     const findIndex1 = publicChannel.findIndex(
       (item) => item.channelId === channelId
@@ -630,7 +637,7 @@ const deleteLocalChannel = ({ serverId, channelCategoryId, channelId, isDestroy 
         //公开频道删除
         publicChannel.splice(findIndex1, 1);
         dispatch.channel.deleteChannelThreadMap({ channelId });
-        updateChannelList(channelCategoryId, channelInfo, publicChannel, "public");
+        updateChannelList(categoryId, channelInfo, publicChannel, "public");
       } else {
         const privateChannel = [...channelInfo?.private] || [];
         const findIndex2 = privateChannel.findIndex(
@@ -639,7 +646,7 @@ const deleteLocalChannel = ({ serverId, channelCategoryId, channelId, isDestroy 
         if (findIndex2 > -1) {
           privateChannel.splice(findIndex2, 1);
           dispatch.channel.deleteChannelThreadMap({ channelId });
-          updateChannelList(channelCategoryId, channelInfo, privateChannel, "private");
+          updateChannelList(categoryId, channelInfo, privateChannel, "private");
         }
       }
       return
@@ -655,7 +662,7 @@ const deleteLocalChannel = ({ serverId, channelCategoryId, channelId, isDestroy 
       //公开频道删除
       publicChannel.splice(findIndex1, 1);
       dispatch.channel.deleteChannelThreadMap({ channelId });
-      updateChannelList(channelCategoryId, channelInfo, publicChannel, "public");
+      updateChannelList(categoryId, channelInfo, publicChannel, "public");
     } else {
       const privateChannel = [...channelInfo?.private] || [];
       const findIndex2 = privateChannel.findIndex(
@@ -668,7 +675,7 @@ const deleteLocalChannel = ({ serverId, channelCategoryId, channelId, isDestroy 
       if (findIndex2 > -1 && (role === USER_ROLE.user || isDestroy)) {
         privateChannel.splice(findIndex2, 1);
         dispatch.channel.deleteChannelThreadMap({ channelId });
-        updateChannelList(channelCategoryId, channelInfo, privateChannel, "private");
+        updateChannelList(categoryId, channelInfo, privateChannel, "private");
       }
     }
   }
@@ -839,7 +846,7 @@ const deleteReactions = ({ messageId, reaction }) => {
 //获取默认分组信息
 const getDefaultCategoryInfo = (categoryInfo) => {
   if (!categoryInfo) return
-  return categoryInfo?.list?.find(item => item.defaultChannelCategory === 1) || {};
+  return categoryInfo?.list?.find(item => item.defaultCategory === true) || {};
 }
 const updateCategoryMap = ({ type, categoryInfo }) => {
   const { serverId, id } = categoryInfo
@@ -861,17 +868,6 @@ const updateCategoryMap = ({ type, categoryInfo }) => {
         ls.splice(findIndex, 1);
         //重新拉取默认分组数据
         dispatch.server.setTransferCategory(true);
-        //将删除的分组下的频道移动到默认分组下
-        // const channelInfo = getState().server.channelMap.get(categoryInfo.id);
-        // const list = channelInfo
-        //   ? [...channelInfo?.public, ...channelInfo?.private]
-        //   : [];
-        // const categoryInfoList = getState().server.categoryMap.get(categoryInfo.serverId);
-        // const defaultCategoryId = getDefaultCategoryInfo(categoryInfoList).id;
-        // list.forEach(item => {
-        //   item.channelCategoryId = defaultCategoryId;
-        //   insertChannelList(item.serverId, item.channelId, item);
-        // })
       }
       break;
     default:
@@ -943,7 +939,7 @@ const joinRtcRoom = (channelInfo) => {
 
 //退出语聊房 a.退出circle channel;b.退出rtcRoom
 const leaveRtcChannel = ({ needLeave, serverId, channelId }) => {
-  const { channelCategoryId, isPublic } = getState().channel.curRtcChannelInfo
+  const { categoryId, isPublic } = getState().channel.curRtcChannelInfo
   return new Promise((resolve, reject) => {
     if (needLeave) {
       //退出rtcRoom
@@ -969,7 +965,7 @@ const leaveRtcChannel = ({ needLeave, serverId, channelId }) => {
             if(!isPublic){
               deleteLocalChannel({
                 serverId,
-                channelCategoryId,
+                categoryId,
                 channelId,
                 isDestroy: false,
                 isTransfer: false
@@ -1066,6 +1062,23 @@ const updateUserRole = ({ serverId, channelId, userId, role }) => {
     });
   }
 }
+//更新社区列表用户角色
+const updateServerUserRole = ({ serverId, userId, role }) => {
+  let dt = getState().server.serverUserMap.get(serverId);
+  const userList = dt?.list || [];
+  const index = userList.findIndex(item => item.uid === userId);
+  if (index > -1) {
+    const info = { ...userList[index], role };
+    userList.splice(index, 1, info)
+    dispatch.server.setServerUserMap({
+      serverId,
+      userListInfo: {
+        ...dt,
+        list: userList
+      }
+    });
+  }
+}
 
 export {
   getConfirmModalConf,
@@ -1107,4 +1120,5 @@ export {
   updateRtcMember,
   initServerIdUnread,
   updateUserRole,
+  updateServerUserRole
 };

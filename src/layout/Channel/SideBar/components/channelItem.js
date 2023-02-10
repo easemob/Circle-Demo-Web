@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import WebIM from "@/utils/WebIM";
 import { getThreadParentMsg, filterData, deleteLocalChannel, insertChannelList, getUsersInfo, getConfirmModalConf, joinRtcRoom, leaveRtcChannel } from "@/utils/common";
-import { CHAT_TYPE, THREAD_PAGE_SIZE, INVITE_TYPE } from "@/consts";
+import { THREAD_PAGE_SIZE, INVITE_TYPE, USER_ROLE } from "@/consts";
 import { Collapse, message, Dropdown, Modal } from "antd";
 import { CHANNEL_MENU_TYPES, getChannelMenu, getRtcMemberMenu, RTC_MEMBER_MENU } from "../../const"
 import Icon from "@/components/Icon";
@@ -62,9 +62,8 @@ const ChannelItem = (props) => {
     setThreadInfo,
     isPublic,
     setIsCreatingThread,
-    chatMap,
     serverRole,
-    channelCategoryId,
+    categoryId,
     categoryInfo,
     setInviteVisible,
     setInviteChannelInfo,
@@ -234,13 +233,13 @@ const ChannelItem = (props) => {
         WebIM.conn.transferChannel({
           serverId,
           channelId,
-          channelCategoryId: e.key
+          newCategoryId: e.key
         }).then(() => {
-          const info = { ...channelInfo, channelCategoryId: e.key }
+          const info = { ...channelInfo, categoryId: e.key }
           //被移动前的分组删除channel
           deleteLocalChannel({
             serverId,
-            channelCategoryId: channelInfo.channelCategoryId,
+            categoryId: channelInfo.categoryId,
             channelId,
             isDestroy: true,
             isTransfer: true,
@@ -270,6 +269,12 @@ const ChannelItem = (props) => {
   }
   //点击频道
   const clickChannelItem = () => {
+    WebIM.conn.isInChannel({ serverId, channelId }).then((res) => {
+      if (!res.data.result && selfRole === USER_ROLE.user && !isPublic) {
+        message.error({ content: "此频道为私有频道，您需要被邀请才能加入" });
+        return
+      }
+    })
     if (mode === 0) {
       navigate(`/main/channel/${serverId}/${channelId}`);
       //清空未读
@@ -290,6 +295,8 @@ const ChannelItem = (props) => {
           }).catch(e => {
             if (JSON.parse(e.data).error_description === "The number of channel users is full.") {
               message.error({ content: "语聊房已满！" });
+            } else if (JSON.parse(e.data).error_description === "The current user has no operation permission.") {
+              message.error({ content: "此频道为私有频道，您需要被邀请才能加入" });
             }
           })
       } else {
@@ -315,7 +322,9 @@ const ChannelItem = (props) => {
                   }).catch(e => {
                     if (JSON.parse(e.data).error_description === "The number of channel users is full.") {
                       message.error({ content: "语聊房已满！" });
-                    }else {
+                    } else if (JSON.parse(e.data).error_description === "The current user has no operation permission.") {
+                      message.error({ content: "此频道为私有频道，您需要被邀请才能加入" });
+                    } else {
                       message.error({ content: "加入语聊房失败，请重试！" });
                     }
                   })
@@ -353,9 +362,9 @@ const ChannelItem = (props) => {
   }
   const getCountInfo = () => {
     if (openMemberPanel) {
-      return (channelMemberInfo?.list?.length || 0) + "/" + channelInfo.seatCount
+      return (channelMemberInfo?.list?.length || 0) + "/" + channelInfo.maxusers
     } else {
-      return channelInfo.seatCount
+      return channelInfo.maxusers
     }
   }
   const menuDisable = mode === 1 && curRtcChannelInfo?.channelId !== channelId && selfRole === "user"
@@ -367,7 +376,7 @@ const ChannelItem = (props) => {
           items: getChannelMenu({
             isInRtcChannel: curRtcChannelInfo?.channelId === channelId,
             mode,
-            channelCategoryId,
+            categoryId,
             pos: "list",
             role: selfRole,
             categorylist: categoryInfo?.list || []
@@ -492,7 +501,6 @@ const ChannelItem = (props) => {
 const mapStateToProps = ({ app, channel }) => {
   return {
     threadMap: channel.threadMap,
-    chatMap: app.chatMap,
     serverRole: app.serverRole,
     channelUserMap: channel.channelUserMap,
     appUserInfo: app.appUserInfo,

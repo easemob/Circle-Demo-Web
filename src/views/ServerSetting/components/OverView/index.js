@@ -1,4 +1,4 @@
-import React, { memo, useState, useRef } from "react";
+import React, { memo, useState, useRef, useEffect, useCallback } from "react";
 import s from "./index.module.less";
 import { connect } from "react-redux";
 import HeaderWrap from "@/components/HeaderWrap";
@@ -21,6 +21,7 @@ const warn = (err) => {
         message.error("保存失败，请重试！");
     }
 }
+const EnterKeyCode = 13;
 const ServerOverView = (props) => {
     const { serverInfo, tags, setTags } = props;
     const Header = () => {
@@ -31,7 +32,7 @@ const ServerOverView = (props) => {
     }
     const TagItem = (props) => {
         const { tagInfo, isEditTag, removeTag } = props
-        return (<div className={`${s.tagItem} ${isEditTag ? s.isEditTag : null}`}>
+        return (<div className={`${s.tagItem} ${isEditTag ? s.isEditTag : null} ${!tagInfo.tagId ? s.newTag : null}`}>
             <span className={s.iconCon}>
                 <Icon name="label" color="rgba(255,255,255,.8)" size="14px" />
             </span>
@@ -58,9 +59,9 @@ const ServerOverView = (props) => {
             const find = showTagList[findIndex];
             if (find.tagId !== undefined) {
                 setRemoveTag([...removeTag, find.tagId]);
-            }else if(index>-1){
-               addTag.splice(index, 1);
-               setAddTag([...addTag])
+            } else if (index > -1) {
+                addTag.splice(index, 1);
+                setAddTag([...addTag])
             }
             showTagList.splice(findIndex, 1);
             setShowTagList([...showTagList])
@@ -175,6 +176,28 @@ const ServerOverView = (props) => {
     const onCoverChange = (url) => {
         editServer(serverInfo.id, 'backgroundUrl', url);
     }
+    //键盘enter事件
+    const onKeyDown = useCallback(
+        (e) => {
+            if (e.keyCode === EnterKeyCode) {
+                e.preventDefault();
+                changeAddTag();
+            }
+        },
+        [changeAddTag]
+    );
+    useEffect(() => {
+        tagRef.current && tagRef.current.addEventListener("keydown", onKeyDown);
+        return function cleanup() {
+            let _inputRef = tagRef;
+            _inputRef &&
+                _inputRef?.current?.removeEventListener("keydown", onKeyDown);
+        };
+    }, [onKeyDown]);
+    //监听isEditTag
+    useEffect(() => {
+        isEditTag && tagRef.current && tagRef.current.focus();
+    }, [isEditTag, tagRef])
     return (
         <div className={s.layout}>
             <HeaderWrap children={Header()} />
@@ -230,6 +253,7 @@ const ServerOverView = (props) => {
                                 :
                                 <SettingEditContent
                                     placeholder="编辑社区名称，不超过16字符"
+                                    defaultValue={serverInfo.name || ""}
                                     rows="1"
                                     maxLength="16"
                                     onCancel={() => { setIsEditName(false) }}
@@ -252,6 +276,7 @@ const ServerOverView = (props) => {
                                 :
                                 <SettingEditContent
                                     placeholder="编辑社区简介，不超过120字符"
+                                    defaultValue={serverInfo.description || ""}
                                     rows="3"
                                     maxLength="120"
                                     onCancel={() => { setIsEditDesc(false) }}
@@ -282,7 +307,7 @@ const ServerOverView = (props) => {
                             <div className={s.editWrap}>
                                 <input className={s.editInput} placeholder="输入新标签，不超过16字符" ref={tagRef} onChange={inputTagChange} maxLength="16" />
                                 <span className={s.count}>{editTagName.length}/16</span>
-                                <span className={s.addTag} onClick={changeAddTag}><Icon name="add_in_circle" color="#929497" size="22px" /></span>
+                                <span className={s.addTag} onClick={changeAddTag}><Icon name="add_in_circle" color={editTagName.length === 0 ? "#929497" : "#fff"} size="22px" /></span>
                             </div>
                             <div className={s.btn}><SettingBtnGroup onCancel={cancelEditTag} onSave={saveTags} /></div>
                         </div>}

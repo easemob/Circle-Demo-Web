@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import s from "./index.module.less";
 import HeaderWrap from "@/components/HeaderWrap";
@@ -31,14 +31,19 @@ const ChannelSetting = (props) => {
                 if (currentChannelInfo.channelId === currentSettingChannelInfo.channelId) {
                     setCurrentChannelInfo({ ...res.data })
                 }
-                updateLocalChannelDetail("edit", serverId, currentSettingChannelInfo.channelCategoryId, { ...res.data, id: channelId });
+                updateLocalChannelDetail("edit", serverId, currentSettingChannelInfo.categoryId, { ...res.data, id: channelId });
             })
             .catch(() => {
                 message.error("编辑频道失败");
             });
     }
-    const [count, setCount] = useState(currentSettingChannelInfo?.seatCount || 8)
-
+    const [count, setCount] = useState(currentSettingChannelInfo?.maxusers || 8)
+    useEffect(()=>{
+        setCount(currentSettingChannelInfo?.maxusers)
+    },[currentSettingChannelInfo?.maxusers])
+    useEffect(()=>{
+        setIsPublic(currentSettingChannelInfo?.isPublic)
+    },[currentSettingChannelInfo?.isPublic])
     return (
         <div className={s.layout}>
             <HeaderWrap children={Header()} />
@@ -58,7 +63,7 @@ const ChannelSetting = (props) => {
                                         tooltip={{
                                             open: false,
                                         }}
-                                        onChange={(count) => { setCount(count); editChannel("seatCount", count) }}
+                                        onChange={(count) => { setCount(count); editChannel("maxusers", count) }}
                                     />
                                 </div>
                             </div>

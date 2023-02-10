@@ -130,14 +130,14 @@ const MemberItem = (props) => {
       } else {
         roleMenu.push(MUTE);
       }
-      channelInfo.defaultChannel !== 1 && roleMenu.push(KICK);
+      !channelInfo.defaultChannel && roleMenu.push(KICK);
     } else if (selfRole === USER_ROLE.moderator && role === USER_ROLE.user) {
       if (isMuted) {
         roleMenu.push(UN_MUTE);
       } else {
         roleMenu.push(MUTE);
       }
-      channelInfo.defaultChannel !== 1 && roleMenu.push(KICK);
+      !channelInfo.defaultChannel && roleMenu.push(KICK);
     }
 
     return roleMenu;

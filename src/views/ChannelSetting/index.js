@@ -75,7 +75,7 @@ const ServerSetting = (props) => {
     const deleteCb = (serverId, channelId)=>{
         deleteLocalChannel({
             serverId,
-            channelCategoryId: settingChannelInfo.channelCategoryId,
+            categoryId: settingChannelInfo.categoryId,
             channelId,
             isDestroy: true,
             isTransfer: false

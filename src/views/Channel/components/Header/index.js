@@ -25,7 +25,7 @@ const getChannelItems = (channelInfo, userRole, categoryInfo) => {
       children: getChannelMenu({
         isInRtcChannel: false,
         mode: channelInfo?.mode,
-        channelCategoryId: channelInfo?.channelCategoryId,
+        categoryId: channelInfo?.categoryId,
         pos: "bar",
         role: userRole,
         categorylist: categoryInfo?.list || []
@@ -76,13 +76,13 @@ const ChannelHeader = (props) => {
         WebIM.conn.transferChannel({
           serverId,
           channelId,
-          channelCategoryId: e.key
+          newCategoryId: e.key
         }).then(() => {
-          const info = { ...channelInfo, channelCategoryId: e.key }
+          const info = { ...channelInfo, categoryId: e.key }
           //被移动前的分组删除channel
           deleteLocalChannel({
             serverId,
-            channelCategoryId: channelInfo.channelCategoryId,
+            categoryId: channelInfo.categoryId,
             channelId,
             isDestroy: true,
             isTransfer: true,
@@ -157,7 +157,7 @@ const ChannelHeader = (props) => {
           style={{ padding: 0 }}
           theme={"dark"}
           selectable={false}
-          triggerSubMenuAction="click"
+          triggerSubMenuAction="hover"
           mode="horizontal"
           items={menuInfo}
         ></Menu>

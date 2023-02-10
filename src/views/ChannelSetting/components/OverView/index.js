@@ -38,7 +38,11 @@ const ChannelOverView = (props) => {
             })
             .then((res) => {
                 message.success("编辑频道成功");
-                updateLocalChannelDetail("edit", serverId, currentChannelInfo.channelCategoryId, { ...res.data, id: channelId });
+                setSettingChannelInfo({ ...res.data })
+                if (currentChannelInfo.channelId === currentSettingChannelInfo.channelId) {
+                    setCurrentChannelInfo({ ...res.data })
+                }
+                updateLocalChannelDetail("edit", serverId, currentSettingChannelInfo.categoryId, { ...res.data, id: channelId });
                 switch (type) {
                     case "name":
                         setIsEditName(false);
@@ -57,7 +61,7 @@ const ChannelOverView = (props) => {
     const getName = (data) => {
         //根据分组id获取分组 在内存里存储当前server下的分组信息(全量)
         const item = categoryInfo?.list.find(item => item.id === data) || {};
-        return item?.defaultChannelCategory === 1 ? "不属于任何分组" : item.name
+        return item?.defaultCategory ? "不属于任何分组" : item.name
     }
     //分组信息
     const categoryInfo = useMemo(() => {
@@ -65,21 +69,21 @@ const ChannelOverView = (props) => {
     }, [categoryMap, serverId]);
     const [curCategoryId, setCurCategoryId] = useState("");
     useEffect(() => {
-        setCurCategoryId(currentSettingChannelInfo.channelCategoryId)
+        setCurCategoryId(currentSettingChannelInfo.categoryId)
     }, [currentSettingChannelInfo])
     const changeChannelCategoryId = () => {
         WebIM.conn.transferChannel({
             serverId,
             channelId,
-            channelCategoryId: curCategoryId,
+            newCategoryId: curCategoryId,
         }).then(() => {
             message.success("移动频道到其他分组成功");
             setIsEditCategory(false)
-            const info = { ...currentSettingChannelInfo, channelCategoryId: curCategoryId };
+            const info = { ...currentSettingChannelInfo, categoryId: curCategoryId };
             //被移动前的分组删除channel
             deleteLocalChannel({
                 serverId,
-                channelCategoryId: currentSettingChannelInfo.channelCategoryId,
+                categoryId: currentSettingChannelInfo.categoryId,
                 channelId,
                 isDestroy: true,
                 isTransfer: true,
@@ -111,6 +115,7 @@ const ChannelOverView = (props) => {
                                 :
                                 <SettingEditContent
                                     placeholder="编辑频道名称，不超过16字符"
+                                    defaultValue={currentSettingChannelInfo.name||""}
                                     rows="1"
                                     maxLength="16"
                                     onCancel={() => { setIsEditName(false) }}
@@ -126,13 +131,14 @@ const ChannelOverView = (props) => {
                         <div className={s.content}>
                             {!isEditDesc ?
                                 <SettingDefaultContent
-                                    contentIsEmpty={!Boolean(currentChannelInfo.description)}
-                                    content={currentChannelInfo.description || "您还未编辑频道简介"}
+                                    contentIsEmpty={!Boolean(currentSettingChannelInfo.description)}
+                                    content={currentSettingChannelInfo.description || "您还未编辑频道简介"}
                                     onEdit={() => { setIsEditDesc(true) }}
                                 />
                                 :
                                 <SettingEditContent
-                                    placeholder="编辑社区简介，不超过120字符"
+                                    placeholder="编辑频道简介，不超过120字符"
+                                    defaultValue={currentSettingChannelInfo.description || ""}
                                     rows="3"
                                     maxLength="120"
                                     onCancel={() => { setIsEditDesc(false) }}
@@ -149,17 +155,17 @@ const ChannelOverView = (props) => {
                             {!isEditCategory ?
                                 <SettingDefaultContent
                                     contentIsEmpty={!Boolean(currentSettingChannelInfo.description)}
-                                    content={getName(currentSettingChannelInfo.channelCategoryId)}
+                                    content={getName(currentSettingChannelInfo.categoryId)}
                                     onEdit={() => { setIsEditCategory(true) }}
                                 />
                                 :
                                 <div className={s.categoryList}>
                                     <div className={s.listCon}>
                                         {categoryInfo?.list.map(item => {
-                                            return (<div key={item.id} className={s.category}>
-                                                <div className={s.categoryName}>{item?.defaultChannelCategory === 1 ? "不属于任何分组" : item.name}</div>
+                                            return (<div key={item.id} className={s.category} onClick={() => setCurCategoryId(item.id)}>
+                                                <div className={s.categoryName}>{item?.defaultCategory ? "不属于任何分组" : item.name}</div>
                                                 <div className={s.radioInput}>
-                                                    {curCategoryId !== item.id && <Icon name="circle" color="#fff" size="18px" onClick={() => setCurCategoryId(item.id)}></Icon>}
+                                                    {curCategoryId !== item.id && <Icon name="circle" color="#fff" size="18px"></Icon>}
                                                     {curCategoryId === item.id && <Icon name="radio-01" color="#27AE60" size="18px"></Icon>}
                                                 </div>
                                             </div>)
