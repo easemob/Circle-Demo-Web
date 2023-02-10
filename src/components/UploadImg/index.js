@@ -36,18 +36,19 @@ const UploadEl = (props) => {
       update(imgUrl);
     }
   };
-  const test = (e)=>{
-    if (maxSize && e.size > maxSize * 1024 * 1000) {
-      message.error(`上传文件超出${maxSize}M，请重新上传！`);
-      return false
-    }else{
-      return true
-    }
-  }
+  // const test = (e)=>{
+  //   if (maxSize && e.size > maxSize * 1024 * 1000) {
+  //     message.error(`上传文件超出${maxSize}M，请重新上传！`);
+  //     return false
+  //   }else{
+  //     return true
+  //   }
+  // }
 
   const uploadProps = {
     showUploadList: false,
     maxCount: 1,
+    accept: "image/png, image/jpeg",
     action: `${WebIM.conn.apiUrl}/${WebIM.conn.orgName}/${WebIM.conn.appName}/chatfiles`,
     onChange: onChange,
     beforeUpload: beforeCheck,
@@ -62,7 +63,7 @@ const UploadEl = (props) => {
         modalCancel={<CancelBtn />}
         quality={0.2}
         maxZoom={2}
-        beforeCrop={test}
+        // beforeCrop={test}
       >
         <Upload {...uploadProps}>{innerNode}</Upload>
       </ImgCrop>

@@ -10,8 +10,8 @@ import { filterData, getDefaultCategoryInfo } from "@/utils/common";
 import { CHANNEL_PAGE_SIZE } from "@/consts"
 
 
-const getChannelInfo = ({ channelCategoryId = "", channelMap = new Map() }) => {
-    return channelMap.get(channelCategoryId);
+const getChannelInfo = ({ categoryId = "", channelMap = new Map() }) => {
+    return channelMap.get(categoryId);
 };
 
 const CategoryItem = (props) => {
@@ -27,26 +27,26 @@ const CategoryItem = (props) => {
     const [hasMorePublic, setHasMorePublic] = useState(true);
     const [loading, setLoading] = useState(false);
     const channelInfo = useMemo(() => {
-        return getChannelInfo({ channelCategoryId: categoryId, channelMap });
+        return getChannelInfo({ categoryId: categoryId, channelMap });
     }, [channelMap, categoryId]);
     const dataSource = channelInfo
         ? [...channelInfo?.public, ...channelInfo?.private]
         : [];
     const loadMoreData = () => {
         if (!hasMorePublic) {
-            getCategoryVisiblePrivateChannels({ serverId, cursor: channelInfo?.privateCursor, channelCategoryId: categoryId });
+            getCategoryVisiblePrivateChannels({ serverId, cursor: channelInfo?.privateCursor, categoryId: categoryId });
         } else {
-            getCategoryPublicChannels({ channelCategoryId: categoryId, cursor: channelInfo?.publicCursor });
+            getCategoryPublicChannels({ categoryId: categoryId, cursor: channelInfo?.publicCursor });
         }
     };
 
     const getCategoryPublicChannels = useCallback(
-        ({ cursor = "", channelCategoryId }) => {
+        ({ cursor = "", categoryId }) => {
             setLoading(true);
             WebIM.conn
                 .getCategoryPublicChannels({
                     serverId,
-                    channelCategoryId,
+                    categoryId,
                     pageSize: CHANNEL_PAGE_SIZE,
                     cursor
                 })
@@ -74,9 +74,9 @@ const CategoryItem = (props) => {
                         setHasMorePublic(false);
                         setLoading(true);
                         WebIM.conn
-                            .getCategoryVisiblePrivateChannels({
+                            .getCategoryPrivateChannels({
                                 serverId,
-                                channelCategoryId,
+                                categoryId,
                                 pageSize: CHANNEL_PAGE_SIZE,
                                 cursor: ""
                             })
@@ -90,7 +90,7 @@ const CategoryItem = (props) => {
                                 );
                                 let ls = [...privateList, ...resList];
                                 setServerChannelMap({
-                                    channelCategoryId,
+                                    categoryId,
                                     channelInfo: {
                                         ...dt,
                                         private: ls,
@@ -101,7 +101,7 @@ const CategoryItem = (props) => {
                             });
                     } else {
                         setServerChannelMap({
-                            channelCategoryId,
+                            categoryId,
                             channelInfo: dt
                         });
                     }
@@ -113,12 +113,12 @@ const CategoryItem = (props) => {
         [channelInfo?.private, channelInfo?.public, serverId, setServerChannelMap]
     );
 
-    const getCategoryVisiblePrivateChannels = ({ cursor = "", channelCategoryId }) => {
+    const getCategoryVisiblePrivateChannels = ({ cursor = "", categoryId }) => {
         setLoading(true);
         WebIM.conn
-            .getCategoryVisiblePrivateChannels({
+            .getCategoryPrivateChannels({
                 serverId,
-                channelCategoryId,
+                categoryId:categoryId,
                 pageSize: CHANNEL_PAGE_SIZE,
                 cursor,
             })
@@ -128,7 +128,7 @@ const CategoryItem = (props) => {
                 const resList = filterData(privateList, res.data.list, "channelId");
                 let ls = [...privateList, ...resList];
                 setServerChannelMap({
-                    channelCategoryId,
+                    categoryId,
                     channelInfo: {
                         ...channelInfo,
                         private: ls,
@@ -144,7 +144,7 @@ const CategoryItem = (props) => {
     useEffect(() => {
         if ((!channelMap.has(categoryId) && categoryId) || (transferCategory && categoryId === getDefaultCategoryInfo(categoryInfo)?.id)) {
             setHasMorePublic(true);
-            getCategoryPublicChannels({ cursor: "", channelCategoryId: categoryId });
+            getCategoryPublicChannels({ cursor: "", categoryId });
             transferCategory && setTransferCategory(false);
         }
     }, [categoryId, channelMap, transferCategory]);

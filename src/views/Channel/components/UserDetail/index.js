@@ -105,9 +105,9 @@ const ChannelUserDetail = (props) => {
     } else {
       roleMenu.push(MUTE);
     }
-    currentChannelInfo?.defaultChannel !== 1 && roleMenu.push(KICK);
+    !(currentChannelInfo?.defaultChannel) && roleMenu.push(KICK);
     return roleMenu;
-  }, [muteId, currentChannelInfo]);
+  }, [muteId, userId, currentChannelInfo?.defaultChannel]);
 
   useEffect(() => {
     if (canOpt) {

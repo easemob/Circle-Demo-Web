@@ -22,7 +22,7 @@ const channelMode = [
   { mode: 1, text: "语聊房频道", icon: "mic", color: "#fff" }
 ]
 const ChannelForm = forwardRef((props, ref) => {
-  const { isEdit = false,channelCategoryId } = props;
+  const { isEdit = false, categoryId, onChange } = props;
   const [form] = Form.useForm();
   const { serverId, channelId } = useParams();
   const [isPublic, setIsPublic] = useState(true);
@@ -63,14 +63,14 @@ const ChannelForm = forwardRef((props, ref) => {
             serverId,
             isPublic,
             mode,
-            channelCategoryId,
+            categoryId,
             ...values
           };
           WebIM.conn
             .createChannel(dt)
             .then((res) => {
               message.success("创建频道成功");
-              getChannelDetail(serverId,res.data.channelId);
+              getChannelDetail(serverId, res.data.channelId);
               onSuccess();
             })
             .catch(() => {
@@ -98,7 +98,7 @@ const ChannelForm = forwardRef((props, ref) => {
           setIsPublic(isPublic);
         } else {
           insertChannelList(serverId, channelId, res.data);
-          if(mode === 0){
+          if (mode === 0) {
             navigate(`/main/channel/${serverId}/${channelId}`);
           }
         }
@@ -115,7 +115,10 @@ const ChannelForm = forwardRef((props, ref) => {
       getChannelDetail(serverId, channelId);
     }
   }, []);
-  const [mode ,setMode] = useState(0);
+  const [mode, setMode] = useState(0);
+  const channelNameChange = (e) => {
+    onChange(e.target.value)
+  }
 
   return (
     <Form ref={ref} className="customForm" form={form} layout={"vertical"}>
@@ -124,10 +127,10 @@ const ChannelForm = forwardRef((props, ref) => {
           return (
             <div className={s.radioItem} key={index}>
               <div className={s.label}>
-                <div className={s.iconStyle} style={{ background: item.mode === 1 ? "#27AE60" : "#1f1f1f" }}><Icon name={item.icon} color={item.color} size="26px"></Icon></div>
+                <div className={s.iconStyle} style={{ background: mode === item.mode ? "#27AE60" : "#1f1f1f" }}><Icon name={item.icon} color={item.color} size="26px"></Icon></div>
                 <span className={s.radioLabel} >{item.text}</span></div>
               <div className={s.radioInput}>
-                {mode !== index && <Icon name="circle" color="#fff" size="22px" onClick={()=>setMode(index)}></Icon>}
+                {mode !== index && <Icon name="circle" color="#fff" size="22px" onClick={() => setMode(index)}></Icon>}
                 {mode === index && <Icon name="radio-01" color="#27AE60" size="22px"></Icon>}
               </div>
             </div>
@@ -140,6 +143,7 @@ const ChannelForm = forwardRef((props, ref) => {
           maxLength={16}
           placeholder="请输入频道名称"
           autoComplete="off"
+          onChange={channelNameChange}
         />
       </Form.Item>
       {/* <Form.Item label="频道简介" name="description">
@@ -174,7 +178,7 @@ const ChannelForm = forwardRef((props, ref) => {
 const mapStateToProps = ({ server, channel }) => {
   return {
     channelMap: server.channelMap,
-    channelCategoryId: channel.createChannelCategoryId,
+    categoryId: channel.createChannelCategoryId,
   };
 };
 const mapDispatchToProps = (dispatch) => {

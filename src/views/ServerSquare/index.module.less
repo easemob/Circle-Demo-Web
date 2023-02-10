@@ -6,10 +6,16 @@
 
     :global {
         .ant-list-grid .ant-col>.ant-list-item {
+            background: none;
             margin-bottom: 12px;
+
+            .ant-card {
+                background: none;
+            }
         }
-        .ant-list .ant-list-item{
-            padding:0;
+
+        .ant-list .ant-list-item {
+            padding: 0;
         }
     }
 
@@ -117,20 +123,42 @@
             min-width: 0;
             position: relative;
             background-size: cover;
-            border-radius: 8px;
             height: 324px;
             border: none;
             cursor: pointer;
             background-position: center;
+
+            :global {
+                .ant-card {
+                    background: none;
+                }
+
+                .ant-card-body {
+                    display: flex;
+                    padding: 0;
+                    height: 100%;
+                    background: none;
+                }
+            }
+
+            .serverBg {
+                position: absolute;
+                top: 0;
+                height: 150px;
+                width: 100%;
+                background-size: cover;
+                background-position: center;
+                border-radius: 8px 8px 0 0;
+            }
 
             .serverInfo {
                 position: absolute;
                 left: 0;
                 bottom: 0;
                 width: 100%;
-                height: 50%;
+                height: calc(100% - 150px);
                 padding: 34px 12px 12px;
-                background: rgba(0, 0, 0, 0.7);
+                background: #292929;
                 border-radius: 0 0 8px 8px;
 
                 .avatar {
@@ -182,6 +210,30 @@
                 display: flex;
                 height: 28px;
                 margin-top: 12px;
+            }
+        }
+        .noApply {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+
+            .noApplyIcon {
+                height: 208px;
+                width: 210px;
+                background: url("../../assets//images/smile_dark.png") 0 0 no-repeat;
+            }
+
+            .noApplyText {
+                margin-top: 20px;
+                font-family: 'PingFang SC';
+                font-weight: 500;
+                font-size: 16px;
+                line-height: 24px;
+                text-align: center;
+                color: #4D4D4D;
             }
         }
     }

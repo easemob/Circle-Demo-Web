@@ -1,5 +1,5 @@
 import React, { memo, useMemo, useState } from "react";
-import { Collapse, message, Dropdown } from "antd";
+import { Collapse, message, Dropdown, Tooltip } from "antd";
 import Desc from "./components/serverDesc";
 import CategoryItem from "./components/Category";
 import ChannelItem from "./components/channelItem"
@@ -26,6 +26,8 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import NameModal from "@/components/NameModal";
 import TagList from "@/components/TagList";
 import RtcRoom from "./components/RtcRoom"
+import defaultCover from "@/assets/images/default_cover.png";
+
 
 const SCROLL_CATEGORY_WARP_ID = "categoryScrollWrap";
 const CATEGORY_LIMIT = 20;
@@ -88,7 +90,7 @@ const SideBar = (props) => {
     const serverInfo = useMemo(() => {
         return getServerInfoById({ serverId, serverList: joinedServerInfo.list });
     }, [serverId, joinedServerInfo]);
-   
+
     //分组信息
     const categoryInfo = useMemo(() => {
         return getCategoryInfo({ serverId, categoryMap });
@@ -150,7 +152,7 @@ const SideBar = (props) => {
     };
     const getChannelCategory = (({ cursor = "" }) => {
         WebIM.conn
-            .getChannelCategorylist({
+            .getCategorylist({
                 serverId,
                 pageSize: CATEGORY_LIMIT,
                 cursor
@@ -185,8 +187,8 @@ const SideBar = (props) => {
     const getChannelInfo = ({ serverId, channelId }) => {
         WebIM.conn.getChannelDetail({ serverId, channelId }).then((res) => {
             setChannelInfo(res.data);
-            if (activeKeys.indexOf(res.data.channelCategoryId) < 0) {
-                setActiveKeys([...activeKeys, res.data.channelCategoryId])
+            if (activeKeys.indexOf(res.data.categoryId) < 0) {
+                setActiveKeys([...activeKeys, res.data.categoryId])
             }
         });
     };
@@ -201,9 +203,10 @@ const SideBar = (props) => {
     const [showCreateCategory, setShowCreateCategory] = useState(false);
     const [showUpdateCategory, setShowUpdateCategory] = useState(false);
     const [curEditCategoryId, setCurEditCategoryId] = useState("");
+    const [curEditCategoryName, setCurEditCategoryName] = useState("");
     //创建分组
     const createChannelCategory = (data) => {
-        WebIM.conn.createChannelCategory({
+        WebIM.conn.createCategory({
             serverId,
             name: data
         }).then((res) => {
@@ -216,7 +219,7 @@ const SideBar = (props) => {
                         id: res.data.id,
                         name: data,
                         serverId,
-                        defaultChannelCategory: 0,
+                        defaultCategory: false,
                     }
                 }
             )
@@ -227,10 +230,10 @@ const SideBar = (props) => {
     //更新分组
     const updateChannelCategory = (data) => {
         setShowUpdateCategory(false)
-        WebIM.conn.updateChannelCategory({
+        WebIM.conn.updateCategory({
             serverId,
             name: data,
-            channelCategoryId: curEditCategoryId,
+            categoryId: curEditCategoryId,
         }).then((res) => {
             message.success("编辑分组成功");
             setShowCreateCategory(false);
@@ -241,7 +244,7 @@ const SideBar = (props) => {
                         id: res.data.id,
                         name: data,
                         serverId,
-                        defaultChannelCategory: 0,
+                        defaultCategory: false,
                     }
                 }
             )
@@ -274,7 +277,7 @@ const SideBar = (props) => {
             let keys = activeKeys.filter((item) => e.indexOf(item) < 0);
             if (keys.length === 1 && keys[0] === "default") {
                 //展开 收起的、选中的channel所在分组
-                setActiveKeys([...e, currentChannelInfo.channelCategoryId])
+                setActiveKeys([...e, currentChannelInfo.categoryId])
             } else {
                 setActiveKeys(e)
             }
@@ -296,13 +299,21 @@ const SideBar = (props) => {
     //分组操作
     const genExtra = (selfRole, categoryId) => {
         return selfRole === USER_ROLE.owner ? (
-            <Icon iconClass={s.plusIcon} name="plus" color="rgba(255,255,255,.74)" size="16px" onClick={(event) => {
-                // If you don't want click extra trigger collapse, you can prevent this:
-                event.stopPropagation();
-                //创建频道
-                setChannelVisible(true);
-                updateCreateChannelCategoryId({ categoryId })
-            }} />
+            <Tooltip
+                title="创建频道"
+                overlayClassName="toolTip"
+                autoAdjustOverflow="false"
+            >
+                <div className={s.addChannel} onClick={(event) => {
+                    // If you don't want click extra trigger collapse, you can prevent this:
+                    event.stopPropagation();
+                    //创建频道
+                    setChannelVisible(true);
+                    updateCreateChannelCategoryId({ categoryId })
+                }}>
+                    <Icon iconClass={s.plusIcon} name="plus" color="rgba(255,255,255,.74)" size="16px" />
+                </div>
+            </Tooltip >
         ) : (<></>);
     }
     //判断是否包含选中的频道
@@ -323,6 +334,7 @@ const SideBar = (props) => {
             case CATEGORY_MENU_TYPES.edit:
                 setShowUpdateCategory(true);
                 setCurEditCategoryId(item.id);
+                setCurEditCategoryName(item.name);
                 break;
             case CATEGORY_MENU_TYPES.delete:
                 const conf = getConfirmModalConf({
@@ -334,9 +346,9 @@ const SideBar = (props) => {
                     ),
                     onOk: () => {
                         WebIM.conn
-                            .deleteChannelCategory({
+                            .deleteCategory({
                                 serverId,
-                                channelCategoryId: item.id
+                                categoryId: item.id
                             })
                             .then(() => {
                                 message.success("删除分组成功");
@@ -370,7 +382,7 @@ const SideBar = (props) => {
                 <Dropdown
                     menu={{
                         items: getCategoryMenu(selfRole),
-                        onClick: (e) => {editCategory(e, item)},
+                        onClick: (e) => { editCategory(e, item) },
                         triggerSubMenuAction: "click"
                     }}
                     overlayClassName="circleDropDown"
@@ -388,8 +400,7 @@ const SideBar = (props) => {
                 <div
                     className={s.serverCover}
                     style={{
-                        backgroundImage: serverInfo.backgroundUrl ? `url(${serverInfo.backgroundUrl})` :`url(${getServerCover(serverId)})`
-                    }}
+                        backgroundImage: serverInfo.backgroundUrl ? `url(${serverInfo.backgroundUrl})` : `url(${defaultCover})` }}
                 >
                     <div className={s.shadow}></div>
                     <div className={s.infoWrap}>
@@ -460,7 +471,7 @@ const SideBar = (props) => {
                         onChange={onChange}
                     >
                         {categoryInfo?.list.map((item) => {
-                            if (item.defaultChannelCategory === 0) {
+                            if (!item.defaultCategory) {
                                 if (activeKeys.indexOf(item.id) < 0 && hasSelectedChannel(item.id)) {
                                     return (
                                         <Panel className={s.default} header={getHeader(item)} key={"default"} extra={genExtra(selfRole, item.id)}>
@@ -490,16 +501,17 @@ const SideBar = (props) => {
                 </InfiniteScroll>
             </div>
             {isInRtcRoom && <div className={s.rtcWrap}>
-                <RtcRoom leave={leaveRtcRoom} invite={inviteUser} serverInfo={serverInfo}/></div>}
-            <NameModal
+                <RtcRoom leave={leaveRtcRoom} invite={inviteUser} /></div>}
+            {(showCreateCategory || showUpdateCategory)&& <NameModal
                 title={showUpdateCategory ? "编辑分组" : "创建频道分组"}
                 inputName="分组名称"
+                defaultName={showUpdateCategory ? curEditCategoryName : ""}
                 open={showCreateCategory || showUpdateCategory}
                 size={50}
                 placeholder="输入分组名称"
                 handleCancel={() => showUpdateCategory ? setShowUpdateCategory(false) : setShowCreateCategory(false)}
                 handleOk={(name) => showUpdateCategory ? updateChannelCategory(name) : createChannelCategory(name)}
-            />
+            />}
         </div>
     );
 };

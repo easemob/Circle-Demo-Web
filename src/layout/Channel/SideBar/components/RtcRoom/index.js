@@ -5,11 +5,21 @@ import Icon from "@/components/Icon";
 import { connect } from "react-redux";
 import { Tooltip } from "antd";
 import { rtc } from "@/utils/basicVoiceCall"
+import { useParams, useNavigate } from "react-router-dom";
+
 
 const RtcRoom = (props) => {
-    const { userInfo, invite, leave, curRtcChannelInfo, rtcUserInfo, serverInfo } = props;
+    const { userInfo, invite, leave, curRtcChannelInfo, rtcUserInfo, serverList } = props;
     const handleMicState = (state) => {
         rtc.localAudioTrack.setEnabled(state);
+    }
+    const serverInfo = serverList.find((item) => item.id === curRtcChannelInfo.serverId);
+    const navigate = useNavigate();
+    const { serverId } = useParams();
+    const goToCurServer = ()=>{
+        if(curRtcChannelInfo.serverId !== serverId){
+            navigate(`/main/channel/${curRtcChannelInfo.serverId}/${serverInfo.defaultChannelId}`);
+        }
     }
     return (
         <div className={s.layout}>
@@ -43,7 +53,7 @@ const RtcRoom = (props) => {
                         </Tooltip>
                     </div>
                 </div>
-                <div className={s.channelName}>{serverInfo.name} - #{curRtcChannelInfo.name}</div>
+                <div className={s.channelName} onClick={goToCurServer}>{serverInfo.name} - #{curRtcChannelInfo.name}</div>
                 <div className={s.line}></div>
                 <div className={s.user}>
                     <div className={s.userInfo}>
@@ -74,6 +84,7 @@ const mapStateToProps = ({ app, channel, rtc, server }) => {
         userInfo: app.userInfo,
         curRtcChannelInfo: channel.curRtcChannelInfo,
         rtcUserInfo: rtc.rtcUserInfo,
+        serverList: server.joinedServerInfo.list || []
     };
 };
 export default memo(connect(mapStateToProps, null)(RtcRoom));

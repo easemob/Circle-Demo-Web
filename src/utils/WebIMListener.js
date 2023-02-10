@@ -12,6 +12,8 @@ import {
   joinRtcRoom,
   leaveRtcChannel,
   updateUserRole,
+  updateServerUserRole,
+  addServer,
 } from "@/utils/common";
 import { message, Modal } from "antd";
 import InviteModal from "@/components/InviteModal";
@@ -124,7 +126,8 @@ export default function initListener() {
   //channel事件
   WebIM.conn.addEventHandler("channelEvent", {
     onChannelEvent: (e) => {
-      const { operator, operation, id, name, to, serverInfo, channelCategoryId } = e;
+      const { operator, operation, channelId:id, name, to, serverInfo, categoryId } = e;
+      e = {...e, id};
       switch (operation) {
         case CHANNEL_EVENT.destroy:
           //如果是rtc频道，需要退出频道
@@ -136,7 +139,7 @@ export default function initListener() {
               });
               deleteLocalChannel({
                 serverId: serverInfo.id,
-                channelCategoryId,
+                categoryId,
                 channelId: id,
                 isDestroy: true,
                 isTransfer: false
@@ -149,7 +152,7 @@ export default function initListener() {
             });
             deleteLocalChannel({
               serverId: serverInfo.id,
-              channelCategoryId,
+              categoryId,
               channelId: id,
               isDestroy: true,
               isTransfer: false
@@ -157,7 +160,7 @@ export default function initListener() {
           }
           break;
         case CHANNEL_EVENT.update:
-          updateLocalChannelDetail("notify", serverInfo.id, channelCategoryId, e);
+          updateLocalChannelDetail("notify", serverInfo.id, categoryId,e);
           break;
         case CHANNEL_EVENT.removed:
           //如果是rtc频道，需要退出频道
@@ -169,7 +172,7 @@ export default function initListener() {
               });
               deleteLocalChannel({
                 serverId: serverInfo.id,
-                channelCategoryId,
+                categoryId,
                 channelId: id,
                 isDestroy: false,
                 isTransfer: false
@@ -182,7 +185,7 @@ export default function initListener() {
             });
             deleteLocalChannel({
               serverId: serverInfo.id,
-              channelCategoryId,
+              categoryId,
               channelId: id,
               isDestroy: false,
               isTransfer: false
@@ -227,16 +230,16 @@ export default function initListener() {
                   } else {
                     if (JSON.stringify(getState().channel.curRtcChannelInfo) === "{}") {
                       joinRtcRoom(res.data)
-                    }else{
-                      if(getState().channel.curRtcChannelInfo?.channelId !== res.data.channelId){
-                        leaveRtcChannel({ needLeave: true, serverId: getState().channel.curRtcChannelInfo.serverId, channelId: getState().channel.curRtcChannelInfo.channelId}).then(() => {
+                    } else {
+                      if (getState().channel.curRtcChannelInfo?.channelId !== res.data.channelId) {
+                        leaveRtcChannel({ needLeave: true, serverId: getState().channel.curRtcChannelInfo.serverId, channelId: getState().channel.curRtcChannelInfo.channelId }).then(() => {
                           //加入新频道
                           joinRtcRoom(res.data);
                         })
                       }
                     }
                   }
-                }).catch(e=>{
+                }).catch(e => {
                   if (JSON.parse(e.data).error_description === "The number of channel users is full.") {
                     message.error({ content: "语聊房已满！" });
                   }
@@ -338,6 +341,9 @@ export default function initListener() {
     onServerEvent: (e) => {
       const { serverId, operator, name } = e;
       switch (e.operation) {
+        case "create":
+          addServer({ ...e, id: serverId });
+          break;
         case "update":
           updateServerDetail("notify", e);
           break;
@@ -405,11 +411,12 @@ export default function initListener() {
           break;
         case "updateRole":
           if (e.userId === WebIM.conn.user) {
-            dispatch.app.updateServerRole({
+            dispatch.app.setServerRole({
               serverId,
               role: e.role
             });
-          } else if (e.serverId === getState().channel?.curRtcChannelInfo?.serverId) {
+          }
+          if (e.serverId === getState().channel?.curRtcChannelInfo?.serverId) {
             const { serverId, channelId } = getState().channel?.curRtcChannelInfo;
             updateUserRole({ serverId, channelId, userId: e.userId, role: e.role })
           } else if (e.serverId === getState().app.currentChannelInfo?.serverId) {
@@ -417,7 +424,8 @@ export default function initListener() {
             if (getState().channel.channelMemberVisible) {
               updateUserRole({ serverId, channelId, userId: e.userId, role: e.role })
             } else if (getState().channel.memberVisible) {
-              //serverMember目前不更新
+              //serverMember
+              updateServerUserRole({ serverId, userId: e.userId, role: e.role })
             }
           }
           break;
@@ -427,14 +435,14 @@ export default function initListener() {
     }
   });
   //category事件
-  WebIM.conn.addEventHandler("onChannelCategoryEvent", {
-    onChannelCategoryEvent: (e) => {
+  WebIM.conn.addEventHandler("onCategoryEvent", {
+    onCategoryEvent: (e) => {
       const { serverId, categoryId, channelId, categoryName } = e;
       const categoryInfo = {
         id: categoryId,
         name: categoryName,
         serverId,
-        defaultChannelCategory: 0,
+        defaultCategory: false,
       }
       switch (e.operation) {
         case "create":
@@ -447,15 +455,22 @@ export default function initListener() {
           updateCategoryMap({ type: "delete", categoryInfo })
           break;
         case "transferChannel":
+          const settingChannelInfo = getState().channel.settingChannelInfo;
+          if (settingChannelInfo.serverId === serverId && settingChannelInfo.channelId === channelId) {
+            dispatch.channel.setSettingChannelInfo({
+              ...settingChannelInfo,
+              categoryId: categoryId,
+            })
+          }
           WebIM.conn.getChannelDetail({ serverId, channelId }).then((res) => {
             //通知里要加上移动之前所在的分组ID
             //从本地获取移动的channelInfo,获取不到就不需要删除或者增加了
             const channelInfo = res.data;
-            const newInfo = { ...channelInfo, channelCategoryId: categoryId }
+            const newInfo = { ...channelInfo, categoryId: categoryId }
             //被移动前的分组删除channel
             deleteLocalChannel({
               serverId,
-              channelCategoryId: e.sourceCategoryId,
+              categoryId: e.fromCategoryId,
               channelId,
               isDestroy: true,
               isTransfer: true,
@@ -475,51 +490,8 @@ export default function initListener() {
   // 多设备事件
   WebIM.conn.addEventHandler("multiDeviceEvent", {
     onMultiDeviceEvent: (e) => {
-      const { operation, channelCategoryId } = e;
+      const { operation, categoryId } = e;
       switch (operation) {
-        case MULTI_DEVICE_EVENT.categoryCreate:
-          const categoryInfo = {
-            id: e.categoryId,
-            name: e.categoryName,
-            serverId: e.serverId,
-            defaultChannelCategory: 0,
-          }
-          updateCategoryMap({ type: "add", categoryInfo })
-          break;
-        case MULTI_DEVICE_EVENT.categoryUpdate:
-          const updateCategoryInfo = {
-            id: e.categoryId,
-            name: e.categoryName,
-            serverId: e.serverId,
-            defaultChannelCategory: 0,
-          }
-          updateCategoryMap({ type: "update", categoryInfo: updateCategoryInfo })
-          break;
-        case MULTI_DEVICE_EVENT.categoryDestroy:
-          const delCategoryInfo = {
-            id: e.categoryId,
-            name: e.categoryName,
-            serverId: e.serverId,
-            defaultChannelCategory: 0,
-          }
-          updateCategoryMap({ type: "delete", categoryInfo: delCategoryInfo })
-          break;
-        case MULTI_DEVICE_EVENT.categoryTransferChannel:
-          WebIM.conn.getChannelDetail({ serverId: e.serverId, channelId: e.channelId }).then((res) => {
-            const channelInfo = res.data;
-            const newInfo = { ...channelInfo, channelCategoryId: e.categoryId }
-            //被移动前的分组删除channel
-            deleteLocalChannel({
-              serverId: e.serverId,
-              channelCategoryId: e.sourceCategoryId,
-              channelId: e.channelId,
-              isDestroy: true,
-              isTransfer: true,
-            })
-            //移动到的分组增加channel
-            insertChannelList(e.serverId, e.channelId, newInfo);
-          });
-          break;
         case MULTI_DEVICE_EVENT.serverUpdate:
           updateServerDetail("notify", e);
           break;
@@ -564,35 +536,35 @@ export default function initListener() {
           break;
 
         case MULTI_DEVICE_EVENT.channelCreate:
-          insertChannelList(e.serverInfo.id, e.id);
+          insertChannelList(e.serverInfo.id, e.channelId);
           break;
         case MULTI_DEVICE_EVENT.channelDestroy:
           deleteLocalChannel({
             serverId: e.serverInfo.id,
-            channelCategoryId,
-            channelId: e.id,
+            categoryId,
+            channelId: e.channelId,
             isDestroy: true,
             isTransfer: false
           })
           break;
         case MULTI_DEVICE_EVENT.channelJoin:
-          insertChannelList(e.serverInfo.id, e.id);
+          insertChannelList(e.serverInfo.id, e.channelId);
           break;
         case MULTI_DEVICE_EVENT.channelUpdate:
-          updateLocalChannelDetail("notify", e.serverInfo.id, channelCategoryId, e);
+          updateLocalChannelDetail("notify", e.serverInfo.id, categoryId, {...e,id:e.channelId});
           break;
         case MULTI_DEVICE_EVENT.channelLeave:
           deleteLocalChannel({
             serverId: e.serverInfo.id,
-            channelCategoryId,
-            channelId: e.id,
+            categoryId,
+            channelId: e.channelId,
             isDestroy: false,
             isTransfer: false
           })
           break;
         case MULTI_DEVICE_EVENT.channelAcceptInvite:
           Modal.destroyAll();
-          insertChannelList(e.serverInfo.id, e.id);
+          insertChannelList(e.serverInfo.id, e.channelId);
           break;
         case MULTI_DEVICE_EVENT.channelRejectInvite:
           Modal.destroyAll();
