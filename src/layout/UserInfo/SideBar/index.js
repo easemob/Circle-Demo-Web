@@ -14,6 +14,11 @@ const operationList = [
     op: "userInfo",
     title: "个人资料",
     iconName: "person_normal"
+  },
+  {
+    op: "loginOut",
+    title: "退出登录",
+    iconName: "door"
   }
 ];
 
@@ -24,6 +29,11 @@ const SideBar = (props) => {
   const showModal = () => {
     setIsModalVisible(true);
   };
+  const handleClick = (item) => {
+    if (item.op === "loginOut") {
+      showModal();
+    }
+  }
 
   const handleOk = () => {
     WebIM.conn.close();
@@ -81,21 +91,17 @@ const SideBar = (props) => {
           {operationList.length > 0 &&
             operationList.map((item) => {
               return (
-                <div className={s.operationItem} key={item}>
-                  <span className={`${s[item.op]}`}>
-                    <Icon name={item.iconName} size="24px" />
-                  </span>
-                  <span className={s.text}>{item.title}</span>
+                <div className={s.item}>
+                  <div className={`${s.operationItem} ${item.op === "loginOut" ? s.loginOut : null}`} key={item} onClick={() => handleClick(item)}>
+                    <span className={`${s[item.op]}`}>
+                      <Icon name={item.iconName} size="24px" />
+                    </span>
+                    <span className={s.text}>{item.title}</span>
+                  </div>
                 </div>
               );
             })}
         </div>
-      </div>
-      <div className={s.logout} onClick={showModal}>
-        <span className={s.logoutIcon}>
-          <Icon name="door" size="22px" />
-        </span>
-        <span className={s.logoutText}>退出登录</span>
       </div>
       <Modal
         className={`logoutModal`}

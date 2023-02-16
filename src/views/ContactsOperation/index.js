@@ -218,7 +218,7 @@ const ContactsOperation = (props) => {
                     }) : emptyDom("没有待处理的好友申请")}
                 </div> :
                 <div className={s.content}>
-                    {showList.length > 0 ? showList.map((item) => {
+                    {showList?.length > 0 ? showList.map((item) => {
                         return (
                             <ContactEl
                                 source="list"

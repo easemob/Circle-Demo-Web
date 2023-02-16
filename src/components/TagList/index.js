@@ -43,7 +43,7 @@ const TagList = (props) => {
     const TagItem = ({ tag }) => {
         return (
             <div className={s.tag} key={tag.tagId}>
-                <Icon name="label" color="#fff)" size="14px" />
+                <span className={s.tagIcon}><Icon name="label" color="#fff" size="14px" /></span>
                 <span className={s.tagText}>{tag.tagName}</span>
             </div>
         )

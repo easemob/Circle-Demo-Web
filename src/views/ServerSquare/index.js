@@ -168,7 +168,7 @@ const ServerSquare = (props) => {
                 </div>
             </div>
             <div className={s.main}>
-                {showList.length > 0 ? <List className={s.serverList}
+                {showList?.length > 0 ? <List className={s.serverList}
                     grid={{
                         gutter: 12,
                         xs: 1,

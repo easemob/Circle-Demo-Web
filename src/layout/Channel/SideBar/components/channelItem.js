@@ -273,70 +273,80 @@ const ChannelItem = (props) => {
       if (!res.data.result && selfRole === USER_ROLE.user && !isPublic) {
         message.error({ content: "此频道为私有频道，您需要被邀请才能加入" });
         return
-      }
-    })
-    if (mode === 0) {
-      navigate(`/main/channel/${serverId}/${channelId}`);
-      //清空未读
-      setServerChannelMap({
-        serverId,
-        channelId,
-        unReadNum: 0,
-      })
-    } else {
-      //每次点击rtc channel都需要调用加入频道接口
-      if (JSON.stringify(curRtcChannelInfo) === "{}") {
-        WebIM.conn
-          .joinChannel({
-            serverId,
-            channelId
-          }).then(() => {
-            joinRtcRoom(channelInfo);
-          }).catch(e => {
-            if (JSON.parse(e.data).error_description === "The number of channel users is full.") {
-              message.error({ content: "语聊房已满！" });
-            } else if (JSON.parse(e.data).error_description === "The current user has no operation permission.") {
-              message.error({ content: "此频道为私有频道，您需要被邀请才能加入" });
-            }
-          })
       } else {
-        if (curRtcChannelInfo?.channelId !== channelId) {
-          //提示已经在别的rtc频道了
-          const conf = getConfirmModalConf({
-            title: <div style={{ color: "#fff" }}>加入语聊房频道</div>,
-            content: (
-              <div style={{ color: "#fff" }}>
-                {`您已经在一个语聊房频道内了，确认要切换到`}&nbsp;<span style={{ fontWeight: 700 }}>{name}</span> {`吗？`}。
-              </div>
-            ),
-            cancelText: "我再想想",
-            onOk: () => {
-              leaveRtcChannel({ needLeave: true, serverId: curRtcChannelInfo.serverId, channelId: curRtcChannelInfo.channelId }).then(() => {
-                //加入新频道
-                WebIM.conn
-                  .joinChannel({
-                    serverId,
-                    channelId
-                  }).then(() => {
-                    joinRtcRoom(channelInfo);
-                  }).catch(e => {
-                    if (JSON.parse(e.data).error_description === "The number of channel users is full.") {
-                      message.error({ content: "语聊房已满！" });
-                    } else if (JSON.parse(e.data).error_description === "The current user has no operation permission.") {
-                      message.error({ content: "此频道为私有频道，您需要被邀请才能加入" });
-                    } else {
-                      message.error({ content: "加入语聊房失败，请重试！" });
-                    }
-                  })
-              }).catch((e) => {
-                message.error({ content: "加入语聊房失败，请重试！" });
+        if (mode === 0) {
+          navigate(`/main/channel/${serverId}/${channelId}`);
+          //清空未读
+          setServerChannelMap({
+            serverId,
+            channelId,
+            unReadNum: 0,
+          })
+          if (!threadMap.has(channelId) && channelInfo?.mode === 0) {
+            //用户在频道则拉取thread列表
+            WebIM.conn.isInChannel({ serverId, channelId }).then((res) => {
+              if (res.data.result) {
+                getChannelThread({ channelId, cursor: "" });
+              }
+            })
+          }
+        } else {
+          //每次点击rtc channel都需要调用加入频道接口
+          if (JSON.stringify(curRtcChannelInfo) === "{}") {
+            WebIM.conn
+              .joinChannel({
+                serverId,
+                channelId
+              }).then(() => {
+                joinRtcRoom(channelInfo);
+              }).catch(e => {
+                if (JSON.parse(e.data).error_description === "The number of channel users is full.") {
+                  message.error({ content: "语聊房已满！" });
+                } else if (JSON.parse(e.data).error_description === "The current user has no operation permission.") {
+                  message.error({ content: "此频道为私有频道，您需要被邀请才能加入" });
+                }
               })
+          } else {
+            if (curRtcChannelInfo?.channelId !== channelId) {
+              //提示已经在别的rtc频道了
+              const conf = getConfirmModalConf({
+                title: <div style={{ color: "#fff" }}>加入语聊房频道</div>,
+                content: (
+                  <div style={{ color: "#fff" }}>
+                    {`您已经在一个语聊房频道内了，确认要切换到`}&nbsp;<span style={{ fontWeight: 700 }}>{name}</span> {`吗？`}。
+                  </div>
+                ),
+                cancelText: "我再想想",
+                onOk: () => {
+                  leaveRtcChannel({ needLeave: true, serverId: curRtcChannelInfo.serverId, channelId: curRtcChannelInfo.channelId }).then(() => {
+                    //加入新频道
+                    WebIM.conn
+                      .joinChannel({
+                        serverId,
+                        channelId
+                      }).then(() => {
+                        joinRtcRoom(channelInfo);
+                      }).catch(e => {
+                        if (JSON.parse(e.data).error_description === "The number of channel users is full.") {
+                          message.error({ content: "语聊房已满！" });
+                        } else if (JSON.parse(e.data).error_description === "The current user has no operation permission.") {
+                          message.error({ content: "此频道为私有频道，您需要被邀请才能加入" });
+                        } else {
+                          message.error({ content: "加入语聊房失败，请重试！" });
+                        }
+                      })
+                  }).catch((e) => {
+                    message.error({ content: "加入语聊房失败，请重试！" });
+                  })
+                }
+              });
+              Modal.confirm(conf);
             }
-          });
-          Modal.confirm(conf);
+          }
         }
       }
-    }
+    })
+
   }
 
   const clickRtcMember = (e, data) => {
