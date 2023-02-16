@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from "react";
+import React, { memo, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import s from "./index.module.less";
 import Number from "@/components/Number";
@@ -10,7 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { CHAT_TYPE } from "@/consts";
 
 const SideBar = (props) => {
-  const { applyNum, chatMap, conversationData, appUserInfo, setConversationList, setUnReadNumber } = props;
+  const { applyNum, chatMap, conversationData, appUserInfo, setConversationList, setUnReadNumber, curRtcChannelInfo } = props;
   const navigate = useNavigate();
 
   const { userId } = useParams();
@@ -52,6 +52,9 @@ const SideBar = (props) => {
       setConversationList(conversationList);
     });
   }, []);
+  const isInRtcRoom = useMemo(() => {
+    return JSON.stringify(curRtcChannelInfo) === "{}" ? false : true;
+}, [curRtcChannelInfo])
   return (
     <div className={s.sideBarWrap}>
       <div className={s.topBar}>
@@ -67,7 +70,7 @@ const SideBar = (props) => {
         </div>
       </div>
       <div className={s.title}>我的消息</div>
-      <div className={s.list}>
+      <div className={isInRtcRoom ? `${s.list} ${s.hasBottom}` : `${s.list}`}>
         {conversationData?.length > 0 ?
           conversationData.map((item, index) => {
             return (
@@ -98,12 +101,13 @@ const SideBar = (props) => {
   );
 };
 
-const mapStateToProps = ({ app, contact }) => {
+const mapStateToProps = ({ app, contact, channel}) => {
   return {
     appUserInfo: app.appUserInfo,
     chatMap: app.chatMap,
     applyNum: contact.applyInfo.length,
-    conversationData: contact.conversationList
+    conversationData: contact.conversationList,
+    curRtcChannelInfo: channel.curRtcChannelInfo,
   };
 };
 

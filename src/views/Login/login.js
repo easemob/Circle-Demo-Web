@@ -113,7 +113,6 @@ function Login(props) {
         const userInfos = {
           username: inputValue.username,
           accessToken,
-          agree: true
         };
         //本地存储用户信息，下次登录自动填充
         localStorage.setItem("userInfo", JSON.stringify(userInfos));

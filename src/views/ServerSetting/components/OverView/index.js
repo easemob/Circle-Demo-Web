@@ -236,8 +236,8 @@ const ServerOverView = (props) => {
                             ></UploadImg>
                         </div>
                         <div className={s.desc}>
-                            <div>社区头像建议比例1:1，2M以下，支持GIF；</div>
-                            <div>社区封面建议比例16:7，2M以下，支持GIF。</div>
+                            <div>社区头像建议比例1:1；</div>
+                            <div>社区封面建议比例16:7。</div>
                         </div>
                     </div>
                 </div>

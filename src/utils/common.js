@@ -441,8 +441,11 @@ const setChannelList = (data) => {
       }
     } else {
       const privateChannel = [...channelInfo?.private] || [];
-      privateChannel.unshift(data);
-      updateChannelList(categoryId, channelInfo, privateChannel, "private");
+      const channelList = filterData(privateChannel, [data], "channelId");
+      if (channelList.length > 0) {
+        privateChannel.unshift(data);
+        updateChannelList(categoryId, channelInfo, privateChannel, "private");
+      }
     }
   } else { }
 };
@@ -476,11 +479,14 @@ const updateServerDetail = (source, info) => {
 const addServer = (data) => {
   return new Promise((resolve, reject) => {
     const list = getState().server.joinedServerInfo.list || [];
-    list.unshift(data);
-    dispatch.server.setJoinedServerInfo({
-      ...getState().server.joinedServerInfo,
-      list
-    });
+    const findIndex = list.findIndex(item => item.id === data.id)
+    if (findIndex < 0) {
+      list.unshift(data);
+      dispatch.server.setJoinedServerInfo({
+        ...getState().server.joinedServerInfo,
+        list
+      });
+    }
     resolve(list);
   });
 };
@@ -520,12 +526,12 @@ const deleteServer = (serverId) => {
 const addLocalThread = (parentId, threadInfo) => {
   return new Promise((resolve) => {
     if (getState().channel.threadMap.has(parentId)) {
-      const list = getState().channel.threadMap.get(parentId).list || [];
+      const list = [...getState().channel.threadMap.get(parentId).list] || [];
       const findIndex = list.findIndex((item) => item.id === threadInfo.id);
       if (findIndex < 0) {
         list.unshift(threadInfo);
         dispatch.channel.setThreadMap({
-          parentId,
+          channelId: parentId,
           threadInfo: { ...getState().channel.threadMap.get(parentId), list }
         });
       }
@@ -559,7 +565,7 @@ const updateLocalChannelDetail = (type, serverId, categoryId, data) => {
   const currentChannelInfo = getState().app.currentChannelInfo;
   const settingChannelInfo = getState().channel.settingChannelInfo;
   const currentRtcChannelInfo = getState().channel.curRtcChannelInfo;
-  if(settingChannelInfo.serverId === serverId && settingChannelInfo.channelId === data.id){
+  if (settingChannelInfo.serverId === serverId && settingChannelInfo.channelId === data.id) {
     dispatch.channel.setSettingChannelInfo({
       ...settingChannelInfo,
       ...data
@@ -962,7 +968,7 @@ const leaveRtcChannel = ({ needLeave, serverId, channelId }) => {
           WebIM.conn.leaveChannel({ serverId, channelId }).then(res => {
             resolve();
             //如果是私有频道，更新列表
-            if(!isPublic){
+            if (!isPublic) {
               deleteLocalChannel({
                 serverId,
                 categoryId,

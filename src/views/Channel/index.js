@@ -80,12 +80,12 @@ const Channel = (props) => {
     setThreadInfo,
     setMsgReaction,
     setThreadHasHistory,
-    setChannelFormVisible,
     setInviteVisible,
     joinedServerInfo,
     currentThreadInfo,
     setThreadMap,
     setInviteChannelInfo,
+    setSettingChannelInfo
   } = props;
 
   const { serverId, channelId } = useParams();
@@ -229,6 +229,7 @@ const Channel = (props) => {
         // setChannelFormVisible("edit");
         //编辑频道
         navigate(`/main/channel/${serverId}/${channelId}/setting`);
+        setSettingChannelInfo(currentChannelInfo);
         break;
       case "recall":
         recallMessage(data, isChatThread);
@@ -438,6 +439,12 @@ const mapDispatchToProps = (dispatch) => {
         type: "channel/setInviteChannelInfo",
         payload: params
       });
+    },
+    setSettingChannelInfo: (params) => {
+      return dispatch({
+        type: "channel/setSettingChannelInfo",
+        payload: params,
+      })
     },
   };
 };

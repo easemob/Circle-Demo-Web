@@ -125,12 +125,12 @@ const ChannelForm = forwardRef((props, ref) => {
       <Form.Item label="频道类型" className="formRadioGroup">
         {channelMode.map((item, index) => {
           return (
-            <div className={s.radioItem} key={index}>
+            <div className={s.radioItem} key={index}  onClick={() => setMode(index)}>
               <div className={s.label}>
                 <div className={s.iconStyle} style={{ background: mode === item.mode ? "#27AE60" : "#1f1f1f" }}><Icon name={item.icon} color={item.color} size="26px"></Icon></div>
                 <span className={s.radioLabel} >{item.text}</span></div>
               <div className={s.radioInput}>
-                {mode !== index && <Icon name="circle" color="#fff" size="22px" onClick={() => setMode(index)}></Icon>}
+                {mode !== index && <Icon name="circle" color="#fff" size="22px"></Icon>}
                 {mode === index && <Icon name="radio-01" color="#27AE60" size="22px"></Icon>}
               </div>
             </div>

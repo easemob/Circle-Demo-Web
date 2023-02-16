@@ -172,7 +172,7 @@ const ChannelOverView = (props) => {
                                         })}
                                     </div>
                                     <div className={s.buttonLayout}>
-                                        <SettingBtnGroup onSave={changeChannelCategoryId} onCancel={() => { setIsEditCategory(false) }} />
+                                        <SettingBtnGroup onSave={changeChannelCategoryId} onCancel={() => { setCurCategoryId(currentSettingChannelInfo.categoryId);setIsEditCategory(false) }} />
                                     </div>
                                 </div>}
                         </div>

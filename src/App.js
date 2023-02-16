@@ -7,6 +7,7 @@ import { ConfigProvider, message } from "antd";
 import initListener from "./utils/WebIMListener";
 import { Empty } from "antd";
 import emptyIcon from "./assets/images/smile_dark.png";
+import RtcRoom from "./layout/Channel/SideBar/components/RtcRoom/index"
 
 const DefaultIcon = () => {
   return (
@@ -51,6 +52,7 @@ function App() {
       <div className="App">
         <Provider store={store}>
           <Routes />
+          <RtcRoom/>
         </Provider>
       </div>
     </ConfigProvider>

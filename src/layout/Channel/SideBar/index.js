@@ -17,7 +17,6 @@ import {
     getConfirmModalConf,
     filterData,
     deleteServer,
-    getServerCover,
     getDefaultCategoryInfo,
     updateCategoryMap,
     leaveRtcChannel,
@@ -80,7 +79,6 @@ const SideBar = (props) => {
         setChannelInfo,
         inviteChannelInfo,
         curRtcChannelInfo,
-        setInviteChannelInfo,
     } = props;
 
     const [activeKeys, setActiveKeys] = useState([]);
@@ -256,20 +254,6 @@ const SideBar = (props) => {
     const isInRtcRoom = useMemo(() => {
         return JSON.stringify(curRtcChannelInfo) === "{}" ? false : true;
     }, [curRtcChannelInfo])
-    // 退出语音频道
-    const leaveRtcRoom = () => {
-        const { serverId, channelId } = curRtcChannelInfo;
-        leaveRtcChannel({ needLeave: true, serverId, channelId }).then(() => {
-            message.success({ content: "退出频道成功" });
-        }).catch(() => {
-            message.error({ content: "操作失败，请重试！" });
-        })
-    }
-    //邀请用户加入语音频道
-    const inviteUser = () => {
-        setInviteChannelInfo({ inviteChannelInfo: curRtcChannelInfo });
-        setInviteVisible(INVITE_TYPE.inviteChannel);
-    }
     //分组折叠面板
     const onChange = (e) => {
         if (activeKeys.indexOf('default') > -1) {
@@ -500,8 +484,6 @@ const SideBar = (props) => {
                     </Collapse>
                 </InfiniteScroll>
             </div>
-            {isInRtcRoom && <div className={s.rtcWrap}>
-                <RtcRoom leave={leaveRtcRoom} invite={inviteUser} /></div>}
             {(showCreateCategory || showUpdateCategory)&& <NameModal
                 title={showUpdateCategory ? "编辑分组" : "创建频道分组"}
                 inputName="分组名称"
@@ -576,12 +558,6 @@ const mapDispatchToProps = (dispatch) => {
         setChannelInfo: (params) => {
             return dispatch({
                 type: "app/setCurrentChannelInfo",
-                payload: params
-            });
-        },
-        setInviteChannelInfo: (params) => {
-            return dispatch({
-                type: "channel/setInviteChannelInfo",
                 payload: params
             });
         },

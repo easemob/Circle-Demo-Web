@@ -126,8 +126,8 @@ export default function initListener() {
   //channel事件
   WebIM.conn.addEventHandler("channelEvent", {
     onChannelEvent: (e) => {
-      const { operator, operation, channelId:id, name, to, serverInfo, categoryId } = e;
-      e = {...e, id};
+      const { operator, operation, channelId: id, name, to, serverInfo, categoryId } = e;
+      e = { ...e, id };
       switch (operation) {
         case CHANNEL_EVENT.destroy:
           //如果是rtc频道，需要退出频道
@@ -160,7 +160,7 @@ export default function initListener() {
           }
           break;
         case CHANNEL_EVENT.update:
-          updateLocalChannelDetail("notify", serverInfo.id, categoryId,e);
+          updateLocalChannelDetail("notify", serverInfo.id, categoryId, e);
           break;
         case CHANNEL_EVENT.removed:
           //如果是rtc频道，需要退出频道
@@ -170,26 +170,32 @@ export default function initListener() {
                 event: CHANNEL_EVENT.removed,
                 data: e
               });
-              deleteLocalChannel({
-                serverId: serverInfo.id,
-                categoryId,
-                channelId: id,
-                isDestroy: false,
-                isTransfer: false
-              })
+              // deleteLocalChannel({
+              //   serverId: serverInfo.id,
+              //   categoryId,
+              //   channelId: id,
+              //   isDestroy: false,
+              //   isTransfer: false
+              // })
             })
           } else {
             dispatch.server.setChannelEvent({
               event: CHANNEL_EVENT.removed,
               data: e
             });
-            deleteLocalChannel({
-              serverId: serverInfo.id,
-              categoryId,
-              channelId: id,
-              isDestroy: false,
-              isTransfer: false
-            })
+            //删除子区
+            const threadMap = getState().channel.threadMap;
+            if (threadMap) {
+              threadMap.delete(id);
+              dispatch.channel.setThreadMap(threadMap)
+            }
+            // deleteLocalChannel({
+            //   serverId: serverInfo.id,
+            //   categoryId,
+            //   channelId: id,
+            //   isDestroy: false,
+            //   isTransfer: false
+            // })
           }
           break;
         case CHANNEL_EVENT.inviteToJoin:
@@ -355,11 +361,25 @@ export default function initListener() {
           break;
         case "acceptInvite":
           //接受邀请者在群里发消息
+          if (e.operator === WebIM.conn.user) {
+            Modal.destroyAll();
+            dispatch.server.setServerMultiDeviceEvent({
+              event: "serverJoin",
+              data: e
+            });
+          }
           break;
         case "refuseInvite":
-          message.info(`${e.operator}拒绝了您的社区邀请`);
+          if (e.operator === WebIM.conn.user) {
+            Modal.destroyAll();
+          } else {
+            message.info(`${e.operator}拒绝了您的社区邀请`);
+          }
           break;
         case "inviteToJoin":
+          if (e.operator === WebIM.conn.user) {
+            return;
+          }
           const conf = getConfirmModalConf({
             title: <div style={{ color: "#fff" }}>邀请加入社区</div>,
             okText: "加入社区",
@@ -408,6 +428,22 @@ export default function initListener() {
             event: "serverRemoved",
             data: e
           });
+          break;
+        case "memberPresence":
+          if (e.operator === WebIM.conn.user) {
+            dispatch.server.setServerMultiDeviceEvent({
+              event: "serverJoin",
+              data: e
+            });
+          }
+          break;
+        case "memberAbsence":
+          if (e.operator === WebIM.conn.user) {
+            dispatch.server.setServerMultiDeviceEvent({
+              event: "serverLeave",
+              data: e
+            });
+          }
           break;
         case "updateRole":
           if (e.userId === WebIM.conn.user) {
@@ -551,7 +587,7 @@ export default function initListener() {
           insertChannelList(e.serverInfo.id, e.channelId);
           break;
         case MULTI_DEVICE_EVENT.channelUpdate:
-          updateLocalChannelDetail("notify", e.serverInfo.id, categoryId, {...e,id:e.channelId});
+          updateLocalChannelDetail("notify", e.serverInfo.id, categoryId, { ...e, id: e.channelId });
           break;
         case MULTI_DEVICE_EVENT.channelLeave:
           deleteLocalChannel({
@@ -570,12 +606,46 @@ export default function initListener() {
           Modal.destroyAll();
           break;
         case MULTI_DEVICE_EVENT.channelMuteMember:
-          //广播事件，channel通知部分已处理
+          let isHas = getState().channel.channelUserMap.has(e.channelId);
+          if (isHas) {
+            let dt = getState().channel.channelUserMap.get(e.channelId);
+            dispatch.channel.setChannelUserMap({
+              channelId: e.channelId,
+              userListInfo: {
+                ...dt,
+                muteList: dt.muteList?.length
+                  ? [
+                    ...dt.muteList,
+                    {
+                      userId: e.to
+                    }
+                  ]
+                  : [{ userId: e.to }]
+              }
+            });
+          }
           break;
         case MULTI_DEVICE_EVENT.channelUnMuteMember:
-          //广播事件，channel通知部分已处理
+          let isDt = getState().channel.channelUserMap.has(e.channelId);
+          if (isDt) {
+            let dt = getState().channel.channelUserMap.get(e.channelId);
+            let muteList = [];
+            if (dt.muteList?.length) {
+              muteList = dt.muteList;
+              let idx = muteList.findIndex((item) => {
+                return item.userId === e.to;
+              });
+              muteList.splice(idx, 1);
+            }
+            dispatch.channel.setChannelUserMap({
+              channelId: e.channelId,
+              userListInfo: {
+                ...dt,
+                muteList
+              }
+            });
+          }
           break;
-
         case MULTI_DEVICE_EVENT.chatThreadCreate:
           //多端多设备，thread创建后会广播信息，在thread监听中操作左侧列表插入数据，不再处理此事件
           break;

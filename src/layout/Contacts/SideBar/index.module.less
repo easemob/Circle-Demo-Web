@@ -73,9 +73,13 @@
   }
 
   .list {
-    flex: 1 1 auto;
     overflow-y: scroll;
     text-align: left;
+    height: 100%;
+    
+    &.hasBottom{
+      height: calc(100% - 246px);
+    }
 
     .contactsItem {
       padding: 0 16px 0 8px;
