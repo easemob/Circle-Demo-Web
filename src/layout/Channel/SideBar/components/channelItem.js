@@ -269,7 +269,10 @@ const ChannelItem = (props) => {
   }
   //点击频道
   const clickChannelItem = () => {
+    if(!threadId && currentChannelInfo.serverId === serverId && currentChannelInfo.channelId === channelId) return;
+    let isInChannel = false;
     WebIM.conn.isInChannel({ serverId, channelId }).then((res) => {
+      isInChannel = res.data.result;
       if (!res.data.result && selfRole === USER_ROLE.user && !isPublic) {
         message.error({ content: "此频道为私有频道，您需要被邀请才能加入" });
         return
@@ -284,11 +287,7 @@ const ChannelItem = (props) => {
           })
           if (!threadMap.has(channelId) && channelInfo?.mode === 0) {
             //用户在频道则拉取thread列表
-            WebIM.conn.isInChannel({ serverId, channelId }).then((res) => {
-              if (res.data.result) {
-                getChannelThread({ channelId, cursor: "" });
-              }
-            })
+            isInChannel && getChannelThread({ channelId, cursor: "" });
           }
         } else {
           //每次点击rtc channel都需要调用加入频道接口
@@ -556,12 +555,6 @@ const mapDispatchToProps = (dispatch) => {
     setChannelUserMap: (params) => {
       return dispatch({
         type: "channel/setChannelUserMap",
-        payload: params
-      });
-    },
-    setUnReadNumber: (params) => {
-      return dispatch({
-        type: "app/setUnReadNumber",
         payload: params
       });
     },

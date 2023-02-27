@@ -493,6 +493,13 @@ const addServer = (data) => {
 //删除一条server数据
 const deleteServer = (serverId) => {
   return new Promise((resolve, reject) => {
+    if (getState().channel.curRtcChannelInfo?.serverId === serverId) {
+      leaveRtcChannel({ needLeave: false, serverId: serverId, channelId: getState().channel.curRtcChannelInfo?.channelId }).then(() => {
+        dispatch.channel.setCurRtcChannelInfo({});
+      }).catch(()=>{
+        reject("false");
+      })
+    }
     const list = getState().server.joinedServerInfo.list || [];
     const index = list.findIndex((item) => item.id === serverId);
     if (index > -1) {
@@ -968,15 +975,15 @@ const leaveRtcChannel = ({ needLeave, serverId, channelId }) => {
           WebIM.conn.leaveChannel({ serverId, channelId }).then(res => {
             resolve();
             //如果是私有频道，更新列表
-            if (!isPublic) {
-              deleteLocalChannel({
-                serverId,
-                categoryId,
-                channelId,
-                isDestroy: false,
-                isTransfer: false
-              })
-            }
+            // if (!isPublic) {
+            //   deleteLocalChannel({
+            //     serverId,
+            //     categoryId,
+            //     channelId,
+            //     isDestroy: false,
+            //     isTransfer: false
+            //   })
+            // }
           })
         })
       }).catch(() => {

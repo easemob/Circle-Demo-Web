@@ -424,6 +424,11 @@ export default function initListener() {
           Modal.confirm(conf);
           break;
         case "removed":
+          if (getState().channel.curRtcChannelInfo?.serverId === e.serverId) {
+            leaveRtcChannel({ needLeave: false, serverId: e.serverId, channelId: getState().channel.curRtcChannelInfo?.channelId }).then(() => {
+              dispatch.channel.setCurRtcChannelInfo({});
+            })
+          }
           dispatch.server.setServerMultiDeviceEvent({
             event: "serverRemoved",
             data: e

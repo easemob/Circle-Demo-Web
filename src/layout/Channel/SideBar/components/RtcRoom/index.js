@@ -42,7 +42,7 @@ const RtcRoom = (props) => {
         setInviteVisible(INVITE_TYPE.inviteChannel);
     }
     return (
-        <div className={s.layout}>
+        <div className={`${s.layout} ${isInRtcRoom ? "null" : s.hidden}`}>
             {isInRtcRoom && <div className={s.main}>
                 <div className={s.states}>
                     <div className={s.flags}>
@@ -73,7 +73,7 @@ const RtcRoom = (props) => {
                         </Tooltip>
                     </div>
                 </div>
-                <div className={s.channelName} onClick={goToCurServer}>{serverInfo.name} - #{curRtcChannelInfo.name}</div>
+                <div className={s.channelName} onClick={goToCurServer}>{serverInfo?.name} - #{curRtcChannelInfo?.name}</div>
                 <div className={s.line}></div>
                 <div className={s.user}>
                     <div className={s.userInfo}>

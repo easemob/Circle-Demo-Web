@@ -129,6 +129,7 @@ const Channel = (props) => {
               channelId
             })
             .then((res) => {
+              getHistoryMsg({ cursor: "" });
               getChannelThread({ channelId });
               let msg = createMsg({
                 chatType: CHAT_TYPE.groupChat,
@@ -142,6 +143,8 @@ const Channel = (props) => {
               });
               deliverMsg({ msg, needShow: true }).then();
             });
+        }else{
+          getHistoryMsg({ cursor: "" });
         }
       });
     }
@@ -181,7 +184,6 @@ const Channel = (props) => {
     handleThreadPanel(false);
     //清空thread数据
     setThreadInfo({ threadInfo: {} });
-    getHistoryMsg({ cursor: "" });
   }, [channelId]);
 
   //消息操作

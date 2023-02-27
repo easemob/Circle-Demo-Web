@@ -19,7 +19,6 @@ let options = {
 
 async function startBasicCall({ accessToken, channel, agoraUid }) {
     // Create an AgoraRTCClient object.
-    console.log("======",rtc.client)
     rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8", role: "host" });
     rtc.client.enableAudioVolumeIndicator();
 

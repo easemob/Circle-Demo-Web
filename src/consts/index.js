@@ -111,9 +111,9 @@ const MULTI_DEVICE_EVENT = {
 
 const CHAT = {
   label: (
-    <div style={{ width: "222px" }}>
-      <Icon name="message" size="18px" />
-      <span>发起私聊</span>
+    <div style={{ width: "222px", display: "flex", alignItems: "center", height: "38px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "4px", height: " 30px", width: "30px" }}><Icon name="message" size="18px" /></div>
+      <span style={{ marginLeft: " 8px", fontFamily: "Noto Sans SC", fontWeight: "500", fontSize: "14px", lineHeight: "20px" }}>发起私聊</span>
     </div>
   ),
   key: "chat"
@@ -121,9 +121,9 @@ const CHAT = {
 
 const UN_MUTE = {
   label: (
-    <div>
-      <Icon name="person_wave" size="18px" />
-      <span>取消禁言</span>
+    <div style={{ width: "222px", display: "flex", alignItems: "center", height: "38px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "4px", height: " 30px", width: "30px" }}><Icon name="person_wave" size="18px" /></div>
+      <span style={{ marginLeft: " 8px", fontFamily: "Noto Sans SC", fontWeight: "500", fontSize: "14px", lineHeight: "20px" }}>取消禁言</span>
     </div>
   ),
   key: "unmute"
@@ -131,9 +131,9 @@ const UN_MUTE = {
 
 const MUTE = {
   label: (
-    <div>
-      <Icon name="person_wave_slash" size="18px" />
-      <span>成员禁言</span>
+    <div style={{ width: "222px", display: "flex", alignItems: "center", height: "38px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "4px", height: " 30px", width: "30px" }}><Icon name="person_wave_slash" size="18px" /></div>
+      <span style={{ marginLeft: " 8px", fontFamily: "Noto Sans SC", fontWeight: "500", fontSize: "14px", lineHeight: "20px" }}>成员禁言</span>
     </div>
   ),
   key: "mute"
@@ -141,9 +141,9 @@ const MUTE = {
 
 const KICK = {
   label: (
-    <div>
-      <Icon name="minus_in_circle" size="18px" />
-      <span>踢出频道</span>
+    <div style={{ width: "222px", display: "flex", alignItems: "center", height: "38px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "4px", height: " 30px", width: "30px" }}><Icon name="minus_in_circle" size="18px" /></div>
+      <span style={{ marginLeft: " 8px", fontFamily: "Noto Sans SC", fontWeight: "500", fontSize: "14px", lineHeight: "20px" }}>踢出频道</span>
     </div>
   ),
   key: "kick"

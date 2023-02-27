@@ -102,15 +102,19 @@ const ChannelHeader = (props) => {
     return getCategoryInfo({ serverId, categoryMap });
   }, [categoryMap, serverId]);
   //菜单信息
-  const menuInfo = useMemo(()=>{
+  const menuInfo = useMemo(() => {
     return getChannelItems(channelInfo, userRole, categoryInfo)
-  },[channelInfo, userRole, categoryInfo])
+  }, [channelInfo, userRole, categoryInfo])
   return (
     <HeaderWrap>
-      <span className={`${s.name} ${channelInfo?.isPublic
+      <div className={`${s.name} ${channelInfo?.isPublic
         ? `${s.channelNameWrap} ${s.base} `
         : `${s.channelNameWrap} ${s.private}`}`}
-      >{channelInfo?.name}</span>
+      ><div className={s.contentBox}>
+          <span className={s.info}>{channelInfo?.name}</span>
+          <span className={s.desc}>{channelInfo?.description||"没啥主题..."}</span>
+        </div>
+      </div>
       <div className={s.optWrap}>
         <Popover
           placement="bottomRight"

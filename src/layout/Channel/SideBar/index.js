@@ -19,12 +19,10 @@ import {
     deleteServer,
     getDefaultCategoryInfo,
     updateCategoryMap,
-    leaveRtcChannel,
 } from "@/utils/common";
 import InfiniteScroll from "react-infinite-scroll-component";
 import NameModal from "@/components/NameModal";
 import TagList from "@/components/TagList";
-import RtcRoom from "./components/RtcRoom"
 import defaultCover from "@/assets/images/default_cover.png";
 
 

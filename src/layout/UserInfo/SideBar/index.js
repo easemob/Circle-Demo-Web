@@ -91,7 +91,7 @@ const SideBar = (props) => {
           {operationList.length > 0 &&
             operationList.map((item) => {
               return (
-                <div className={s.item}>
+                <div className={s.item} key={item.op}>
                   <div className={`${s.operationItem} ${item.op === "loginOut" ? s.loginOut : null}`} key={item} onClick={() => handleClick(item)}>
                     <span className={`${s[item.op]}`}>
                       <Icon name={item.iconName} size="24px" />
