@@ -37,7 +37,7 @@ const ServerOverView = (props) => {
                 <Icon name="label" color="rgba(255,255,255,.8)" size="14px" />
             </span>
             <span className={`${s.name}`}>{tagInfo.tagName}</span>
-            {isEditTag && <span className={s.iconCon} onClick={() => { removeTag(tagInfo.tagName) }}>
+            {isEditTag && <span className={`${s.iconCon} ${s.ml2}`} onClick={() => { removeTag(tagInfo.tagName) }}>
                 <Icon name="xmark_in_circle" color="rgba(255,255,255,.8)" size="16px" />
             </span>}
         </div>)
@@ -71,7 +71,7 @@ const ServerOverView = (props) => {
     const inputTagChange = () => {
         setTagName(tagRef.current.value)
     }
-    const changeAddTag = () => {
+    const changeAddTag = useCallback(() => {
         if (showTagList.length === 10) {
             message.error("社区标签数量超出限制!");
             return;
@@ -95,7 +95,7 @@ const ServerOverView = (props) => {
         } else {
             message.error("社区标签已存在！");
         }
-    }
+    },[addTag, editTagName.length, showTagList])
     const cancelEditTag = () => {
         setShowTagList(tags);
         setIsEditTag(false);

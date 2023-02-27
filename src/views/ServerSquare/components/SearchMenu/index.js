@@ -16,13 +16,13 @@ const SearchMenu = (props) => {
         setTypeList([typeList[1], typeList[0]]);
     }
     return (
-        <div className={`${s.searchMenu} ${openMenu ? s.openMenu : null}`}>
+        <div className={`${s.searchMenu} ${openMenu ? s.openMenu : null}`} onClick={() => { setOpenMenu(!openMenu) }}>
             {typeList.map((item, index) => {
                 return (
-                    <div key={item.type} onClick={() => handleClick(index, item)} className={`${s.typeItem} ${index === 0 ? s.firstItem : s.secondItem}`}>
+                    <div key={item.type} onClick={() => handleClick(index, item)} className={`${s.typeItem} ${index === 0 ? s.firstItem : s.secondItem}`} >
                         <span className={s.typeName}>{item.text}</span>
-                        {index === 0 && !openMenu && <Icon name="shevron_down" size="14px" color="rgba(255,255,255,.74)" style={{ cursor: "pointer" }} onClick={() => { setOpenMenu(true) }} />}
-                        {index === 0 && openMenu && <Icon name="shevron_down" size="14px" color="rgba(255,255,255,.74)" style={{ cursor: "pointer" }} onClick={() => { setOpenMenu(false) }} />}
+                        {index === 0 && !openMenu && <Icon name="shevron_down" size="14px" color="rgba(255,255,255,.74)" style={{ cursor: "pointer" }} />}
+                        {index === 0 && openMenu && <Icon name="shevron_down" size="14px" color="rgba(255,255,255,.74)" style={{ cursor: "pointer" }} />}
                     </div>
                 )
             })}

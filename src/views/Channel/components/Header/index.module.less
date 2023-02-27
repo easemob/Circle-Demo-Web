@@ -1,8 +1,41 @@
 .name {
+  display: flex;
+  flex: 1;
+  width: 0;
   color: #fff;
   font-size: 16px;
   line-height: 22px;
   font-weight: 500;
+
+  .contentBox {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    flex-direction: column;
+
+    .info {
+      height: 24px;
+      line-height: 24px;
+      font-family: 'Noto Sans SC';
+      font-weight: 500;
+      font-size: 16px;
+      color: #FFFFFF;
+    }
+
+    .desc {
+      width: 100%;
+      font-family: 'SF Pro Text';
+      font-weight: 500;
+      font-size: 12px;
+      height: 20px;
+      line-height: 20px;
+      color: #BDBDBD;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      word-break: break-all;
+    }
+  }
 }
 
 .base {

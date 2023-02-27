@@ -114,10 +114,10 @@ const ScrollBar = (props) => {
         id: channelId
       })
       //清空未读数
-      setUnReadNumber({
-        chatType: CHAT_TYPE.groupChat,
-        fromId: channelId,
-        number: 0,
+      setServerChannelMap({
+        serverId,
+        channelId,
+        unReadNum: 0,
       })
     } else if (userId) {
       setCurrentChatInfo({

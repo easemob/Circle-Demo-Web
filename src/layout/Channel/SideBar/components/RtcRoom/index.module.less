@@ -1,13 +1,17 @@
 .layout {
     position: absolute;
-    bottom:0;
-    left:72px;
+    bottom: 0;
+    left: 72px;
     z-index: 1000;
     display: flex;
     width: 280px;
     height: 146px;
     align-items: center;
     justify-content: center;
+
+    &.hidden {
+        display: none;
+    }
 
     .main {
         height: 130px;

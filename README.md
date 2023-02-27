@@ -67,7 +67,6 @@
 │       ├── ServerSetting
 │       │   ├── components //社区设置页面组件
 │       │   └── index.js //社区设置页面
-
 │       ├── Chat
 │       │   ├── components //联系人聊天页面组件
 │       │   └── index.js //联系人聊天页面
