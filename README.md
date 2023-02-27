@@ -99,6 +99,8 @@ npm install
 
 3、设置appKey
 在"/src/utils/WebIM.js"文件中设置你的appKey。
+如需语聊房服务，需要设置appId
+在"/src/utils/basicVoiceCall.js"文件中设置你的appId。
 
 4、运行项目
 
