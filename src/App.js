@@ -8,6 +8,8 @@ import initListener from "./utils/WebIMListener";
 import { Empty } from "antd";
 import emptyIcon from "./assets/images/smile_dark.png";
 import RtcRoom from "./layout/Channel/SideBar/components/RtcRoom/index"
+import CheckBrowser from "./components/CheckBrowser";
+
 
 const DefaultIcon = () => {
   return (
@@ -38,6 +40,8 @@ message.config({
   maxCount: 2,
 });
 
+const isSupport = CSS.supports("selector(:where(div))")
+
 function App() {
   useEffect(() => {
     initListener();
@@ -53,6 +57,7 @@ function App() {
         <Provider store={store}>
           <Routes />
           <RtcRoom/>
+          {!isSupport && <CheckBrowser/>}
         </Provider>
       </div>
     </ConfigProvider>
