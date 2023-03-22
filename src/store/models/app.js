@@ -172,7 +172,7 @@ const App = {
       if (chatType && state.chatMap[chatType].has(fromId)) {
         dt = state.chatMap[chatType].get(fromId);
       }
-      let unReadNum = number === "reset" ? 0 : dt.unReadNum ? dt.unReadNum + number : number;
+      let unReadNum = number === "reset" ? 0 : dt.unReadNum && message.onlineState === 1 ? dt.unReadNum + number : number;
       if (chatType === CHAT_TYPE.groupChat) {
         //channel server 未读消息数单独处理
         const info = { ...state.serverChannelMap };
