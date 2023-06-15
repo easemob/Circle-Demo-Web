@@ -27,7 +27,7 @@ const SideBar = (props) => {
   }
 
   useEffect(() => {
-    if (conversationData.length > 0) return;
+    // if (conversationData.length > 0) return;
     WebIM.conn.getConversationlist().then((res) => {
       const { channel_infos } = res.data;
       const conversationList = [];
