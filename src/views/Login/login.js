@@ -13,17 +13,17 @@ const LoadingIcon = () => {
     <LoadingOutlined
       style={{
         fontSize: 24,
-        color: "#fff"
+        color: "#fff",
       }}
     />
-  )
-}
+  );
+};
 
 const LOGIN = {
   loginText: "登录环信超级社区",
   usernamePlaceHolder: "请输入您的手机号",
   passwordPlaceHolder: "请输入密码",
-  login: "登录"
+  login: "登录",
 };
 let userInfos = JSON.parse(localStorage.getItem("userInfo")) || {};
 
@@ -35,7 +35,7 @@ function Login(props) {
     setLoginStatus,
     appUserInfo,
     userInfo,
-    setAppUserInfo
+    setAppUserInfo,
   } = props;
 
   let navigate = useNavigate();
@@ -50,7 +50,7 @@ function Login(props) {
       {
         username: "",
         password: "",
-        agree: false
+        agree: false,
       },
       userInfos
     )
@@ -75,7 +75,7 @@ function Login(props) {
       message.warning({ content: "请输入用户名！" });
       return;
     } else if (!/^1\d{10}$/.test(inputValue.username)) {
-      message.warning({ content: "请输入合法手机号！"});
+      message.warning({ content: "请输入合法手机号！" });
       return;
     } else if (!inputValue.agree) {
       message.warning({
@@ -99,14 +99,14 @@ function Login(props) {
             </a>
             。
           </span>
-        )
+        ),
       });
       return;
     }
     WebIM.conn
       .open({
         user: inputValue.username,
-        pwd: LOGIN_PASSWORD
+        pwd: LOGIN_PASSWORD,
       })
       .then((res) => {
         const { accessToken } = res;
@@ -137,7 +137,7 @@ function Login(props) {
           WebIM.conn
             .registerUser({
               username: inputValue.username,
-              password: LOGIN_PASSWORD
+              password: LOGIN_PASSWORD,
             })
             .then((res) => {
               login();
@@ -157,7 +157,7 @@ function Login(props) {
     setLoginStatus,
     setUserInfo,
     setAppUserInfo,
-    appUserInfo
+    appUserInfo,
   ]);
 
   useEffect(() => {
@@ -174,20 +174,22 @@ function Login(props) {
           <Input
             disabled={isLogging}
             value={inputValue.username}
-            className={`${style.usernameInput} ${isLogging ? style.isLoggingInput : null
-              }`}
+            className={`${style.usernameInput} ${
+              isLogging ? style.isLoggingInput : null
+            }`}
             placeholder={LOGIN.usernamePlaceHolder}
             allowClear={{
               clearIcon: (
                 <Icon name="xmark_in_circle" color="#979797" size="22px"></Icon>
-              )
+              ),
             }}
             maxLength={11}
             onChange={handleInputChange("username")}
           />
           <div
-            className={`${style.loginButton} ${inputValue.username === "" ? style.loginDisable : null
-              }`}
+            className={`${style.loginButton} ${
+              inputValue.username === "" ? style.loginDisable : null
+            }`}
             onClick={login}
           >
             {!isLogging ? (
@@ -244,7 +246,7 @@ const mapStateToProps = ({ app }) => {
     isLogging: app.isLogging,
     loginSuccess: app.loginSuccess,
     appUserInfo: app.appUserInfo,
-    userInfo: app.userInfo
+    userInfo: app.userInfo,
   };
 };
 
@@ -253,21 +255,21 @@ const mapDispatchToProps = (dispatch) => {
     setLoginStatus: (params) => {
       return dispatch({
         type: "app/setLoginStatus",
-        payload: params
+        payload: params,
       });
     },
     setUserInfo: (params) => {
       return dispatch({
         type: "app/setUserInfo",
-        payload: params
+        payload: params,
       });
     },
     setAppUserInfo: (params) => {
       return dispatch({
         type: "app/setAppUserInfo",
-        payload: params
+        payload: params,
       });
-    }
+    },
   };
 };
 export default memo(connect(mapStateToProps, mapDispatchToProps)(Login));

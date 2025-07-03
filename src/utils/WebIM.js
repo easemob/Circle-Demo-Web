@@ -1,5 +1,5 @@
 // import WebIM from "./Easemob-chat";
-import WebIM from "easemob-circle/circleSdk/Easemob-chat";
+import WebIM from "easemob-circle";
 
 WebIM.conn = new WebIM.connection({
 //  Pass your appKey here.
