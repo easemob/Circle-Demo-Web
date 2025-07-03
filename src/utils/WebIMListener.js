@@ -29,7 +29,7 @@ import {
   CHAT_TYPE,
   ACCEPT_INVITE_TYPE,
   CHANNEL_EVENT,
-  REACTION_TYPE
+  REACTION_TYPE,
 } from "@/consts";
 
 const { dispatch, getState } = store;
@@ -39,12 +39,15 @@ export default function initListener() {
   WebIM.conn.addEventHandler("login", {
     onConnected: () => {
       console.log("登录");
-      dispatch.app.setLoginSuccess(true);
+      // 先执行登录成功的then存储用户信息
+      setTimeout(() => {
+        dispatch.app.setLoginSuccess(true);
+      }, 10);
     },
     onDisconnected: () => {
       console.log("登出");
       dispatch.app.setLoginSuccess(false);
-    }
+    },
   });
   //联系人相关事件
   WebIM.conn.addEventHandler("contacts", {
@@ -98,7 +101,7 @@ export default function initListener() {
         dispatch.contact.setContactsList(allList);
         WebIM.conn.unsubscribePresence({ usernames: [msg.from] });
       }
-    }
+    },
     //拒绝好友申请-无事件触发，暂不处理
     //发送好友申请被拒绝-不处理
   });
@@ -121,42 +124,54 @@ export default function initListener() {
             dispatch.app.setAppUserInfo({ ...appUserInfo });
           }
         });
-    }
+    },
   });
   //channel事件
   WebIM.conn.addEventHandler("channelEvent", {
     onChannelEvent: (e) => {
-      const { operator, operation, channelId: id, name, to, serverInfo, categoryId } = e;
+      const {
+        operator,
+        operation,
+        channelId: id,
+        name,
+        to,
+        serverInfo,
+        categoryId,
+      } = e;
       e = { ...e, id };
       switch (operation) {
         case CHANNEL_EVENT.destroy:
           //如果是rtc频道，需要退出频道
           if (getState().channel.curRtcChannelInfo?.channelId === id) {
-            leaveRtcChannel({ needLeave: false, serverId: serverInfo.id, channelId: id }).then(() => {
+            leaveRtcChannel({
+              needLeave: false,
+              serverId: serverInfo.id,
+              channelId: id,
+            }).then(() => {
               dispatch.server.setChannelEvent({
                 event: CHANNEL_EVENT.destroy,
-                data: e
+                data: e,
               });
               deleteLocalChannel({
                 serverId: serverInfo.id,
                 categoryId,
                 channelId: id,
                 isDestroy: true,
-                isTransfer: false
-              })
-            })
+                isTransfer: false,
+              });
+            });
           } else {
             dispatch.server.setChannelEvent({
               event: CHANNEL_EVENT.destroy,
-              data: e
+              data: e,
             });
             deleteLocalChannel({
               serverId: serverInfo.id,
               categoryId,
               channelId: id,
               isDestroy: true,
-              isTransfer: false
-            })
+              isTransfer: false,
+            });
           }
           break;
         case CHANNEL_EVENT.update:
@@ -165,10 +180,14 @@ export default function initListener() {
         case CHANNEL_EVENT.removed:
           //如果是rtc频道，需要退出频道
           if (getState().channel.curRtcChannelInfo?.channelId === id) {
-            leaveRtcChannel({ needLeave: false, serverId: serverInfo.id, channelId: id }).then(() => {
+            leaveRtcChannel({
+              needLeave: false,
+              serverId: serverInfo.id,
+              channelId: id,
+            }).then(() => {
               dispatch.server.setChannelEvent({
                 event: CHANNEL_EVENT.removed,
-                data: e
+                data: e,
               });
               // deleteLocalChannel({
               //   serverId: serverInfo.id,
@@ -177,17 +196,17 @@ export default function initListener() {
               //   isDestroy: false,
               //   isTransfer: false
               // })
-            })
+            });
           } else {
             dispatch.server.setChannelEvent({
               event: CHANNEL_EVENT.removed,
-              data: e
+              data: e,
             });
             //删除子区
             const threadMap = getState().channel.threadMap;
             if (threadMap) {
               threadMap.delete(id);
-              dispatch.channel.setThreadMap(threadMap)
+              dispatch.channel.setThreadMap(threadMap);
             }
             // deleteLocalChannel({
             //   serverId: serverInfo.id,
@@ -215,7 +234,7 @@ export default function initListener() {
                 .acceptChannelInvite({
                   serverId: serverInfo.id,
                   channelId: id,
-                  inviter: operator
+                  inviter: operator,
                 })
                 .then((res) => {
                   //插入数据
@@ -229,35 +248,51 @@ export default function initListener() {
                       customEvent: ACCEPT_INVITE_TYPE.acceptInviteChannel,
                       customExts: {
                         server_name: e.serverInfo.name,
-                        channel_name: name
-                      }
+                        channel_name: name,
+                      },
                     });
                     deliverMsg({ msg, needShow: true }).then();
                   } else {
-                    if (JSON.stringify(getState().channel.curRtcChannelInfo) === "{}") {
-                      joinRtcRoom(res.data)
+                    if (
+                      JSON.stringify(getState().channel.curRtcChannelInfo) ===
+                      "{}"
+                    ) {
+                      joinRtcRoom(res.data);
                     } else {
-                      if (getState().channel.curRtcChannelInfo?.channelId !== res.data.channelId) {
-                        leaveRtcChannel({ needLeave: true, serverId: getState().channel.curRtcChannelInfo.serverId, channelId: getState().channel.curRtcChannelInfo.channelId }).then(() => {
+                      if (
+                        getState().channel.curRtcChannelInfo?.channelId !==
+                        res.data.channelId
+                      ) {
+                        leaveRtcChannel({
+                          needLeave: true,
+                          serverId:
+                            getState().channel.curRtcChannelInfo.serverId,
+                          channelId:
+                            getState().channel.curRtcChannelInfo.channelId,
+                        }).then(() => {
                           //加入新频道
                           joinRtcRoom(res.data);
-                        })
+                        });
                       }
                     }
                   }
-                }).catch(e => {
-                  if (JSON.parse(e.data).error_description === "The number of channel users is full.") {
+                })
+                .catch((e) => {
+                  if (
+                    JSON.parse(e.data).error_description ===
+                    "The number of channel users is full."
+                  ) {
                     message.error({ content: "语聊房已满！" });
                   }
-                })
+                });
             },
             onCancel: () => {
               WebIM.conn.rejectChannelInvite({
                 serverId: serverInfo.id,
                 channelId: id,
-                inviter: operator
+                inviter: operator,
               });
-            }
+            },
           });
           Modal.confirm(conf);
           break;
@@ -268,8 +303,8 @@ export default function initListener() {
             type: "add",
             channelId: id,
             userId: operator,
-            role: e.serverRole
-          })
+            role: e.serverRole,
+          });
           break;
         case CHANNEL_EVENT.memberAbsence:
           // 有用户离开频道
@@ -284,8 +319,8 @@ export default function initListener() {
                 id,
                 userListInfo: {
                   ...dt,
-                  list
-                }
+                  list,
+                },
               });
             }
           }
@@ -300,13 +335,13 @@ export default function initListener() {
                 ...dt,
                 muteList: dt.muteList?.length
                   ? [
-                    ...dt.muteList,
-                    {
-                      userId: to
-                    }
-                  ]
-                  : [{ userId: to }]
-              }
+                      ...dt.muteList,
+                      {
+                        userId: to,
+                      },
+                    ]
+                  : [{ userId: to }],
+              },
             });
           }
           break;
@@ -326,8 +361,8 @@ export default function initListener() {
               channelId: id,
               userListInfo: {
                 ...dt,
-                muteList
-              }
+                muteList,
+              },
             });
           }
           break;
@@ -340,7 +375,7 @@ export default function initListener() {
         default:
           break;
       }
-    }
+    },
   });
   //server事件
   WebIM.conn.addEventHandler("serverEvent", {
@@ -356,7 +391,7 @@ export default function initListener() {
         case "destroy":
           dispatch.server.setServerMultiDeviceEvent({
             event: "serverDestroy",
-            data: e
+            data: e,
           });
           break;
         case "acceptInvite":
@@ -365,7 +400,7 @@ export default function initListener() {
             Modal.destroyAll();
             dispatch.server.setServerMultiDeviceEvent({
               event: "serverJoin",
-              data: e
+              data: e,
             });
           }
           break;
@@ -389,7 +424,7 @@ export default function initListener() {
               WebIM.conn
                 .acceptServerInvite({
                   serverId,
-                  inviter: operator
+                  inviter: operator,
                 })
                 .then((res) => {
                   //插入数据
@@ -401,14 +436,14 @@ export default function initListener() {
                     to: res.data.defaultChannelId,
                     customEvent: ACCEPT_INVITE_TYPE.acceptInviteServer,
                     customExts: {
-                      server_name: name
-                    }
+                      server_name: name,
+                    },
                   });
                   deliverMsg({ msg, needShow: true }).then(() => {
                     WebIM.conn.getServerRole({ serverId }).then((res) => {
                       dispatch.app.setServerRole({
                         serverId,
-                        role: res.data.role
+                        role: res.data.role,
                       });
                     });
                   });
@@ -417,28 +452,32 @@ export default function initListener() {
             onCancel: () => {
               WebIM.conn.rejectServerInvite({
                 serverId,
-                inviter: operator
+                inviter: operator,
               });
-            }
+            },
           });
           Modal.confirm(conf);
           break;
         case "removed":
           if (getState().channel.curRtcChannelInfo?.serverId === e.serverId) {
-            leaveRtcChannel({ needLeave: false, serverId: e.serverId, channelId: getState().channel.curRtcChannelInfo?.channelId }).then(() => {
+            leaveRtcChannel({
+              needLeave: false,
+              serverId: e.serverId,
+              channelId: getState().channel.curRtcChannelInfo?.channelId,
+            }).then(() => {
               dispatch.channel.setCurRtcChannelInfo({});
-            })
+            });
           }
           dispatch.server.setServerMultiDeviceEvent({
             event: "serverRemoved",
-            data: e
+            data: e,
           });
           break;
         case "memberPresence":
           if (e.operator === WebIM.conn.user) {
             dispatch.server.setServerMultiDeviceEvent({
               event: "serverJoin",
-              data: e
+              data: e,
             });
           }
           break;
@@ -446,7 +485,7 @@ export default function initListener() {
           if (e.operator === WebIM.conn.user) {
             dispatch.server.setServerMultiDeviceEvent({
               event: "serverLeave",
-              data: e
+              data: e,
             });
           }
           break;
@@ -454,26 +493,43 @@ export default function initListener() {
           if (e.userId === WebIM.conn.user) {
             dispatch.app.setServerRole({
               serverId,
-              role: e.role
+              role: e.role,
             });
           }
           if (e.serverId === getState().channel?.curRtcChannelInfo?.serverId) {
-            const { serverId, channelId } = getState().channel?.curRtcChannelInfo;
-            updateUserRole({ serverId, channelId, userId: e.userId, role: e.role })
-          } else if (e.serverId === getState().app.currentChannelInfo?.serverId) {
+            const { serverId, channelId } =
+              getState().channel?.curRtcChannelInfo;
+            updateUserRole({
+              serverId,
+              channelId,
+              userId: e.userId,
+              role: e.role,
+            });
+          } else if (
+            e.serverId === getState().app.currentChannelInfo?.serverId
+          ) {
             const { serverId, channelId } = getState().app.currentChannelInfo;
             if (getState().channel.channelMemberVisible) {
-              updateUserRole({ serverId, channelId, userId: e.userId, role: e.role })
+              updateUserRole({
+                serverId,
+                channelId,
+                userId: e.userId,
+                role: e.role,
+              });
             } else if (getState().channel.memberVisible) {
               //serverMember
-              updateServerUserRole({ serverId, userId: e.userId, role: e.role })
+              updateServerUserRole({
+                serverId,
+                userId: e.userId,
+                role: e.role,
+              });
             }
           }
           break;
         default:
           break;
       }
-    }
+    },
   });
   //category事件
   WebIM.conn.addEventHandler("onCategoryEvent", {
@@ -484,30 +540,33 @@ export default function initListener() {
         name: categoryName,
         serverId,
         defaultCategory: false,
-      }
+      };
       switch (e.operation) {
         case "create":
-          updateCategoryMap({ type: "add", categoryInfo })
+          updateCategoryMap({ type: "add", categoryInfo });
           break;
         case "update":
-          updateCategoryMap({ type: "update", categoryInfo })
+          updateCategoryMap({ type: "update", categoryInfo });
           break;
         case "destroy":
-          updateCategoryMap({ type: "delete", categoryInfo })
+          updateCategoryMap({ type: "delete", categoryInfo });
           break;
         case "transferChannel":
           const settingChannelInfo = getState().channel.settingChannelInfo;
-          if (settingChannelInfo.serverId === serverId && settingChannelInfo.channelId === channelId) {
+          if (
+            settingChannelInfo.serverId === serverId &&
+            settingChannelInfo.channelId === channelId
+          ) {
             dispatch.channel.setSettingChannelInfo({
               ...settingChannelInfo,
               categoryId: categoryId,
-            })
+            });
           }
           WebIM.conn.getChannelDetail({ serverId, channelId }).then((res) => {
             //通知里要加上移动之前所在的分组ID
             //从本地获取移动的channelInfo,获取不到就不需要删除或者增加了
             const channelInfo = res.data;
-            const newInfo = { ...channelInfo, categoryId: categoryId }
+            const newInfo = { ...channelInfo, categoryId: categoryId };
             //被移动前的分组删除channel
             deleteLocalChannel({
               serverId,
@@ -515,19 +574,19 @@ export default function initListener() {
               channelId,
               isDestroy: true,
               isTransfer: true,
-            })
+            });
             //移动到的分组增加channel
             insertChannelList(serverId, channelId, newInfo);
             if (getState().app.currentChannelInfo?.channelId === channelId) {
-              dispatch.app.setCurrentChannelInfo({ ...newInfo })
+              dispatch.app.setCurrentChannelInfo({ ...newInfo });
             }
           });
           break;
         default:
           break;
       }
-    }
-  })
+    },
+  });
   // 多设备事件
   WebIM.conn.addEventHandler("multiDeviceEvent", {
     onMultiDeviceEvent: (e) => {
@@ -539,31 +598,31 @@ export default function initListener() {
         case MULTI_DEVICE_EVENT.serverCreate:
           dispatch.server.setServerMultiDeviceEvent({
             event: "serverCreate",
-            data: e
+            data: e,
           });
           break;
         case MULTI_DEVICE_EVENT.serverDestroy:
           dispatch.server.setServerMultiDeviceEvent({
             event: "serverDestroy",
-            data: e
+            data: e,
           });
           break;
         case MULTI_DEVICE_EVENT.serverJoin:
           dispatch.server.setServerMultiDeviceEvent({
             event: "serverJoin",
-            data: e
+            data: e,
           });
           break;
         case MULTI_DEVICE_EVENT.serverLeave:
           dispatch.server.setServerMultiDeviceEvent({
             event: "serverLeave",
-            data: e
+            data: e,
           });
           break;
         case MULTI_DEVICE_EVENT.serverRemoveMember:
           dispatch.server.setServerMultiDeviceEvent({
             event: "serverRemoveMember",
-            data: e
+            data: e,
           });
           break;
         case MULTI_DEVICE_EVENT.serverAcceptInvite:
@@ -585,14 +644,17 @@ export default function initListener() {
             categoryId,
             channelId: e.channelId,
             isDestroy: true,
-            isTransfer: false
-          })
+            isTransfer: false,
+          });
           break;
         case MULTI_DEVICE_EVENT.channelJoin:
           insertChannelList(e.serverInfo.id, e.channelId);
           break;
         case MULTI_DEVICE_EVENT.channelUpdate:
-          updateLocalChannelDetail("notify", e.serverInfo.id, categoryId, { ...e, id: e.channelId });
+          updateLocalChannelDetail("notify", e.serverInfo.id, categoryId, {
+            ...e,
+            id: e.channelId,
+          });
           break;
         case MULTI_DEVICE_EVENT.channelLeave:
           deleteLocalChannel({
@@ -600,8 +662,8 @@ export default function initListener() {
             categoryId,
             channelId: e.channelId,
             isDestroy: false,
-            isTransfer: false
-          })
+            isTransfer: false,
+          });
           break;
         case MULTI_DEVICE_EVENT.channelAcceptInvite:
           Modal.destroyAll();
@@ -620,13 +682,13 @@ export default function initListener() {
                 ...dt,
                 muteList: dt.muteList?.length
                   ? [
-                    ...dt.muteList,
-                    {
-                      userId: e.to
-                    }
-                  ]
-                  : [{ userId: e.to }]
-              }
+                      ...dt.muteList,
+                      {
+                        userId: e.to,
+                      },
+                    ]
+                  : [{ userId: e.to }],
+              },
             });
           }
           break;
@@ -646,8 +708,8 @@ export default function initListener() {
               channelId: e.channelId,
               userListInfo: {
                 ...dt,
-                muteList
-              }
+                muteList,
+              },
             });
           }
           break;
@@ -659,7 +721,7 @@ export default function initListener() {
           dispatch.thread.setDeleteThreadEvent({
             event: "chatThreadDestroy",
             parentId: e.parentId,
-            threadId: e.chatThreadId
+            threadId: e.chatThreadId,
           });
           break;
         case MULTI_DEVICE_EVENT.chatThreadLeave:
@@ -667,13 +729,13 @@ export default function initListener() {
           dispatch.thread.setDeleteThreadEvent({
             event: "chatThreadLeave",
             parentId: e.parentId,
-            threadId: e.chatThreadId
+            threadId: e.chatThreadId,
           });
           break;
         default:
           break;
       }
-    }
+    },
   });
   // 聊天室事件
   WebIM.conn.addEventHandler("chatroomEvent", {
@@ -683,12 +745,12 @@ export default function initListener() {
         case "updateChatRoomAttributes":
           if (id === getState().channel.curRtcChannelInfo?.channelId) {
             //更新当前加入的语聊房频道的kv属性
-            getUsersInfo([from])
+            getUsersInfo([from]);
             dispatch.rtc.setRtcUserInfo({
               ...getState().rtc.rtcUserInfo,
               [from]: {
                 agoraUid: attributes[from],
-              }
+              },
             });
           }
           break;
@@ -697,7 +759,7 @@ export default function initListener() {
             //更新当前加入的语聊房频道的kv属性
             const rtcUserInfo = getState().rtc.rtcUserInfo;
             if (rtcUserInfo[from]) {
-              delete (rtcUserInfo[from]);
+              delete rtcUserInfo[from];
               dispatch.rtc.setRtcUserInfo(rtcUserInfo);
             }
           }
@@ -705,8 +767,8 @@ export default function initListener() {
         default:
           break;
       }
-    }
-  })
+    },
+  });
 
   //消息事件
   WebIM.conn.addEventHandler("messageEvent", {
@@ -715,15 +777,15 @@ export default function initListener() {
       if (message.chatThread) {
         dispatch.thread.setThreadMessage({
           message,
-          fromId
+          fromId,
         });
       } else {
         dispatch.app.insertChatMessage({
           chatType: message.chatType,
           fromId,
           messageInfo: {
-            list: [message]
-          }
+            list: [message],
+          },
         });
       }
     },
@@ -758,12 +820,12 @@ export default function initListener() {
           if (idx > -1) {
             currentReaction[idx] = {
               ...opItem,
-              isAddedBySelf
+              isAddedBySelf,
             };
           } else {
             currentReaction.push({
               ...opItem,
-              isAddedBySelf
+              isAddedBySelf,
             });
           }
         } else {
@@ -777,13 +839,13 @@ export default function initListener() {
             }
             return {
               ...item,
-              isAddedBySelf
+              isAddedBySelf,
             };
           });
         }
         dispatch.app.updateMsgReaction({
           msgId: messageId,
-          reactions: hasMsgReactions || idx > -1 ? currentReaction : list
+          reactions: hasMsgReactions || idx > -1 ? currentReaction : list,
         });
       } catch (error) {
         console.log(error, "error");
@@ -793,15 +855,15 @@ export default function initListener() {
       if (message.chatThread) {
         dispatch.thread.setThreadMessage({
           message,
-          fromId: getMessageFromId(message)
+          fromId: getMessageFromId(message),
         });
       } else {
         dispatch.app.insertChatMessage({
           chatType: message.chatType,
           fromId: getMessageFromId(message),
           messageInfo: {
-            list: [message]
-          }
+            list: [message],
+          },
         });
       }
     },
@@ -809,15 +871,15 @@ export default function initListener() {
       if (message.chatThread) {
         dispatch.thread.setThreadMessage({
           message,
-          fromId: getMessageFromId(message)
+          fromId: getMessageFromId(message),
         });
       } else {
         dispatch.app.insertChatMessage({
           chatType: message.chatType,
           fromId: getMessageFromId(message),
           messageInfo: {
-            list: [message]
-          }
+            list: [message],
+          },
         });
       }
     },
@@ -825,11 +887,11 @@ export default function initListener() {
       dispatch.app.setDeleteMessage({
         id: message.mid,
         fromId: message.to,
-        operator: message.from
+        operator: message.from,
       });
       dispatch.thread.setDeleteMessage({
         id: message.mid,
-        fromId: message.to
+        fromId: message.to,
       });
     },
     onCustomMessage: (message) => {
@@ -837,25 +899,28 @@ export default function initListener() {
         chatType: message.chatType,
         fromId: getMessageFromId(message),
         messageInfo: {
-          list: [message]
-        }
+          list: [message],
+        },
       });
     },
     onReceivedMessage: (message) => {
       //更新id status
-      dispatch.app.updateChatMessageId({ ...message, status: "successful" })
-      dispatch.thread.updateChatThreadMessageId({ ...message, status: "successful" })
-    }
+      dispatch.app.updateChatMessageId({ ...message, status: "successful" });
+      dispatch.thread.updateChatThreadMessageId({
+        ...message,
+        status: "successful",
+      });
+    },
   });
   //网络情况
   WebIM.conn.addEventHandler("online", {
     onOnline: () => {
-      dispatch.app.updateOnline(true)
+      dispatch.app.updateOnline(true);
     },
     onOffline: () => {
-      dispatch.app.updateOnline(false)
-    }
-  })
+      dispatch.app.updateOnline(false);
+    },
+  });
   //thread事件 'create' | 'update' | 'destroy' | 'userRemove'
   WebIM.conn.addEventHandler("threadEvent", {
     onChatThreadChange: (msg) => {
@@ -874,7 +939,7 @@ export default function initListener() {
           dispatch.thread.setDeleteThreadEvent({
             event: "destroy",
             parentId: msg.parentId,
-            threadId: msg.id
+            threadId: msg.id,
           });
           break;
         case "userRemove":
@@ -882,7 +947,7 @@ export default function initListener() {
           dispatch.thread.setDeleteThreadEvent({
             event: "userRemove",
             parentId: msg.parentId,
-            threadId: msg.id
+            threadId: msg.id,
           });
           break;
         default:
@@ -892,17 +957,17 @@ export default function initListener() {
       dispatch.app.updateChatThreadMessage({
         chatType: "groupChat",
         fromId: msg.parentId,
-        updateInfo: msg
+        updateInfo: msg,
       });
       //更新当前currentInfo
       dispatch.thread.updateThreadInfo({
         fromId: msg.parentId,
-        updateInfo: msg
+        updateInfo: msg,
       });
       //更新channel列表中threadInfo
       dispatch.channel.updateChannelThreadInfo({
-        updateInfo: msg
+        updateInfo: msg,
       });
-    }
+    },
   });
 }
